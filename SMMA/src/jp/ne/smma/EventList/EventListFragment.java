@@ -31,9 +31,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.Gallery.LayoutParams;
+import android.widget.LinearLayout;
 
 import com.costum.android.widget.LoadMoreListView;
 import com.costum.android.widget.LoadMoreListView.OnLoadMoreListener;
@@ -56,7 +59,7 @@ public class EventListFragment extends Fragment {
 	// Alert dialog manager
 	private AlertDialogManager alert = new AlertDialogManager();
 	private ProgressDialog pDialog;
-	Button btnLoadMore;
+	View btnLoadMore;
 	private String getImgTAG = "";
 	int count = 0;
 	int lengJson = 0;
@@ -73,22 +76,21 @@ public class EventListFragment extends Fragment {
 			Bundle savedInstanceState) {
 
 		View rootView = inflater.inflate(R.layout.event_list, container, false);
-		btnLoadMore = new Button(getActivity());
-		btnLoadMore.setBackgroundResource(R.drawable.img_load_more);
+		btnLoadMore = inflater.inflate(R.layout.event_list_footer, null, false);
 		listEvent = (LoadMoreListView) rootView.findViewById(R.id.list_event);
 		listEvent.addFooterView(btnLoadMore);
-		
+
 		/**
 		 * Listening to Load More button click event
 		 * */
-		 btnLoadMore.setOnClickListener(new View.OnClickListener() {
-		 @Override
-		 public void onClick(View arg0) {
-		 // Starting a new async task
-		 new loadMoreListView().execute();
-		 }
-		 });
-		
+		btnLoadMore.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				// Starting a new async task
+				new loadMoreListView().execute();
+			}
+		});
+
 		// ((LoadMoreListView) listEvent)
 		// .setOnLoadMoreListener(new OnLoadMoreListener() {
 		// public void onLoadMore() {
@@ -108,14 +110,14 @@ public class EventListFragment extends Fragment {
 		cd = new ConnectionDetector(getActivity().getApplicationContext());
 		// list = (ListView)findViewById(R.id.list);
 
-
 		isInternetPresent = cd.isConnectingToInternet();
 		if (isInternetPresent) {
 			eventList = new ArrayList<HashMap<String, String>>();
 			new GetList().execute();
 		} else {
 			showAlertDialog(getActivity(), "No Internet Connection",
-					"You don't have internet connection, please try again", false);
+					"You don't have internet connection, please try again",
+					false);
 		}
 
 	}
@@ -182,13 +184,13 @@ public class EventListFragment extends Fragment {
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
-						//bCheck = true;
+						// bCheck = true;
 
 					}
 				}
 			} catch (Exception ex) {
 				// showAlertDialog(getActivity(), "", "TIME OUT", false);
-//				bCheck = true;
+				// bCheck = true;
 			}
 
 			return null;
@@ -202,8 +204,12 @@ public class EventListFragment extends Fragment {
 			// dismiss the dialog after getting all tracks
 			pDialog.dismiss();
 			if (Constance.bCheckNetworkTimeOut) {
-				showAlertDialog(getActivity(), "", "Can not get data from server, please check internet and try again", false);
-				
+				showAlertDialog(
+						getActivity(),
+						"",
+						"Can not get data from server, please check internet and try again",
+						false);
+
 			} else {
 				// updating UI from Background Thread
 				getActivity().runOnUiThread(new Runnable() {
@@ -365,8 +371,8 @@ public class EventListFragment extends Fragment {
 	 * ((LoadMoreListView)listEvent).onLoadMoreComplete(); } }
 	 */
 	@SuppressWarnings("deprecation")
-	public void showAlertDialog(final Context context, String title, String message,
-			Boolean status) {
+	public void showAlertDialog(final Context context, String title,
+			String message, Boolean status) {
 		AlertDialog alertDialog = new AlertDialog.Builder(context).create();
 
 		// Setting Dialog Title
@@ -378,7 +384,7 @@ public class EventListFragment extends Fragment {
 		// Setting OK Button
 		alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
-				((Activity)context).finish();
+				((Activity) context).finish();
 			}
 		});
 

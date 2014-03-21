@@ -8,22 +8,23 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/event_list2"
-        android:contentDescription="@string/image" />
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/image"
+        android:src="@drawable/event_list2" />
 
     <TextView
-        android:textColor="@color/Blue"
-        android:padding="10dp"
         android:id="@+id/txtContentAbout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:padding="10dp"
+        android:text="@string/hello_world"
+        android:textColor="@color/about_smma_color_text" />
 
     <ListView
-        android:listSelector="@android:color/background_light"
         android:id="@+id/listview"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:listSelector="@android:color/background_light" >
     </ListView>
 
 </LinearLayout>

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <color name="background_grid">#FFFAD5</color>
     <color name="background_weekend">#F1F1F1</color>
-     <color name="color_background_gridplace">#FFFAD5</color>
+    <color name="color_background_gridplace">#FFFAD5</color>
     <color name="background_grid">#FFFAD5</color>
     <color name="background_weekend">#F1F1F1</color>
     <color name="headerBar">#ffddcc</color>
@@ -149,4 +150,9 @@
     <color name="Navy">#000080</color>
     <color name="Black">#000000</color>
     <color name="A07ItemBG">#fde9d8</color>
+    <color name="footer_background">#fffad5</color>
+    <color name="footer_text_color">#0f387c</color>
+    <color name="event_item_color_text">#4e4e4e</color>
+    <color name="about_smma_color_text">#314d87</color>
+
 </resources>
