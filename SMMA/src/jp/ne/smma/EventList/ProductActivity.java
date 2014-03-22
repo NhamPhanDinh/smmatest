@@ -5,6 +5,7 @@ import java.util.List;
 
 import jp.ne.smma.R;
 import jp.ne.smma.EventList.Controller.AlertDialogManager;
+import jp.ne.smma.Ultis.ApplicationUntils;
 import jp.ne.smma.Ultis.ImageLoader;
 import jp.ne.smma.Ultis.JSONParser;
 
@@ -17,6 +18,7 @@ import org.json.JSONObject;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -26,6 +28,7 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -38,6 +41,7 @@ public class ProductActivity extends Activity {
 	private ImageView imgDetail;
 	private ImageView imgIcon;
 
+	private Button imgAdd;
 	// TextView
 	private TextView textHeader;
 	private TextView textName;
@@ -60,7 +64,6 @@ public class ProductActivity extends Activity {
 	private ProgressDialog pDialog;
 	ImageLoader imageLoaderProduct;
 	ImageLoader imageLoaderIcon;
-
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	@SuppressLint("NewApi")
 	protected void onCreate(Bundle savedInstanceState) {
@@ -82,20 +85,36 @@ public class ProductActivity extends Activity {
 		textAddress = (TextView) findViewById(R.id.product_text_address);
 		textPhone = (TextView) findViewById(R.id.product_text_phone);
 		backButton = (Button) findViewById(R.id.product_btn_back);
+
+		imgAdd = (Button) findViewById(R.id.imageButton1);
+		// save db
+		imgAdd.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				ApplicationUntils.showDialogChooseDateEventDetail(
+						ProductActivity.this, 2222, "Go to super market",
+						"2014/03/12", "2014/04/16", "Test value", "Test note");
+			}
+		});
+		// load image
 		new loadImage().execute();
 
 		backButton.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-//				Intent setIntent = new Intent(ProductActivity.this,MainActivity.class);
-//
-//				startActivity(setIntent);
-//				@Override
-					Intent i = new Intent(getApplicationContext(),MainActivity.class);
-					startActivity(i);
-					finish();
-					//super.onBackPressed();
+				// Intent setIntent = new
+				// Intent(ProductActivity.this,MainActivity.class);
+				//
+				// startActivity(setIntent);
+				// @Override
+				Intent i = new Intent(getApplicationContext(),
+						MainActivity.class);
+				startActivity(i);
+				finish();
+				// super.onBackPressed();
 			}
 		});
 
@@ -114,23 +133,23 @@ public class ProductActivity extends Activity {
 		});
 	}
 
-//	private class loadImageTask extends AsyncTask<Void, Void, Void> {
-//		@Override
-//		protected void onPreExecute() {
-//			// Showing progress dialog before sending http request
-//			pDialog = new ProgressDialog(ProductActivity.this);
-//			pDialog.setMessage("Please wait..");
-//			pDialog.setIndeterminate(true);
-//			pDialog.setCancelable(false);
-//			pDialog.show();
-//		}
-//
-//		@Override
-//		protected Void doInBackground(Void... params) {
-//
-//			return null;
-//		}
-//	}
+	// private class loadImageTask extends AsyncTask<Void, Void, Void> {
+	// @Override
+	// protected void onPreExecute() {
+	// // Showing progress dialog before sending http request
+	// pDialog = new ProgressDialog(ProductActivity.this);
+	// pDialog.setMessage("Please wait..");
+	// pDialog.setIndeterminate(true);
+	// pDialog.setCancelable(false);
+	// pDialog.show();
+	// }
+	//
+	// @Override
+	// protected Void doInBackground(Void... params) {
+	//
+	// return null;
+	// }
+	// }
 
 	/**
 	 * Async Task that send a request to url Gets new list view data Appends to

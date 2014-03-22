@@ -3,9 +3,12 @@ package jp.ne.smma.aboutsmma.adapter;
 import java.util.List;
 
 import jp.ne.smma.R;
+import jp.ne.smma.aboutsmma.DAO.NotificationDataSource;
 import jp.ne.smma.aboutsmma.DTO.EventNotificationItem;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +24,18 @@ public class ListEventNotificationAdapter extends
 		ArrayAdapter<EventNotificationItem> {
 
 	Context context;
+	NotificationDataSource notificationSource;
+	ProgressDialog pDialog;
+	String value = "0";
+	int id;
 
+	/**
+	 * Cosntructor
+	 * 
+	 * @param context
+	 * @param resourceId
+	 * @param items
+	 */
 	public ListEventNotificationAdapter(Context context, int resourceId,
 			List<EventNotificationItem> items) {
 		super(context, resourceId, items);
@@ -36,7 +50,7 @@ public class ListEventNotificationAdapter extends
 		TextView txtContentThree;
 	}
 
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(final int position, View convertView, ViewGroup parent) {
 		ViewHolder holder = null;
 		EventNotificationItem rowItem = getItem(position);
 
@@ -70,14 +84,67 @@ public class ListEventNotificationAdapter extends
 				CheckBox cb = (CheckBox) v;
 				EventNotificationItem country = (EventNotificationItem) cb
 						.getTag();
-				Toast.makeText(
-						context,
-						"Clicked on Checkbox: " + cb.getText() + " is "
-								+ cb.isChecked(), Toast.LENGTH_LONG).show();
+
+				// load data
+				pDialog = new ProgressDialog(context);
+				// check data
+				if (cb.isChecked()) {
+					value = "1";
+				} else {
+					value = "0";
+				}
+				id = position;
+				new updateStatus().execute("");
+				// click check
 				country.setSelected(cb.isChecked());
+
 			}
 		});
 
 		return convertView;
 	}
+
+	/**
+	 * Assytask update status
+	 */
+	private class updateStatus extends AsyncTask<String, String, String> {
+		private boolean bCheck = false;
+
+		@Override
+		protected String doInBackground(String... params) {
+			// add data list view
+			notificationSource = new NotificationDataSource(context);
+			notificationSource.open();
+			bCheck = notificationSource.updateStatus(value, id);
+			notificationSource.close();
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			if (pDialog != null) {
+				pDialog.dismiss();
+			}
+			if (bCheck) {
+				Toast.makeText(context, "Change notification success",
+						Toast.LENGTH_LONG).show();
+			} else {
+				Toast.makeText(context,
+						"Change notification fail, please try again",
+						Toast.LENGTH_LONG).show();
+			}
+
+		}
+
+		@Override
+		protected void onPreExecute() {
+
+			pDialog.setMessage("Updating data...");
+			pDialog.setIndeterminate(false);
+			pDialog.setCancelable(false);
+			pDialog.show();
+		}
+
+	}
+
 }

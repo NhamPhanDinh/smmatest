@@ -1,18 +1,24 @@
 package jp.ne.smma.EventList;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import jp.ne.smma.R;
 import jp.ne.smma.EventCalendar.Custom.Switch;
+import jp.ne.smma.Ultis.ApplicationUntils;
 import jp.ne.smma.Ultis.Constance;
 import jp.ne.smma.Ultis.DialogUtil;
+import jp.ne.smma.aboutsmma.DAO.NotificationDataSource;
 import jp.ne.smma.notification.ReceiverNotification;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -46,6 +52,10 @@ public class SettingActivity extends Activity implements OnClickListener {
 	// set value send notification
 	private PendingIntent pendingIntent;
 
+	NotificationDataSource notificationSource;
+
+	ProgressDialog pDialog;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -53,6 +63,7 @@ public class SettingActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.setting_activity);
 		// get data from xml
 		ini();
+		pDialog = new ProgressDialog(SettingActivity.this);
 		// set click button
 		btnSetEvent.setOnClickListener(this);
 		btnClearEvent.setOnClickListener(this);
@@ -74,6 +85,12 @@ public class SettingActivity extends Activity implements OnClickListener {
 				if (isChecked) {
 					linearShow.setVisibility(View.VISIBLE);
 					Constance.bCheckOnOff = true;
+					// update all status
+					notificationSource = new NotificationDataSource(
+							SettingActivity.this);
+					notificationSource.open();
+					notificationSource.updateAllStatus("0");
+					notificationSource.close();
 				}
 
 				else {
@@ -113,6 +130,44 @@ public class SettingActivity extends Activity implements OnClickListener {
 					}
 				});
 		// detect check box
+		// check checkbox
+		checkBoxShowing();
+		radioCheckBox
+				.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
+					@Override
+					public void onCheckedChanged(RadioGroup group, int checkedId) {
+						// TODO Auto-generated method stub
+						int click = group.getCheckedRadioButtonId();
+						// If the radiobutton that has changed in check state is
+						// now checked...
+						switch (click) {
+						case R.id.checkOneDay:
+
+							// set variable check
+							Constance.strCheckBoxNotifiation = 1;
+							checkOneDay.setChecked(true);
+							// Update value
+							new updateTimeShowNotification().execute("");
+							break;
+
+						case R.id.checkThreeDay:
+							// set variable check
+							Constance.strCheckBoxNotifiation = 2;
+							checkThreeDay.setChecked(true);
+							// Update value
+							new updateTimeShowNotification().execute("");
+							break;
+						case R.id.checkOneWeek:
+							// set variable check
+							Constance.strCheckBoxNotifiation = 3;
+							checkOneWeek.setChecked(true);
+							// Update value
+							new updateTimeShowNotification().execute("");
+							break;
+						}
+					}
+				});
 	}
 
 	/**
@@ -148,7 +203,9 @@ public class SettingActivity extends Activity implements OnClickListener {
 	 * Show dialog clear event
 	 */
 	protected void showDialogClearEvent() {
-		DialogUtil.doMessageDialog(SettingActivity.this, null,
+		DialogUtil.doMessageDialog(
+				SettingActivity.this,
+				null,
 				getString(R.string.content_message),
 				getString(R.string.dialog_ok),
 				new DialogInterface.OnClickListener() {
@@ -157,6 +214,16 @@ public class SettingActivity extends Activity implements OnClickListener {
 					public void onClick(DialogInterface dialog, int which) {
 						// TODO Auto-generated method stub
 						dialog.dismiss();
+						// clear data database
+						notificationSource = new NotificationDataSource(
+								SettingActivity.this);
+						notificationSource.open();
+						// update count
+						Constance.countDatabaseNotification = Constance.countDatabaseNotification
+								+ notificationSource.getNotificationCount();
+						// delete data db
+						notificationSource.deleteAllNotication();
+						notificationSource.close();
 					}
 				}, getString(R.string.dialog_cancel),
 				new DialogInterface.OnClickListener() {
@@ -176,9 +243,9 @@ public class SettingActivity extends Activity implements OnClickListener {
 	 */
 	protected void setNotification() {
 		Calendar calendar = Calendar.getInstance();
-		
-		calendar.set(2014, 2, 20, 16, 37, 00); //month 3// month +1
-		Log.i("", "Set calandar: "+calendar.getTime());
+
+		calendar.set(2014, 2, 20, 16, 37, 00); // month 3// month +1
+		Log.i("", "Set calandar: " + calendar.getTime());
 		// go to receiver class
 		Intent myIntent = new Intent(SettingActivity.this,
 				ReceiverNotification.class);
@@ -199,15 +266,156 @@ public class SettingActivity extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		if (v == btnClearEvent) {
-			showDialogClearEvent();
+			if (showDialogValidate()) {
+				showDialogClearEvent();
+			}
+
 		}
-		if (v==btnSetEvent) {
-			//setNotification();
-			Intent intent = new Intent(getApplicationContext(),
-					ListEventNotificationActivity.class);
-			startActivity(intent);
+		if (v == btnSetEvent) {
+			// setNotification();
+			if (showDialogValidate()) {
+				// if setting ON OFF check
+				if (Constance.bCheckOnOff) {
+					Intent intent = new Intent(getApplicationContext(),
+							ListEventNotificationActivity.class);
+					startActivity(intent);
+				} else {
+					DialogUtil.doMessageDialog(SettingActivity.this, null,
+							"You need select ON notification settings.", "OK",
+							null);
+				}
+			}
+
 		}
-		
+
+	}
+
+	/**
+	 * Validate record notification
+	 * 
+	 * @return true if have > 1 record
+	 */
+	protected Boolean validateRecordNotification() {
+		int count = 0;
+		try {
+			notificationSource = new NotificationDataSource(
+					SettingActivity.this);
+			notificationSource.open();
+			count = notificationSource.getNotificationCount();
+			notificationSource.close();
+			// check record
+			if (count > 0) {
+				return true;
+			} else {
+				return false;
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	/**
+	 * Show dialog validate
+	 * 
+	 * @return
+	 */
+	private boolean showDialogValidate() {
+		if (!validateRecordNotification()) {
+			DialogUtil.doMessageDialog(SettingActivity.this, null,
+					"No have data event list", "OK", null);
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	/**
+	 * Checkbox set notification showing
+	 */
+	private void checkBoxShowing() {
+		if (Constance.strCheckBoxNotifiation == 1) {
+			// 1 day
+			checkOneDay.setChecked(true);
+		} else if (Constance.strCheckBoxNotifiation == 2) {
+			// 3 day
+			checkThreeDay.setChecked(true);
+		} else if (Constance.strCheckBoxNotifiation == 3) {
+			// 1 week
+			checkOneWeek.setChecked(true);
+		} else {
+			// nothing
+			checkOneDay.setChecked(false);
+			checkThreeDay.setChecked(false);
+			checkOneWeek.setChecked(false);
+		}
+	}
+
+	/**
+	 * Assytask update checkbox
+	 */
+	private class updateTimeShowNotification extends
+			AsyncTask<String, String, String> {
+		@SuppressWarnings("unused")
+		ArrayList<String> strCheckZero;
+		ArrayList<String> strChooseDayZwro;
+		ArrayList<String> strChooseDayUpdate = new ArrayList<String>();
+		String fDate = null;
+
+		@Override
+		protected String doInBackground(String... params) {
+			// get data from DB
+			strCheckZero = notificationSource.getCheckEqualZero();
+			strChooseDayZwro = notificationSource.getChooseDayZero();
+			// convert day by 1day, 3day, 1 weeks
+			for (int i = 0; i < strChooseDayZwro.size(); i++) {
+				fDate = new SimpleDateFormat("yyyy/MM/dd")
+						.format(ApplicationUntils
+								.converStringtoDate(strChooseDayZwro.get(i)));
+				// check data time
+				fDate = ApplicationUntils.previewDaybyDay(fDate);
+				strChooseDayUpdate.add(fDate);
+				// set notification
+				ApplicationUntils.setNotification(SettingActivity.this, fDate);
+			}
+			// update database
+			notificationSource.updateChooseDayZero(strChooseDayUpdate);
+
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			if (pDialog != null) {
+				pDialog.dismiss();
+			}
+			notificationSource.close();
+			
+		}
+
+		@Override
+		protected void onPreExecute() {
+
+			pDialog.setMessage("Updating data...");
+			pDialog.setIndeterminate(false);
+			pDialog.setCancelable(false);
+			pDialog.show();
+			// open db
+			notificationSource = new NotificationDataSource(
+					SettingActivity.this);
+			notificationSource.open();
+		}
+
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		if (pDialog != null) {
+			pDialog.dismiss();
+		}
 	}
 
 }

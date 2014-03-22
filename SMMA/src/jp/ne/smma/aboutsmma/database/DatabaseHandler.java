@@ -19,19 +19,29 @@ public class DatabaseHandler extends SQLiteOpenHelper
 
 	// Users Table Columns names
 	public static final String COLUMN_ID = "_id";
+	public static final String COLUMN_ID_EVENT = "_id_event";
 	public static final String COLUMN_NAME = "_name";
+	public static final String COLUMN_STARTDAY = "_start_day";
+	public static final String COLUMN_ENDDAY = "_end_day";
+	public static final String COLUMN_CHOOSE_DAY = "_choose_day";
 	public static final String COLUMN_VALUE= "_value";
-	public static final String COLUMN_DATE = "_date";
-	public static final String COLUMN_STATUS = "_status"; //0: nothing, 1: 1 month, 2: 3 month, 3: other
+	public static final String COLUMN_NOTE = "_note";
+	public static final String COLUMN_CHECK = "_check"; //0: nothing, 1 ; click item
+	public static final String COLUMN_STATUS = "_status"; //0: nothing, 1: show notification
 
 	// Database creation sql statement
 	private static final String CREATE_NOTIFICATION_TABLE = "create table " 
 			+ TBL_NOTIFICATION
 			+ "(" 
 			+ COLUMN_ID + " integer primary key autoincrement, "
+			+ COLUMN_ID_EVENT + " integer not null, " 
 			+ COLUMN_NAME + " text not null, " 
+			+ COLUMN_STARTDAY + " text not null, " 
+			+ COLUMN_ENDDAY + " text not null, " 
+			+ COLUMN_CHOOSE_DAY + " text not null, " 
 			+ COLUMN_VALUE + " text not null, " 
-			+ COLUMN_DATE + " text not null, "
+			+ COLUMN_NOTE + " text not null, "
+			+ COLUMN_CHECK + " text not null, "
 			+ COLUMN_STATUS + " text not null"
 			+ ");";
 	
