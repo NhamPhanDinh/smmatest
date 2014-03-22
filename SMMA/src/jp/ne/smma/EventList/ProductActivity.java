@@ -8,6 +8,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -133,14 +134,28 @@ public class ProductActivity extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				// convert date
-//				String fDate1 = SimpleDateFormat.getDateInstance(
-//						SimpleDateFormat.LONG, Locale.JAPAN).format(dateEnd);
-//				String fDate = SimpleDateFormat.getDateInstance(
-//						SimpleDateFormat.LONG, Locale.JAPAN).format(dateFrom);
+				// String fDate1 = SimpleDateFormat.getDateInstance(
+				// SimpleDateFormat.LONG, Locale.JAPAN).format(dateEnd);
+				// String fDate = SimpleDateFormat.getDateInstance(
+				// SimpleDateFormat.LONG, Locale.JAPAN).format(dateFrom);
+
+				java.text.DateFormat df = new java.text.SimpleDateFormat(
+						"yyyy年M月dd日");
+				java.text.DateFormat df1 = new java.text.SimpleDateFormat(
+						"yyyy/MM/dd");
+				df.setTimeZone(java.util.TimeZone.getDefault());
+				try {
+					java.util.Date dateE = df.parse(dateEnd);
+					java.util.Date dateF = df.parse(dateFrom);
+				
 				// show notification
 				ApplicationUntils.showDialogChooseDateEventDetail(
-						ProductActivity.this, id, strName, "2014/04/01",
-						"2014/05/22", strTitle, strDate);
+						ProductActivity.this, id, strName, df1.format(dateF),
+						df1.format(dateE), strTitle, strDate);
+				} catch (java.text.ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		});
 		// load image
