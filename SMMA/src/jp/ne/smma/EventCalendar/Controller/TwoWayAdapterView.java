@@ -16,6 +16,7 @@ import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.Adapter;
+import android.widget.AdapterView;
 
 
 /**
@@ -249,6 +250,8 @@ public abstract class TwoWayAdapterView<T extends Adapter> extends ViewGroup {
 		 * @param id The row id of the item that was clicked.
 		 */
 		void onItemClick(TwoWayAdapterView<?> parent, View view, int position, long id);
+
+		void onItemClick(AdapterView<?> arg0, View v, int pos, long arg3);
 	}
 
 	/**

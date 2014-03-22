@@ -3,10 +3,13 @@ package jp.ne.smma.aboutsmma.adapter;
 import java.util.List;
 
 import jp.ne.smma.R;
+import jp.ne.smma.EventList.EventListFragment;
+import jp.ne.smma.Ultis.ImageLoader;
 import jp.ne.smma.aboutsmma.DTO.RowAboutItem;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,11 +22,13 @@ import android.widget.TextView;
 public class CustomListViewAdapter extends ArrayAdapter<RowAboutItem> {
 
 	Context context;
-
+	public ImageLoader imageLoader; 
+	
 	public CustomListViewAdapter(Context context, int resourceId,
 			List<RowAboutItem> items) {
 		super(context, resourceId, items);
 		this.context = context;
+		imageLoader=new ImageLoader(context);
 	}
 
 	/* private view holder class */
@@ -52,7 +57,9 @@ public class CustomListViewAdapter extends ArrayAdapter<RowAboutItem> {
         /* Set item */
         holder.linearBacground.setBackgroundColor(Color.parseColor(rowItem.getColorCode()));
         holder.txtContent.setText(rowItem.getStrContent());
-        holder.imageIndexItem.setImageResource(rowItem.getImageItem());
+        imageLoader.DisplayImage(rowItem.getPathImageItem(), holder.imageIndexItem);
+        Log.e("test url image about",rowItem.getPathImageItem());
+       // holder.imageIndexItem.setImageResource(rowItem.getImageItem());
  
         return convertView;
     }

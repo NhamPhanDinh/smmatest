@@ -27,5 +27,6 @@
     <string name="dialog_ok">OK</string>
     <!-- Notification service -->
     <string name="content_notification">You have an upcoming event happening</string>
+    <string name="event_footer_text">古い記事を表示</string>
 
 </resources>

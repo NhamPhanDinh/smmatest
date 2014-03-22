@@ -31,9 +31,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.Gallery.LayoutParams;
+import android.widget.LinearLayout;
 
 import com.costum.android.widget.LoadMoreListView;
 import com.costum.android.widget.LoadMoreListView.OnLoadMoreListener;
@@ -41,13 +44,15 @@ import com.costum.android.widget.LoadMoreListView.OnLoadMoreListener;
 public class EventListFragment extends Fragment {
 
 	public static final String KEY_SUCCESS = "success";
-	public static final String KEY_ID = "id";
-	public static final String KEY_NAME = "name";
-	public static final String KEY_ADDRESS = "address";
-	public static final String KEY_DAY = "day";
+	public static final String KEY_ID = "ev_id";
+	public static final String KEY_CAT_ID = "ev_cat_id";
+	public static final String KEY_NAME = "ev_company_name";
+	public static final String KEY_ADDRESS = "ev_name";
+	public static final String KEY_DAY = "ev_date";
 	public static final String KEY_ERROR = "error";
-	public static final String KEY_IMG_URL = "pathimage";
-	public static final String url = "http://nhampd.orgfree.com/get_all_eventlist.php";
+	public static final String KEY_IMG_COLOR = "ev_color";
+	public static final String KEY_IMG_URL = "ev_path_image";
+	public static final String url = "http://dev9.ominext.com/smma/?page_id=27649";
 	// ListView list;
 	private EventListAdapter adapter;
 	private ArrayList<HashMap<String, String>> eventList;
@@ -56,7 +61,7 @@ public class EventListFragment extends Fragment {
 	// Alert dialog manager
 	private AlertDialogManager alert = new AlertDialogManager();
 	private ProgressDialog pDialog;
-	Button btnLoadMore;
+	View btnLoadMore;
 	private String getImgTAG = "";
 	int count = 0;
 	int lengJson = 0;
@@ -73,22 +78,21 @@ public class EventListFragment extends Fragment {
 			Bundle savedInstanceState) {
 
 		View rootView = inflater.inflate(R.layout.event_list, container, false);
-		btnLoadMore = new Button(getActivity());
-		btnLoadMore.setBackgroundResource(R.drawable.img_load_more);
+		btnLoadMore = inflater.inflate(R.layout.event_list_footer, null, false);
 		listEvent = (LoadMoreListView) rootView.findViewById(R.id.list_event);
 		listEvent.addFooterView(btnLoadMore);
-		
+
 		/**
 		 * Listening to Load More button click event
 		 * */
-		 btnLoadMore.setOnClickListener(new View.OnClickListener() {
-		 @Override
-		 public void onClick(View arg0) {
-		 // Starting a new async task
-		 new loadMoreListView().execute();
-		 }
-		 });
-		
+		btnLoadMore.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				// Starting a new async task
+				new loadMoreListView().execute();
+			}
+		});
+
 		// ((LoadMoreListView) listEvent)
 		// .setOnLoadMoreListener(new OnLoadMoreListener() {
 		// public void onLoadMore() {
@@ -108,14 +112,14 @@ public class EventListFragment extends Fragment {
 		cd = new ConnectionDetector(getActivity().getApplicationContext());
 		// list = (ListView)findViewById(R.id.list);
 
-
 		isInternetPresent = cd.isConnectingToInternet();
 		if (isInternetPresent) {
 			eventList = new ArrayList<HashMap<String, String>>();
 			new GetList().execute();
 		} else {
 			showAlertDialog(getActivity(), "No Internet Connection",
-					"You don't have internet connection, please try again", false);
+					"You don't have internet connection, please try again",
+					false);
 		}
 
 	}
@@ -143,11 +147,13 @@ public class EventListFragment extends Fragment {
 				// Creating service handler class instance
 				JSONParser jsonParser = new JSONParser();
 				List<NameValuePair> params = new ArrayList<NameValuePair>();
-				params.add(new BasicNameValuePair("name", "1111"));
+				// POST API to server
+				params.add(new BasicNameValuePair("name_event", "get-event-all"));
+				params.add(new BasicNameValuePair("id", "1"));
+				
 				JSONObject mJson = jsonParser.getJSONFromUrl(url, params);
 				if (mJson == null) {
 					showAlertDialog(getActivity(), "", "TIME OUT", false);
-					Log.e("aaaaaaa", "bbbbbbbb");
 				} else {
 					try {
 						if (mJson.getString(KEY_SUCCESS) != null) {
@@ -165,14 +171,18 @@ public class EventListFragment extends Fragment {
 									HashMap<String, String> map = new HashMap<String, String>();
 									JSONObject json = mJsonArray
 											.getJSONObject(i);
-									map.put(KEY_ID, json.getString("id"));
-									;
-									map.put(KEY_NAME, json.getString("name"));
+									map.put(KEY_ID, json.getString("ev_id"));
+									map.put(KEY_CAT_ID,
+											json.getString("ev_cat_id"));
+									map.put(KEY_NAME,
+											json.getString("ev_company_name"));
 									map.put(KEY_ADDRESS,
-											json.getString("address"));
-									map.put(KEY_DAY, json.getString("day"));
+											json.getString("ev_name"));
+									map.put(KEY_DAY, json.getString("ev_date"));
+									map.put(KEY_IMG_COLOR,
+											json.getString("ev_color"));
 									map.put(KEY_IMG_URL,
-											json.getString("pathimage"));
+											json.getString("ev_path_image"));
 									Log.d("KEY_IMG_URL", map.get(KEY_IMG_URL));
 									count = count + 1;
 									eventList.add(map);
@@ -182,13 +192,13 @@ public class EventListFragment extends Fragment {
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
-						//bCheck = true;
+						// bCheck = true;
 
 					}
 				}
 			} catch (Exception ex) {
 				// showAlertDialog(getActivity(), "", "TIME OUT", false);
-//				bCheck = true;
+				// bCheck = true;
 			}
 
 			return null;
@@ -202,8 +212,12 @@ public class EventListFragment extends Fragment {
 			// dismiss the dialog after getting all tracks
 			pDialog.dismiss();
 			if (Constance.bCheckNetworkTimeOut) {
-				showAlertDialog(getActivity(), "", "Can not get data from server, please check internet and try again", false);
-				
+				showAlertDialog(
+						getActivity(),
+						"",
+						"Can not get data from server, please check internet and try again",
+						false);
+
 			} else {
 				// updating UI from Background Thread
 				getActivity().runOnUiThread(new Runnable() {
@@ -268,12 +282,15 @@ public class EventListFragment extends Fragment {
 				JSONObject json;
 				try {
 					json = mJsonArray.getJSONObject(i);
-					map.put(KEY_ID, json.getString("id"));
-					;
-					map.put(KEY_NAME, json.getString("name"));
-					map.put(KEY_ADDRESS, json.getString("address"));
-					map.put(KEY_DAY, json.getString("day"));
-					map.put(KEY_IMG_URL, json.getString("pathimage"));
+
+					map.put(KEY_ID, json.getString("ev_id"));
+					map.put(KEY_CAT_ID, json.getString("ev_cat_id"));
+					map.put(KEY_NAME, json.getString("ev_company_name"));
+					map.put(KEY_ADDRESS, json.getString("ev_name"));
+					map.put(KEY_DAY, json.getString("ev_date"));
+					map.put(KEY_IMG_COLOR, json.getString("ev_color"));
+					map.put(KEY_IMG_URL, json.getString("ev_path_image"));
+
 					Log.d("KEY_IMG_URL", map.get(KEY_IMG_URL));
 					count = count + 1;
 					eventList.add(map);
@@ -365,8 +382,8 @@ public class EventListFragment extends Fragment {
 	 * ((LoadMoreListView)listEvent).onLoadMoreComplete(); } }
 	 */
 	@SuppressWarnings("deprecation")
-	public void showAlertDialog(final Context context, String title, String message,
-			Boolean status) {
+	public void showAlertDialog(final Context context, String title,
+			String message, Boolean status) {
 		AlertDialog alertDialog = new AlertDialog.Builder(context).create();
 
 		// Setting Dialog Title
@@ -378,7 +395,7 @@ public class EventListFragment extends Fragment {
 		// Setting OK Button
 		alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
-				((Activity)context).finish();
+				((Activity) context).finish();
 			}
 		});
 

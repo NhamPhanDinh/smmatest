@@ -7,14 +7,16 @@
 
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:padding="5dp" >
 
         <ImageView
             android:id="@+id/backIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
+            android:layout_marginRight="5dp"
             android:background="@drawable/btn_back"
             android:contentDescription="@string/image"
             android:onClick="backIcon" />
@@ -45,15 +47,20 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical"
+            android:padding="5dp" >
+
+            <TextView
+                android:id="@+id/text_content"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" />
 
             <ImageView
                 android:id="@+id/imgContent"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/image"
-                android:scaleType="fitXY"
-                />
+                android:scaleType="fitXY" />
 
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -65,6 +72,7 @@
                     android:layout_height="wrap_content" >
 
                     <ImageView
+                        android:id="@+id/imageMap"
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         android:contentDescription="@string/image"
@@ -87,12 +95,14 @@
 
                     <TextView
                         android:id="@+id/urlPlace"
+                        android:onClick="openURL"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="" />
 
                     <TextView
                         android:id="@+id/telPlace"
+                        android:onClick="clickCall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="" />
