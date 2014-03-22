@@ -4,9 +4,11 @@ package jp.ne.smma.aboutsmma.DTO;
  */
 public class RowAboutItem {
 	private String colorCode;
-	private int imageItem;
+	private String pathImageItem;
 	private String strContent;
-
+	private String placeId;
+	private double latitude;
+	private double longitude;
 	/**
 	 * Constructor
 	 * 
@@ -17,10 +19,13 @@ public class RowAboutItem {
 	 * @param strContent
 	 *            - content list item
 	 */
-	public RowAboutItem(String colorCode, int imageItem, String strContent) {
+	public RowAboutItem(String colorCode, String imagePathItem, String strContent, String id, double latitude, double longitude) {
 		this.colorCode = colorCode;
-		this.imageItem = imageItem;
+		this.pathImageItem = imagePathItem;
 		this.strContent = strContent;
+		this.placeId = id;
+		this.latitude = latitude;
+		this.longitude = longitude;
 	}
 
 	public String getColorCode() {
@@ -31,12 +36,12 @@ public class RowAboutItem {
 		this.colorCode = colorCode;
 	}
 
-	public int getImageItem() {
-		return imageItem;
+	public String getPathImageItem() {
+		return pathImageItem;
 	}
 
-	public void setImageItem(int imageItem) {
-		this.imageItem = imageItem;
+	public void setPathImageItem(String imageItem) {
+		this.pathImageItem = imageItem;
 	}
 
 	public String getStrContent() {
@@ -45,6 +50,30 @@ public class RowAboutItem {
 
 	public void setStrContent(String strContent) {
 		this.strContent = strContent;
+	}
+	
+	public String getPlaceId(){
+		return placeId;
+	}
+	
+	public void setPlaceId(String id){
+		this.placeId = id;
+	}
+	
+	public double getLatitude(){
+		return latitude;
+	}
+	
+	public void setLatitude(double latitude){
+		this.latitude = latitude;
+	}
+	
+	public double getLongitude(){
+		return longitude;
+	}
+	
+	public void setLongitude(){
+		this.longitude = longitude;
 	}
 
 }

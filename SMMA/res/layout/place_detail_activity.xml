@@ -47,7 +47,13 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical"
+            android:padding="5dp" >
+
+            <TextView
+                android:id="@+id/text_content"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" />
 
             <ImageView
                 android:id="@+id/imgContent"
@@ -88,12 +94,14 @@
 
                     <TextView
                         android:id="@+id/urlPlace"
+                        android:onClick="openURL"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="" />
 
                     <TextView
                         android:id="@+id/telPlace"
+                        android:onClick="clickCall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="" />

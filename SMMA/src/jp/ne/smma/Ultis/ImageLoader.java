@@ -48,7 +48,7 @@ public class ImageLoader {
         else
         {
             queuePhoto(url, imageView);
-          //  imageView.setImageResource(stub_id);
+           imageView.setImageResource(stub_id);
         }
         
     }
@@ -113,7 +113,9 @@ public class ImageLoader {
             o2.inSampleSize=scale;
             return BitmapFactory.decodeStream(new FileInputStream(f), null, o2);
         } catch (FileNotFoundException e) {}
+
         return null;
+       
     }
     
     //Task for the queue
@@ -139,8 +141,9 @@ public class ImageLoader {
                 return;
             Bitmap bmp=getBitmap(photoToLoad.url);
             memoryCache.put(photoToLoad.url, bmp);
-            if(imageViewReused(photoToLoad))
+            if(imageViewReused(photoToLoad)){
                 return;
+            }
             BitmapDisplayer bd=new BitmapDisplayer(bmp, photoToLoad);
             Activity a=(Activity)photoToLoad.imageView.getContext();
             a.runOnUiThread(bd);
