@@ -3,12 +3,7 @@ package jp.ne.smma.Ultis;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-
-import jp.ne.smma.EventList.SettingActivity;
 import jp.ne.smma.aboutsmma.DAO.NotificationDataSource;
-import jp.ne.smma.aboutsmma.DTO.NotificationItem;
 import jp.ne.smma.aboutsmma.dialog.ChooseDateDialog;
 import jp.ne.smma.notification.ReceiverNotification;
 import android.app.AlarmManager;
@@ -16,7 +11,6 @@ import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.text.format.DateFormat;
 import android.util.Log;
 
 /**
@@ -156,6 +150,7 @@ public class ApplicationUntils {
 	 * @param datetime
 	 */
 	public static void setNotification(Context mContext, String time) {
+		Log.i("", "Time: "+time);
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(converStringtoDate(time)); // month 3// month +1
 		// go to receiver class

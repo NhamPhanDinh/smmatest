@@ -6,13 +6,9 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-
 import jp.ne.smma.R;
 import jp.ne.smma.EventList.Controller.AlertDialogManager;
 import jp.ne.smma.Ultis.ApplicationUntils;
@@ -134,13 +130,9 @@ public class ProductActivity extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				// convert date
-				// String fDate1 = SimpleDateFormat.getDateInstance(
-				// SimpleDateFormat.LONG, Locale.JAPAN).format(dateEnd);
-				// String fDate = SimpleDateFormat.getDateInstance(
-				// SimpleDateFormat.LONG, Locale.JAPAN).format(dateFrom);
 
 				java.text.DateFormat df = new java.text.SimpleDateFormat(
-						"yyyy年M月dd日");
+						"yyyy年MM月dd日"); //old M
 				java.text.DateFormat df1 = new java.text.SimpleDateFormat(
 						"yyyy/MM/dd");
 				df.setTimeZone(java.util.TimeZone.getDefault());

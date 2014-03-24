@@ -1,10 +1,14 @@
 package jp.ne.smma.EventList;
 
 import jp.ne.smma.R;
+import jp.ne.smma.Ultis.Constance;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -16,6 +20,8 @@ public class MainActivity extends FragmentActivity {
 
 	private PageIndicator mIndicator;
 	private ImageView btnSetting;
+	// preferences
+	SharedPreferences preferences;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +46,16 @@ public class MainActivity extends FragmentActivity {
 				startActivity(intent);
 			}
 		});
+		// get share prefrent
+		// share Preference for setting
+		preferences = PreferenceManager
+				.getDefaultSharedPreferences(MainActivity.this);
+		Constance.bCheckOnOff = preferences.getBoolean(Constance.CHECK_ON_OFF,
+				true);
+		Constance.bOrientation = preferences.getBoolean(
+				Constance.CHECK_ORIENTATION, false);
+		Constance.strCheckBoxNotifiation = preferences.getInt(
+				Constance.CHECK_CHECKBOXNOTIFIATION, 0);
 
 	}
 

@@ -2,26 +2,22 @@ package jp.ne.smma.EventList;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-
 import jp.ne.smma.R;
 import jp.ne.smma.EventCalendar.Custom.Switch;
 import jp.ne.smma.Ultis.ApplicationUntils;
 import jp.ne.smma.Ultis.Constance;
 import jp.ne.smma.Ultis.DialogUtil;
 import jp.ne.smma.aboutsmma.DAO.NotificationDataSource;
-import jp.ne.smma.notification.ReceiverNotification;
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -50,12 +46,13 @@ public class SettingActivity extends Activity implements OnClickListener {
 
 	private int clickRadio = 0;
 	// set value send notification
-	private PendingIntent pendingIntent;
 
 	NotificationDataSource notificationSource;
 
 	ProgressDialog pDialog;
-
+	
+	//preferences
+	SharedPreferences preferences;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -67,6 +64,8 @@ public class SettingActivity extends Activity implements OnClickListener {
 		// set click button
 		btnSetEvent.setOnClickListener(this);
 		btnClearEvent.setOnClickListener(this);
+		//share Preference
+		preferences = PreferenceManager.getDefaultSharedPreferences(SettingActivity.this);
 		// click switch
 		// check event
 		if (!Constance.bCheckOnOff) {
@@ -236,26 +235,6 @@ public class SettingActivity extends Activity implements OnClickListener {
 				});
 	}
 
-	/**
-	 * Set notification
-	 * 
-	 * @param datetime
-	 */
-	protected void setNotification() {
-		Calendar calendar = Calendar.getInstance();
-
-		calendar.set(2014, 2, 20, 16, 37, 00); // month 3// month +1
-		Log.i("", "Set calandar: " + calendar.getTime());
-		// go to receiver class
-		Intent myIntent = new Intent(SettingActivity.this,
-				ReceiverNotification.class);
-		pendingIntent = PendingIntent.getBroadcast(SettingActivity.this, 0,
-				myIntent, 0);
-		// set alarm
-		AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-		alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(),
-				pendingIntent);
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -417,5 +396,21 @@ public class SettingActivity extends Activity implements OnClickListener {
 			pDialog.dismiss();
 		}
 	}
-
+	/*
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onDestroy()
+	 */
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		//save variable share preferent
+		/* Create variable share preferences */
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putBoolean(Constance.CHECK_ON_OFF, Constance.bCheckOnOff);
+		editor.putBoolean(Constance.CHECK_ORIENTATION, Constance.bOrientation);
+		editor.putInt(Constance.CHECK_CHECKBOXNOTIFIATION, Constance.strCheckBoxNotifiation);
+		editor.commit();
+	}
+	
 }
