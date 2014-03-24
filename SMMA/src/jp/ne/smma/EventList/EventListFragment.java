@@ -96,7 +96,7 @@ public class EventListFragment extends Fragment {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				HashMap<String, String> map = eventList.get(position);
+				HashMap<String, String> map = eventList.get(position-1);
 				String itemId = map.get(KEY_ID);
 				String name = map.get(KEY_NAME);
 				Intent intent = new Intent(getActivity(), ProductActivity.class);
