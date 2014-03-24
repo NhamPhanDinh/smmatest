@@ -7,7 +7,11 @@ import jp.ne.smma.EventList.EventListFragment;
 import jp.ne.smma.Ultis.ImageLoader;
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.ShapeDrawable;
@@ -46,6 +50,7 @@ public class EventListAdapter extends BaseAdapter {
 		return position;
 	}
 
+	@SuppressWarnings("deprecation")
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View vi = convertView;
 		if (convertView == null)
@@ -64,19 +69,30 @@ public class EventListAdapter extends BaseAdapter {
 		name.setText(event.get(EventListFragment.KEY_NAME));
 		address.setText(event.get(EventListFragment.KEY_ADDRESS));
 		day.setText(event.get(EventListFragment.KEY_DAY));
-		event_thumb_bg.setBackgroundColor(Color.parseColor(event.get(EventListFragment.KEY_IMG_COLOR)));
+		event_thumb_bg.setBackgroundColor(Color.parseColor(event
+				.get(EventListFragment.KEY_IMG_COLOR)));
 
-		/*LayerDrawable bgDrawable = (LayerDrawable) event_arrow_img
-				.getBackground();
-		final GradientDrawable shape = (GradientDrawable) bgDrawable
-				.findDrawableByLayerId(R.id.arrow_shape);
-		shape.setColor(Color.parseColor("#9ACD32"));*/
+		LayerDrawable bgShape = (LayerDrawable) event_arrow_img.getBackground();
+		bgShape.setColorFilter(
+				Color.parseColor(event.get(EventListFragment.KEY_IMG_COLOR)),
+				PorterDuff.Mode.ADD);
+		/*
+		 * LayerDrawable bgDrawable = (LayerDrawable) event_arrow_img
+		 * .getBackground(); final GradientDrawable shape = (GradientDrawable)
+		 * bgDrawable .findDrawableByLayerId(R.id.arrow_shape);
+		 * shape.setColor(Color.parseColor("#9ACD32"));
+		 */
 
 		// GradientDrawable backgroundGradient =
 		// (GradientDrawable)event_arrow_img.getBackground();
 		// backgroundGradient.setColor(Color.parseColor("#9ACD32"));
 
-		event_arrow_img.setBackgroundColor(Color.parseColor(event.get(EventListFragment.KEY_IMG_COLOR)));
+		// event_arrow_img.setBackgroundColor(Color.parseColor(event
+		// .get(EventListFragment.KEY_IMG_COLOR)));
+		// Resources res = this.activity.getResources();
+		// Drawable shape = res.getDrawable(R.drawable.arrow_up);
+		// shape.setColorFilter(Color.parseColor(event
+		// .get(EventListFragment.KEY_IMG_COLOR)));
 		imageLoader.DisplayImage(event.get(EventListFragment.KEY_IMG_URL),
 				image);
 		Log.d("key img url", EventListFragment.KEY_IMG_URL);
@@ -86,4 +102,15 @@ public class EventListAdapter extends BaseAdapter {
 		return vi;
 	}
 
+	public class SomeDrawable extends GradientDrawable {
+
+		public SomeDrawable(int pStartColor, int pCenterColor, int pEndColor,
+				int pStrokeWidth, int pStrokeColor, float cornerRadius) {
+			super(Orientation.BOTTOM_TOP, new int[] { pStartColor,
+					pCenterColor, pEndColor });
+			setStroke(pStrokeWidth, pStrokeColor);
+			setShape(GradientDrawable.RECTANGLE);
+			setCornerRadius(cornerRadius);
+		}
+	}
 }
