@@ -1,6 +1,5 @@
 package jp.ne.smma.EventList;
 
-import java.net.ContentHandler;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +14,6 @@ import jp.ne.smma.Ultis.JSONParser;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
@@ -26,20 +24,19 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.sax.RootElement;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
+import android.webkit.WebView.FindListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
-import android.widget.Gallery.LayoutParams;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
+import android.widget.ListView;
 
 import com.costum.android.widget.LoadMoreListView;
-import com.costum.android.widget.LoadMoreListView.OnLoadMoreListener;
 
 public class EventListFragment extends Fragment {
 
@@ -57,7 +54,7 @@ public class EventListFragment extends Fragment {
 	private EventListAdapter adapter;
 	private ArrayList<HashMap<String, String>> eventList;
 	private ArrayList<HashMap<String, String>> items;
-	private LoadMoreListView listEvent;
+	private ListView listEvent;
 	// Alert dialog manager
 	private AlertDialogManager alert = new AlertDialogManager();
 	private ProgressDialog pDialog;
@@ -65,21 +62,23 @@ public class EventListFragment extends Fragment {
 	private String getImgTAG = "";
 	int count = 0;
 	int lengJson = 0;
+	private int pageNumber = 1;
 	// flag for Internet connection status
 	Boolean isInternetPresent = false;
 
 	// Connection detector class
 	ConnectionDetector cd;
-
+	View mHeader;
 	public JSONArray mJsonArray;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-
 		View rootView = inflater.inflate(R.layout.event_list, container, false);
 		btnLoadMore = inflater.inflate(R.layout.event_list_footer, null, false);
-		listEvent = (LoadMoreListView) rootView.findViewById(R.id.list_event);
+		listEvent = (ListView) rootView.findViewById(R.id.list_event);
+		mHeader = inflater.inflate(R.layout.event_list_header,null,false);
+		listEvent.addHeaderView(mHeader);
 		listEvent.addFooterView(btnLoadMore);
 
 		/**
@@ -90,6 +89,21 @@ public class EventListFragment extends Fragment {
 			public void onClick(View arg0) {
 				// Starting a new async task
 				new loadMoreListView().execute();
+			}
+		});
+		listEvent.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				HashMap<String, String> map = eventList.get(position);
+				String itemId = map.get(KEY_ID);
+				String name = map.get(KEY_NAME);
+				Intent intent = new Intent(getActivity(), ProductActivity.class);
+				intent.putExtra("itemId", itemId);
+				intent.putExtra("name", name);
+
+				startActivity(intent);
 			}
 		});
 
@@ -149,9 +163,11 @@ public class EventListFragment extends Fragment {
 				List<NameValuePair> params = new ArrayList<NameValuePair>();
 				// POST API to server
 				params.add(new BasicNameValuePair("name_event", "get-event-all"));
-				params.add(new BasicNameValuePair("id", "1"));
-				
+				params.add(new BasicNameValuePair("id", String
+						.valueOf(pageNumber)));
+
 				JSONObject mJson = jsonParser.getJSONFromUrl(url, params);
+				pageNumber = pageNumber + 1;
 				if (mJson == null) {
 					showAlertDialog(getActivity(), "", "TIME OUT", false);
 				} else {
@@ -163,11 +179,7 @@ public class EventListFragment extends Fragment {
 							if (Integer.parseInt(res) == 1) {
 								mJsonArray = mJson.getJSONArray("data");
 								// mJsonArray = jsonData;
-								int d = 10;
-								lengJson = mJsonArray.length();
-								if (d >= mJsonArray.length())
-									d = mJsonArray.length();
-								for (int i = 0; i < d; i++) {
+								for (int i = 0; i < mJsonArray.length(); i++) {
 									HashMap<String, String> map = new HashMap<String, String>();
 									JSONObject json = mJsonArray
 											.getJSONObject(i);
@@ -184,7 +196,6 @@ public class EventListFragment extends Fragment {
 									map.put(KEY_IMG_URL,
 											json.getString("ev_path_image"));
 									Log.d("KEY_IMG_URL", map.get(KEY_IMG_URL));
-									count = count + 1;
 									eventList.add(map);
 
 								}
@@ -227,28 +238,8 @@ public class EventListFragment extends Fragment {
 						// Getting adapter by passing xml data ArrayList
 						adapter = new EventListAdapter(getActivity(), eventList);
 						listEvent.setAdapter(adapter);
-
+						adapter.notifyDataSetChanged();
 						// Click event for single list row
-						listEvent
-								.setOnItemClickListener(new OnItemClickListener() {
-
-									@Override
-									public void onItemClick(
-											AdapterView<?> parent, View view,
-											int position, long id) {
-										HashMap<String, String> map = eventList
-												.get(position);
-										String itemId = map.get(KEY_ID);
-										String name = map.get(KEY_NAME);
-										Intent intent = new Intent(
-												getActivity(),
-												ProductActivity.class);
-										intent.putExtra("itemId", itemId);
-										intent.putExtra("name", name);
-
-										startActivity(intent);
-									}
-								});
 					}
 				});
 			}
@@ -260,15 +251,13 @@ public class EventListFragment extends Fragment {
 	 * list view
 	 * */
 	private class loadMoreListView extends AsyncTask<Void, Void, Void> {
+		Boolean checkEventNumber = false;
 
 		@Override
 		protected void onPreExecute() {
 			// Showing progress dialog before sending http request
 			pDialog = new ProgressDialog(getActivity());
-			if (count > lengJson) {
-				pDialog.setMessage("no events");
-			} else
-				pDialog.setMessage("Please wait..");
+			pDialog.setMessage("loading list events..");
 			pDialog.setIndeterminate(true);
 			pDialog.setCancelable(false);
 			pDialog.show();
@@ -277,29 +266,77 @@ public class EventListFragment extends Fragment {
 		@Override
 		protected Void doInBackground(Void... params) {
 			// TODO Auto-generated method stub
-			for (int i = count; i < count + 10; i++) {
-				HashMap<String, String> map = new HashMap<String, String>();
-				JSONObject json;
-				try {
-					json = mJsonArray.getJSONObject(i);
+			listEvent.setClickable(false);
+			// getActivity().runOnUiThread(new Runnable() {
+			// public void run() {
+			// listEvent.setOnItemClickListener(new OnItemClickListener() {
+			// @Override
+			// public void onItemClick(AdapterView<?> parent,
+			// View view, int position, long id) {
+			// v.
+			// }
+			// });
+			// }
+			// });
+			try {
+				JSONParser jsonParser = new JSONParser();
+				List<NameValuePair> params1 = new ArrayList<NameValuePair>();
+				// POST API to server
+				params1.add(new BasicNameValuePair("name_event",
+						"get-event-all"));
+				params1.add(new BasicNameValuePair("id", String
+						.valueOf(pageNumber)));
 
-					map.put(KEY_ID, json.getString("ev_id"));
-					map.put(KEY_CAT_ID, json.getString("ev_cat_id"));
-					map.put(KEY_NAME, json.getString("ev_company_name"));
-					map.put(KEY_ADDRESS, json.getString("ev_name"));
-					map.put(KEY_DAY, json.getString("ev_date"));
-					map.put(KEY_IMG_COLOR, json.getString("ev_color"));
-					map.put(KEY_IMG_URL, json.getString("ev_path_image"));
+				JSONObject mJson = jsonParser.getJSONFromUrl(url, params1);
+				pageNumber = pageNumber + 1;
+				if (mJson == null) {
+					showAlertDialog(getActivity(), "", "TIME OUT", false);
+				} else {
+					try {
+						if (mJson.getString(KEY_SUCCESS) != null) {
+							// Toast.makeText(this, "success = 0",
+							// Toast.LENGTH_LONG).show();
+							String res = mJson.getString(KEY_SUCCESS);
+							if (Integer.parseInt(res) == 1) {
+								mJsonArray = mJson.getJSONArray("data");
+								// mJsonArray = jsonData;
+								for (int i = 0; i < mJsonArray.length(); i++) {
+									HashMap<String, String> map = new HashMap<String, String>();
+									JSONObject json = mJsonArray
+											.getJSONObject(i);
+									map.put(KEY_ID, json.getString("ev_id"));
+									map.put(KEY_CAT_ID,
+											json.getString("ev_cat_id"));
+									map.put(KEY_NAME,
+											json.getString("ev_company_name"));
+									map.put(KEY_ADDRESS,
+											json.getString("ev_name"));
+									map.put(KEY_DAY, json.getString("ev_date"));
+									map.put(KEY_IMG_COLOR,
+											json.getString("ev_color"));
+									map.put(KEY_IMG_URL,
+											json.getString("ev_path_image"));
+									Log.d("KEY_IMG_URL", map.get(KEY_IMG_URL));
+									eventList.add(map);
 
-					Log.d("KEY_IMG_URL", map.get(KEY_IMG_URL));
-					count = count + 1;
-					eventList.add(map);
+								}
+							} else {
+								pDialog.setMessage("no event..");
+								checkEventNumber = true;
 
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+							}
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+						// bCheck = true;
+
+					}
 				}
+			} catch (Exception ex) {
+				// showAlertDialog(getActivity(), "", "TIME OUT", false);
+				// bCheck = true;
 			}
+
 			return null;
 		}
 
@@ -308,40 +345,46 @@ public class EventListFragment extends Fragment {
 			super.onPostExecute(result);
 			// Dismiss the progress dialog
 			// dismiss the dialog after getting all tracks
-			pDialog.dismiss();
 			// updating UI from Background Thread
-			getActivity().runOnUiThread(new Runnable() {
-				public void run() {
-					// list = (ListView) findViewById(R.id.list);
-					// get listview current position - used to maintain scroll
-					// position
-					int currentPosition = listEvent.getFirstVisiblePosition();
 
-					// Appending new data to menuItems ArrayList
-					adapter = new EventListAdapter(getActivity(), eventList);
-					listEvent.setAdapter(adapter);
-					// Setting new scroll position
-					listEvent.setSelectionFromTop(currentPosition + 1, 0);
-					listEvent.setOnItemClickListener(new OnItemClickListener() {
+				getActivity().runOnUiThread(new Runnable() {
+					public void run() {
+						// list = (ListView) findViewById(R.id.list);
+						// get listview current position - used to maintain
+						// scroll
+						// position
+						int currentPosition = listEvent
+								.getFirstVisiblePosition();
+						int m = eventList.size();
+						Log.e("counttttttttt", "abc" + m);
+						// Appending new data to menuItems ArrayList
+						adapter = new EventListAdapter(getActivity(), eventList);
+						listEvent.setAdapter(adapter);
+						adapter.notifyDataSetChanged();
+						// Setting new scroll position
+						listEvent.setSelectionFromTop(currentPosition + 1, 0);
+					}
 
-						@Override
-						public void onItemClick(AdapterView<?> parent,
-								View view, int position, long id) {
-							HashMap<String, String> map = eventList
-									.get(position);
-							String itemId = map.get(KEY_ID);
-							String name = map.get(KEY_NAME);
-							Intent intent = new Intent(getActivity(),
-									ProductActivity.class);
-							intent.putExtra("itemId", itemId);
-							intent.putExtra("name", name);
+				});
+				
+				listEvent.setOnItemClickListener(new OnItemClickListener() {
 
-							startActivity(intent);
-						}
-					});
-				}
+					@Override
+					public void onItemClick(AdapterView<?> parent, View view,
+							int position, long id) {
+						HashMap<String, String> map = eventList.get(position-1);
+						String itemId = map.get(KEY_ID);
+						String name = map.get(KEY_NAME);
+						Intent intent = new Intent(getActivity(), ProductActivity.class);
+						intent.putExtra("itemId", itemId);
+						intent.putExtra("name", name);
 
-			});
+						startActivity(intent);
+					}
+				});
+
+			pDialog.dismiss();
+
 		}
 	}
 
