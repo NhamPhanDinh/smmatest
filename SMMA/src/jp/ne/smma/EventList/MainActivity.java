@@ -4,6 +4,7 @@ import jp.ne.smma.R;
 import jp.ne.smma.Ultis.Constance;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
@@ -27,6 +28,12 @@ public class MainActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		if(Constance.checkPortrait ){
+			 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		}
+		else{
+			 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		}
 		PagerAdapter pageAdapter = new PagerAdapter(getSupportFragmentManager());
 		ViewPager pager = (ViewPager) findViewById(R.id.myViewPager);
 		pager.setAdapter(pageAdapter);
@@ -58,5 +65,17 @@ public class MainActivity extends FragmentActivity {
 				Constance.CHECK_CHECKBOXNOTIFIATION, 0);
 
 	}
+	@Override
+	public void onResume(){
+		super.onResume();
+		if(Constance.checkPortrait){
+			 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+			 Log.e("bbbbbbbbbb", "ffffffffffffffffff");
+		}
+		else{
+			 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		}
+	}
+
 
 }

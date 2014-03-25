@@ -212,13 +212,13 @@ public class AboutFragment extends Fragment {
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
-						// bCheck = true;
+						 bCheck = true;
 
 					}
 				}
 			} catch (Exception ex) {
 				// showAlertDialog(getActivity(), "", "TIME OUT", false);
-				// bCheck = true;
+				 bCheck = true;
 			}
 
 			return null;
@@ -239,6 +239,7 @@ public class AboutFragment extends Fragment {
 //						false);
 //
 //			} else {
+//			if (!Constance.bCheckNetworkTimeOut){
 				// updating UI from Background Thread
 				getActivity().runOnUiThread(new Runnable() {
 					public void run() {
@@ -253,6 +254,7 @@ public class AboutFragment extends Fragment {
 				});
 			}
 		}
+//		}
 	//}
 
 	@SuppressWarnings("deprecation")

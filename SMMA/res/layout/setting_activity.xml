@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res/jp.ne.smma"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -11,139 +11,144 @@
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/event_push_setting"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/btnSetEvent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:ems="15"
-            android:text="@string/btn_set_event_list" />
-
-        <Button
-            android:id="@+id/btnClearEvent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:ems="15"
-            android:text="@string/btn_clear_event_list" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/all_push_setting"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/active_all_push" />
-
-        <jp.ne.smma.EventCalendar.Custom.Switch
-            android:id="@+id/btn_on_off"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:ems="10"
-            app:textLeft="@string/btn_on"
-            app:textRight="@string/btn_off" />
-
         <LinearLayout
-            android:id="@+id/linearShow"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone" >
+            android:orientation="vertical" >
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/lable_time_active_function" />
+                android:text="@string/event_push_setting"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
-            <RadioGroup
-                android:id="@+id/radioCheckBox"
-                android:layout_width="fill_parent"
+            <Button
+                android:id="@+id/btnSetEvent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:orientation="vertical" >
+                android:ems="15"
+                android:text="@string/btn_set_event_list" />
+
+            <Button
+                android:id="@+id/btnClearEvent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:ems="15"
+                android:text="@string/btn_clear_event_list" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/all_push_setting"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/active_all_push" />
+
+            <jp.ne.smma.EventCalendar.Custom.Switch
+                android:id="@+id/btn_on_off"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:ems="10"
+                app:textLeft="@string/btn_on"
+                app:textRight="@string/btn_off" />
+
+            <LinearLayout
+                android:id="@+id/linearShow"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lable_time_active_function" />
+
+                <RadioGroup
+                    android:id="@+id/radioCheckBox"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="vertical" >
+
+                    <RadioButton
+                        android:id="@+id/checkOneWeek"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:button="@drawable/button_radio"
+                        android:ems="10"
+                        android:text="@string/check_one_week" />
+
+                    <RadioButton
+                        android:id="@+id/checkThreeDay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:button="@drawable/button_radio"
+                        android:ems="10"
+                        android:text="@string/check_three_month" />
+
+                    <RadioButton
+                        android:id="@+id/checkOneDay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:button="@drawable/button_radio"
+                        android:ems="10"
+                        android:text="@string/check_one_month" />
+                </RadioGroup>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/active_rotate"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <RadioGroup
+                android:id="@+id/radioOrientation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" >
 
                 <RadioButton
-                    android:id="@+id/checkOneWeek"
+                    android:id="@+id/btnActive"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:button="@drawable/button_radio"
                     android:ems="10"
-                    android:text="@string/check_one_week" />
+                    android:text="@string/rotate_active" />
 
                 <RadioButton
-                    android:id="@+id/checkThreeDay"
+                    android:id="@+id/btnDeactive"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                   android:button="@drawable/button_radio"
                     android:ems="10"
-                    android:text="@string/check_three_month" />
-
-                <RadioButton
-                    android:id="@+id/checkOneDay"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:button="@drawable/button_radio"
-                    android:ems="10"
-                    android:text="@string/check_one_month" />
+                    android:text="@string/rotate_deactive" />
             </RadioGroup>
         </LinearLayout>
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/active_rotate"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <RadioGroup
-            android:id="@+id/radioOrientation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" >
-
-            <RadioButton
-                android:id="@+id/btnActive"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:ems="10"
-                android:text="@string/rotate_active" />
-
-            <RadioButton
-                android:id="@+id/btnDeactive"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:ems="10"
-                android:text="@string/rotate_deactive" />
-        </RadioGroup>
-    </LinearLayout>
-
-</LinearLayout>
+</ScrollView>

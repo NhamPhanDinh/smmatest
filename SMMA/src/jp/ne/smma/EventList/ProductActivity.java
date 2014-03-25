@@ -12,6 +12,7 @@ import java.util.List;
 import jp.ne.smma.R;
 import jp.ne.smma.EventList.Controller.AlertDialogManager;
 import jp.ne.smma.Ultis.ApplicationUntils;
+import jp.ne.smma.Ultis.Constance;
 import jp.ne.smma.Ultis.ImageLoader;
 import jp.ne.smma.Ultis.JSONParser;
 
@@ -26,6 +27,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -78,6 +80,7 @@ public class ProductActivity extends Activity {
 	String textOfName;
 	String textOfAddress;
 	String textOfPhone;
+	String fName;
 
 	// Button
 	Button backButton;
@@ -106,10 +109,18 @@ public class ProductActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.product);
+		
 		if (android.os.Build.VERSION.SDK_INT > 9) {
 			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
 					.permitAll().build();
 			StrictMode.setThreadPolicy(policy);
+		}
+		if(Constance.checkPortrait){
+			 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+			 Log.e("bbbbbbbbbb", "ffffffffffffffffff");
+		}
+		else{
+			 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		}
 		imageLoaderProduct = new ImageLoader(
 				ProductActivity.this.getApplicationContext());
@@ -150,6 +161,7 @@ public class ProductActivity extends Activity {
 				}
 			}
 		});
+		
 		// load image
 		nameTv = (TextView) findViewById(R.id.product_name);
 		computerNameTv = (TextView) findViewById(R.id.product_computer_name);
@@ -159,7 +171,6 @@ public class ProductActivity extends Activity {
 		product_detail = (TextView) findViewById(R.id.product_detail_txt);
 
 		new loadImage().execute();
-
 		backButton.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -169,11 +180,12 @@ public class ProductActivity extends Activity {
 				//
 				// startActivity(setIntent);
 				// @Override
-				Intent i = new Intent(getApplicationContext(),
-						MainActivity.class);
-				startActivity(i);
-				finish();
+//				Intent i = new Intent(getApplicationContext(),
+//						MainActivity.class);
+//				startActivity(i);
+//				finish();
 				// super.onBackPressed();
+				onBackPressed();
 			}
 		});
 
@@ -188,6 +200,16 @@ public class ProductActivity extends Activity {
 				Intent callIntent = new Intent(Intent.ACTION_DIAL, Uri
 						.parse("tel:" + phoneNumber));
 				startActivity(callIntent);
+			}
+		});
+		textAddress.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				// Starting a new async task
+				String url = textAddress.getText().toString();
+				Intent i = new Intent(Intent.ACTION_VIEW);
+				i.setData(Uri.parse(url));
+				startActivity(i);
 			}
 		});
 	}
@@ -212,8 +234,7 @@ public class ProductActivity extends Activity {
 		protected Void doInBackground(Void... params) {
 			// TODO Auto-generated method stub
 			Intent intent = getIntent();
-			String fName = intent.getStringExtra("name");
-			textHeader.setText(fName);
+			fName = intent.getStringExtra("name");
 			String id = intent.getStringExtra("itemId");
 			Log.e("item id", id);
 
@@ -272,6 +293,7 @@ public class ProductActivity extends Activity {
 					try {
 						// imageLoaderProduct.DisplayImage(pathDetail,
 						// imgDetail);
+						textHeader.setText(fName);
 						textHeader.setBackgroundColor(Color.parseColor(map
 								.get(KEY_IMG_COLOR)));
 
@@ -380,5 +402,20 @@ public class ProductActivity extends Activity {
 			pDialog.dismiss();
 		}
 	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		if (pDialog != null) {
+			pDialog.dismiss();
+		}
+	}
+	
+	@Override
+    public void onBackPressed() {
+        super.onBackPressed();   
+        //    finish();
 
+    }
 }

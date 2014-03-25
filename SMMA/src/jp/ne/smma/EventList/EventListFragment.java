@@ -77,7 +77,7 @@ public class EventListFragment extends Fragment {
 		View rootView = inflater.inflate(R.layout.event_list, container, false);
 		btnLoadMore = inflater.inflate(R.layout.event_list_footer, null, false);
 		listEvent = (ListView) rootView.findViewById(R.id.list_event);
-		mHeader = inflater.inflate(R.layout.event_list_header,null,false);
+		mHeader = inflater.inflate(R.layout.event_list_header, null, false);
 		listEvent.addHeaderView(mHeader);
 		listEvent.addFooterView(btnLoadMore);
 
@@ -96,7 +96,7 @@ public class EventListFragment extends Fragment {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				HashMap<String, String> map = eventList.get(position-1);
+				HashMap<String, String> map = eventList.get(position - 1);
 				String itemId = map.get(KEY_ID);
 				String name = map.get(KEY_NAME);
 				Intent intent = new Intent(getActivity(), ProductActivity.class);
@@ -321,7 +321,6 @@ public class EventListFragment extends Fragment {
 
 								}
 							} else {
-								pDialog.setMessage("no event..");
 								checkEventNumber = true;
 
 							}
@@ -346,84 +345,49 @@ public class EventListFragment extends Fragment {
 			// Dismiss the progress dialog
 			// dismiss the dialog after getting all tracks
 			// updating UI from Background Thread
-
-				getActivity().runOnUiThread(new Runnable() {
-					public void run() {
-						// list = (ListView) findViewById(R.id.list);
-						// get listview current position - used to maintain
-						// scroll
-						// position
-						int currentPosition = listEvent
-								.getFirstVisiblePosition();
-						int m = eventList.size();
-						Log.e("counttttttttt", "abc" + m);
-						// Appending new data to menuItems ArrayList
-						adapter = new EventListAdapter(getActivity(), eventList);
-						listEvent.setAdapter(adapter);
-						adapter.notifyDataSetChanged();
-						// Setting new scroll position
-						listEvent.setSelectionFromTop(currentPosition + 1, 0);
-					}
-
-				});
-				
-				listEvent.setOnItemClickListener(new OnItemClickListener() {
-
-					@Override
-					public void onItemClick(AdapterView<?> parent, View view,
-							int position, long id) {
-						HashMap<String, String> map = eventList.get(position-1);
-						String itemId = map.get(KEY_ID);
-						String name = map.get(KEY_NAME);
-						Intent intent = new Intent(getActivity(), ProductActivity.class);
-						intent.putExtra("itemId", itemId);
-						intent.putExtra("name", name);
-
-						startActivity(intent);
-					}
-				});
-
 			pDialog.dismiss();
+			
+			if (checkEventNumber == true) {
+				showAlertDialog(getActivity(), "", "no event loaded", false);
+
+			}
+			getActivity().runOnUiThread(new Runnable() {
+				public void run() {
+					// list = (ListView) findViewById(R.id.list);
+					// get listview current position - used to maintain
+					// scroll
+					// position
+					int currentPosition = listEvent.getFirstVisiblePosition();
+					// Appending new data to menuItems ArrayList
+					adapter = new EventListAdapter(getActivity(), eventList);
+					listEvent.setAdapter(adapter);
+					adapter.notifyDataSetChanged();
+					// Setting new scroll position
+					listEvent.setSelectionFromTop(currentPosition + 1, 0);
+				}
+
+			});
+
+			listEvent.setOnItemClickListener(new OnItemClickListener() {
+
+				@Override
+				public void onItemClick(AdapterView<?> parent, View view,
+						int position, long id) {
+					HashMap<String, String> map = eventList.get(position - 1);
+					String itemId = map.get(KEY_ID);
+					String name = map.get(KEY_NAME);
+					Intent intent = new Intent(getActivity(),
+							ProductActivity.class);
+					intent.putExtra("itemId", itemId);
+					intent.putExtra("name", name);
+
+					startActivity(intent);
+				}
+			});
 
 		}
 	}
 
-	/*
-	 * private class LoadDataTask extends AsyncTask<Void, Void, Void> {
-	 * 
-	 * @Override protected void onPreExecute() { // Showing progress dialog
-	 * before sending http request listEvent.removeFooterView(btnLoadMore); }
-	 * 
-	 * @Override protected Void doInBackground(Void... params) { if
-	 * (isCancelled()) { return null; }
-	 * 
-	 * // Simulates a background task try { Thread.sleep(1000); } catch
-	 * (InterruptedException e) { }
-	 * 
-	 * for (int i = count; i < count + 10; i++) { HashMap<String, String> map =
-	 * new HashMap<String, String>(); JSONObject json; try { json =
-	 * mJsonArray.getJSONObject(i); map.put(KEY_ID, json.getString("id")); ;
-	 * map.put(KEY_NAME, json.getString("name")); map.put(KEY_ADDRESS,
-	 * json.getString("address")); map.put(KEY_DAY, json.getString("day"));
-	 * map.put(KEY_IMG_URL, json.getString("pathimage")); Log.d("KEY_IMG_URL",
-	 * map.get(KEY_IMG_URL)); count = count + 1; eventList.add(map);
-	 * 
-	 * } catch (JSONException e) { // TODO Auto-generated catch block
-	 * e.printStackTrace(); } }
-	 * 
-	 * return null; }
-	 * 
-	 * @Override protected void onPostExecute(Void result) { // We need notify
-	 * the adapter that the data have been changed
-	 * adapter.notifyDataSetChanged(); // Call onLoadMoreComplete when the
-	 * LoadMore task, has finished ((LoadMoreListView)
-	 * listEvent).onLoadMoreComplete(); listEvent.addFooterView(btnLoadMore);
-	 * super.onPostExecute(result); }
-	 * 
-	 * @Override protected void onCancelled() { // Notify the loading more
-	 * operation has finished
-	 * ((LoadMoreListView)listEvent).onLoadMoreComplete(); } }
-	 */
 	@SuppressWarnings("deprecation")
 	public void showAlertDialog(final Context context, String title,
 			String message, Boolean status) {
@@ -442,6 +406,20 @@ public class EventListFragment extends Fragment {
 			}
 		});
 
+		// Showing Alert Message
+		alertDialog.show();
+	}
+
+	@SuppressWarnings("deprecation")
+	public void showAlert(final Context context, String title, String message,
+			Boolean status) {
+		AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+
+		// Setting Dialog Title
+		alertDialog.setTitle(title);
+		alertDialog.setCancelable(false);
+		// Setting Dialog Message
+		alertDialog.setMessage(message);
 		// Showing Alert Message
 		alertDialog.show();
 	}
