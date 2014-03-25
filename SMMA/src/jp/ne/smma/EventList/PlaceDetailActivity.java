@@ -63,7 +63,8 @@ public class PlaceDetailActivity extends Activity implements OnClickListener {
 	public JSONArray mJsonArray;
 	Boolean isInternet = false;
 	ConnectionDetector checkInternet;
-
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub

@@ -59,6 +59,7 @@ public class AboutFragment extends Fragment {
 	private ProgressDialog aboutDialog;
 	private AlertDialogManager alert = new AlertDialogManager();
 	public JSONArray mJsonArray;
+	View mHeader;
 	Boolean isInternet = false;
 	ConnectionDetector checkInternet;
 	CustomListViewAdapter adapter;
@@ -77,10 +78,12 @@ public class AboutFragment extends Fragment {
 				false);
 		// get data from XML
 		listview = (ListView) rootView.findViewById(R.id.listview);
-		txtContentTitle = (TextView) rootView
-				.findViewById(R.id.txtContentAbout);
+		mHeader = inflater.inflate(R.layout.about_header_view, null, false);
+//		txtContentTitle = (TextView) rootView
+//				.findViewById(R.id.txtContentAbout);
 		// add data list view
 		rowItems = new ArrayList<RowAboutItem>();
+		listview.addHeaderView(mHeader);
 
 	
 
@@ -98,7 +101,7 @@ public class AboutFragment extends Fragment {
 		 public void onItemClick(AdapterView<?> arg0, View v, int pos,
 		 long arg3) {
 		 // TODO Auto-generated method stub
-		 RowAboutItem item = rowItems.get(pos);
+		 RowAboutItem item = rowItems.get(pos-1);
 		 String colorCode = item.getColorCode();
 		 String companyName = item.getStrContent();
 		 String placeID = item.getPlaceId();
@@ -243,8 +246,8 @@ public class AboutFragment extends Fragment {
 				// updating UI from Background Thread
 				getActivity().runOnUiThread(new Runnable() {
 					public void run() {
-						txtContentTitle
-						.setText("知的情報資源である仙台・宮城地域のさまざまな博物館が共働することで、地域にとってより有益な機能を獲得していくための共同事業体です。各館の学芸員や専門職員が持つ知識やノウハウを集積し、分野を横断した連携イベント、学校教育への協力や地域で活動する人材の育成支援、観光資源の開発など、単館では実現困難な新たな価値の創出を行い、地域のニーズに合った新時代のミュージアムとなることを目指します。");
+//						txtContentTitle
+//						.setText("知的情報資源である仙台・宮城地域のさまざまな博物館が共働することで、地域にとってより有益な機能を獲得していくための共同事業体です。各館の学芸員や専門職員が持つ知識やノウハウを集積し、分野を横断した連携イベント、学校教育への協力や地域で活動する人材の育成支援、観光資源の開発など、単館では実現困難な新たな価値の創出を行い、地域のニーズに合った新時代のミュージアムとなることを目指します。");
 						adapter = new CustomListViewAdapter(getActivity(),
 								R.layout.item_list_about, rowItems);
 						listview.setAdapter(adapter);

@@ -5,19 +5,19 @@
     android:orientation="vertical"
     tools:context=".AboutFragment" >
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:contentDescription="@string/image"
-        android:src="@drawable/event_list2" />
+<!--     <ImageView -->
+<!--         android:layout_width="wrap_content" -->
+<!--         android:layout_height="wrap_content" -->
+<!--         android:adjustViewBounds="true" -->
+<!--         android:contentDescription="@string/image" -->
+<!--         android:src="@drawable/event_list2" /> -->
 
-    <TextView
-        android:id="@+id/txtContentAbout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:textColor="@color/about_smma_color_text" />
+<!--     <TextView -->
+<!--         android:id="@+id/txtContentAbout" -->
+<!--         android:layout_width="wrap_content" -->
+<!--         android:layout_height="wrap_content" -->
+<!--         android:padding="10dp" -->
+<!--         android:textColor="@color/about_smma_color_text" /> -->
 
     <ListView
         android:id="@+id/listview"
