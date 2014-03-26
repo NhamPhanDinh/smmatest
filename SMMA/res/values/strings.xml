@@ -28,5 +28,7 @@
     <!-- Notification service -->
     <string name="content_notification">You have an upcoming event happening</string>
     <string name="event_footer_text">古い記事を表示</string>
+    <string name="string_about">知的情報資源である仙台・宮城地域のさまざまな博物館が共働することで、地域にとってより有益な機能を獲得していくための共同事業体です。各館の学芸員や専門職員が持つ知識やノウハウを集積し、分野を横断した連携イベント、学校教育への協力や地域で活動する人材の育成支援、観光資源の開発など、単館では実現困難な新たな価値の創出を行い、地域のニーズに合った新時代のミュージアムとなることを目指します。</string>
+    
 
 </resources>

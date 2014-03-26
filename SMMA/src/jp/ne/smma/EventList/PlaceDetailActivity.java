@@ -17,6 +17,7 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -62,12 +63,20 @@ public class PlaceDetailActivity extends Activity implements OnClickListener {
 	public JSONArray mJsonArray;
 	Boolean isInternet = false;
 	ConnectionDetector checkInternet;
-
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.place_detail_activity);
+		if(Constance.checkPortrait){
+			 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+			 Log.e("bbbbbbbbbb", "ffffffffffffffffff");
+		}
+		else{
+			 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		}
 		// get data from xml
 		linearBannerPlaceDetail = (LinearLayout) findViewById(R.id.linearBannerPlaceDetail);
 		imgMain = (ImageView) findViewById(R.id.imgContent);

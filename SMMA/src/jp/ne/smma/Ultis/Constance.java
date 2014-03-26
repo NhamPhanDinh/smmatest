@@ -65,5 +65,11 @@ public class Constance {
 	public static String TEL_PALCE_DETAIL = "c_add_text_tel";
 
 	public static String WEB_PALCE_DETAIL = "c_add_text_web";
+	
+	//check orientation landscape
+	public static boolean checkLanscape = false;
+	
+	//check orientation portrait
+	public static boolean checkPortrait = true;
 
 }

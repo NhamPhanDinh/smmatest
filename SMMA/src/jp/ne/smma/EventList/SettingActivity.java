@@ -2,6 +2,7 @@ package jp.ne.smma.EventList;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+
 import jp.ne.smma.R;
 import jp.ne.smma.EventCalendar.Custom.Switch;
 import jp.ne.smma.Ultis.ApplicationUntils;
@@ -14,10 +15,12 @@ import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -37,8 +40,8 @@ public class SettingActivity extends Activity implements OnClickListener {
 	private RadioButton checkOneWeek;
 	private RadioButton checkThreeDay;
 	private RadioButton checkOneDay;
-	private RadioButton btnActive;
-	private RadioButton btnDeactive;
+	private RadioButton btnPortraint;
+	private RadioButton btnLanscape;
 
 	private RadioGroup radioOrientation;
 	private RadioGroup radioCheckBox;
@@ -50,22 +53,31 @@ public class SettingActivity extends Activity implements OnClickListener {
 	NotificationDataSource notificationSource;
 
 	ProgressDialog pDialog;
-	
-	//preferences
+
+	// preferences
 	SharedPreferences preferences;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.setting_activity);
-		// get data from xml
+		if(Constance.checkPortrait){
+			 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+			 Log.e("bbbbbbbbbb", "ffffffffffffffffff");
+		}
+		else{
+			 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		}
+//		// get data from xml
 		ini();
 		pDialog = new ProgressDialog(SettingActivity.this);
 		// set click button
 		btnSetEvent.setOnClickListener(this);
 		btnClearEvent.setOnClickListener(this);
-		//share Preference
-		preferences = PreferenceManager.getDefaultSharedPreferences(SettingActivity.this);
+		// share Preference
+		preferences = PreferenceManager
+				.getDefaultSharedPreferences(SettingActivity.this);
 		// click switch
 		// check event
 		if (!Constance.bCheckOnOff) {
@@ -99,35 +111,16 @@ public class SettingActivity extends Activity implements OnClickListener {
 			}
 		});
 		// check event bOrientation
-		if (Constance.bOrientation) {
-			btnActive.setChecked(true);
-		} else {
-			btnDeactive.setChecked(true);
+		if (Constance.checkPortrait) {
+			btnPortraint.setChecked(true);
+			Log.e("bbbbbbbbbb","vvvvvvvvvvvvvvvvv");
+		} else {			
+			btnLanscape.setChecked(true);
+			Log.e("bbbbbbbbbb","111111111111111111111111");
 		}
 		// detect click radiobutton
 
-		radioOrientation
-				.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-					public void onCheckedChanged(RadioGroup rGroup,
-							int checkedId) {
-						clickRadio = rGroup.getCheckedRadioButtonId();
-						// If the radiobutton that has changed in check state is
-						// now checked...
-						switch (clickRadio) {
-						case R.id.btnActive:
-							setAutoOrientationEnabled(getContentResolver(),
-									true);
-							Constance.bOrientation = true;
-							break;
-
-						case R.id.btnDeactive:
-							setAutoOrientationEnabled(getContentResolver(),
-									false);
-							Constance.bOrientation = false;
-							break;
-						}
-					}
-				});
+	
 		// detect check box
 		// check checkbox
 		checkBoxShowing();
@@ -191,8 +184,8 @@ public class SettingActivity extends Activity implements OnClickListener {
 		checkOneWeek = (RadioButton) findViewById(R.id.checkOneWeek);
 		checkThreeDay = (RadioButton) findViewById(R.id.checkThreeDay);
 		checkOneDay = (RadioButton) findViewById(R.id.checkOneDay);
-		btnActive = (RadioButton) findViewById(R.id.btnActive);
-		btnDeactive = (RadioButton) findViewById(R.id.btnDeactive);
+		btnPortraint = (RadioButton) findViewById(R.id.btnActive);
+		btnLanscape = (RadioButton) findViewById(R.id.btnDeactive);
 		radioOrientation = (RadioGroup) findViewById(R.id.radioOrientation);
 		linearShow = (LinearLayout) findViewById(R.id.linearShow);
 		radioCheckBox = (RadioGroup) findViewById(R.id.radioCheckBox);
@@ -234,7 +227,6 @@ public class SettingActivity extends Activity implements OnClickListener {
 					}
 				});
 	}
-
 
 	/*
 	 * (non-Javadoc)
@@ -370,7 +362,7 @@ public class SettingActivity extends Activity implements OnClickListener {
 				pDialog.dismiss();
 			}
 			notificationSource.close();
-			
+
 		}
 
 		@Override
@@ -387,6 +379,45 @@ public class SettingActivity extends Activity implements OnClickListener {
 		}
 
 	}
+	
+	@Override
+	protected void onStart(){
+		super.onStart();
+//		if (Constance.checkPortrait) {
+//			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+//		} else {
+//			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+//		}
+		
+		radioOrientation
+		.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+			public void onCheckedChanged(RadioGroup rGroup,
+					int checkedId) {
+				clickRadio = rGroup.getCheckedRadioButtonId();
+				// If the radiobutton that has changed in check state is
+				// now checked...
+				switch (clickRadio) {
+				case R.id.btnActive:
+//					setAutoOrientationEnabled(getContentResolver(),
+//							true);
+					btnPortraint.setChecked(true);
+					// Constance.bOrientation = true;							
+					setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+					Constance.checkPortrait = true;
+					break;
+
+				case R.id.btnDeactive:
+//					setAutoOrientationEnabled(getContentResolver(),
+//							true);
+					 btnLanscape.setChecked(true);
+					// Constance.bOrientation = false;							
+					setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+					Constance.checkPortrait = false;
+					break;
+				}
+			}
+		});
+	}
 
 	@Override
 	protected void onPause() {
@@ -396,21 +427,24 @@ public class SettingActivity extends Activity implements OnClickListener {
 			pDialog.dismiss();
 		}
 	}
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see android.app.Activity#onDestroy()
 	 */
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		//save variable share preferent
+		// save variable share preferent
 		/* Create variable share preferences */
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putBoolean(Constance.CHECK_ON_OFF, Constance.bCheckOnOff);
 		editor.putBoolean(Constance.CHECK_ORIENTATION, Constance.bOrientation);
-		editor.putInt(Constance.CHECK_CHECKBOXNOTIFIATION, Constance.strCheckBoxNotifiation);
+		editor.putInt(Constance.CHECK_CHECKBOXNOTIFIATION,
+				Constance.strCheckBoxNotifiation);
 		editor.commit();
 	}
-	
+
 }
