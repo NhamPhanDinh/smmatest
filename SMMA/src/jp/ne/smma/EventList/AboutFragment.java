@@ -83,7 +83,7 @@ public class AboutFragment extends Fragment {
 //				.findViewById(R.id.txtContentAbout);
 		// add data list view
 		rowItems = new ArrayList<RowAboutItem>();
-		listview.addHeaderView(mHeader);
+		listview.addHeaderView(mHeader,null, false);
 
 	
 

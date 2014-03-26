@@ -78,7 +78,7 @@ public class EventListFragment extends Fragment {
 		btnLoadMore = inflater.inflate(R.layout.event_list_footer, null, false);
 		listEvent = (ListView) rootView.findViewById(R.id.list_event);
 		mHeader = inflater.inflate(R.layout.event_list_header, null, false);
-		listEvent.addHeaderView(mHeader);
+		listEvent.addHeaderView(mHeader,null, false);
 		listEvent.addFooterView(btnLoadMore);
 
 		/**
