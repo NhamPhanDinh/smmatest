@@ -24,11 +24,16 @@ public class ChooseDateDialog extends Dialog {
 	private Context Mcontex;
 
 	private int NoOfYear = 40;
+
 	/**
 	 * Constructor
-	 * @param context - context activity
-	 * @param calendar - calendar
-	 * @param dtp - event
+	 * 
+	 * @param context
+	 *            - context activity
+	 * @param calendar
+	 *            - calendar
+	 * @param dtp
+	 *            - event
 	 */
 	@SuppressWarnings("deprecation")
 	public ChooseDateDialog(Context context, Calendar calendar,
@@ -50,16 +55,32 @@ public class ChooseDateDialog extends Dialog {
 		final WheelView month = new WheelView(Mcontex);
 		final WheelView year = new WheelView(Mcontex);
 		final WheelView day = new WheelView(Mcontex);
+		// ////////////////ADD HH:PP:SS//////////////////////////
+		final WheelView hour = new WheelView(Mcontex);
+		final WheelView minute = new WheelView(Mcontex);
+		// final WheelView second = new WheelView(Mcontex);
+		// /////////////////////////////////////////
 
 		lytdate.addView(day, new LayoutParams(
 				android.view.ViewGroup.LayoutParams.FILL_PARENT,
-				android.view.ViewGroup.LayoutParams.WRAP_CONTENT, 1.2f));
+				android.view.ViewGroup.LayoutParams.WRAP_CONTENT, 1.2f)); // 1.2
 		lytdate.addView(month, new LayoutParams(
 				android.view.ViewGroup.LayoutParams.FILL_PARENT,
-				android.view.ViewGroup.LayoutParams.WRAP_CONTENT, 0.8f));
+				android.view.ViewGroup.LayoutParams.WRAP_CONTENT, 0.8f)); // 0.8
 		lytdate.addView(year, new LayoutParams(
 				android.view.ViewGroup.LayoutParams.FILL_PARENT,
-				android.view.ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+				android.view.ViewGroup.LayoutParams.WRAP_CONTENT, 1f)); // 1f
+		// /////////////////ADD layout////////////////////
+		lytdate.addView(hour, new LayoutParams(
+				android.view.ViewGroup.LayoutParams.FILL_PARENT,
+				android.view.ViewGroup.LayoutParams.WRAP_CONTENT, 1.2f));
+		lytdate.addView(minute, new LayoutParams(
+				android.view.ViewGroup.LayoutParams.FILL_PARENT,
+				android.view.ViewGroup.LayoutParams.WRAP_CONTENT, 1.2f));
+		// lytdate.addView(second, new LayoutParams(
+		// android.view.ViewGroup.LayoutParams.FILL_PARENT,
+		// android.view.ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+		// //////////////////////////////////////
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 		lytbutton.addView(btnset, new LayoutParams(
@@ -79,16 +100,18 @@ public class ChooseDateDialog extends Dialog {
 				LayoutParams.WRAP_CONTENT);
 		OnWheelChangedListener listener = new OnWheelChangedListener() {
 			public void onChanged(WheelView wheel, int oldValue, int newValue) {
-				updateDays(year, month, day);
+				updateDays(year, month, day, hour, minute);
 
 			}
 		};
 
 		// month
 		int curMonth = calendar.get(Calendar.MONTH);
-		String months[] = new String[] { "January", "February", "March",
-				"April", "May", "June", "July", "August", "September",
-				"October", "November", "December" };
+		// String months[] = new String[] { "January", "February", "March",
+		// "April", "May", "June", "July", "August", "September",
+		// "October", "November", "December" };
+		String months[] = new String[] { "1月", "2月", "3月", "4月", "5月", "6月",
+				"7月", "8月", "9月", "10月", "11月", "12月" };
 		month.setViewAdapter(new DateArrayAdapter(context, months, curMonth));
 		month.setCurrentItem(curMonth);
 		month.addChangingListener(listener);
@@ -102,9 +125,25 @@ public class ChooseDateDialog extends Dialog {
 				Year + NoOfYear, NoOfYear));
 		year.setCurrentItem(curYear - (Year - NoOfYear));
 		year.addChangingListener(listener);
+		// /////////////Add value hour, minute,
+		// second////////////////////////////
+		// set adapter
+		hour.setViewAdapter(new NumericWheelAdapter(Mcontex, 0, 23));
+		minute.setViewAdapter(new NumericWheelAdapter(Mcontex, 0, 59, "%02d"));
+		// /second.setViewAdapter(new NumericWheelAdapter(Mcontex, 0, 59,
+		// "%02d"));
+		// Thiết lập thời gian hiện tại
+		Calendar c = Calendar.getInstance();
+		int curHours = c.get(Calendar.HOUR_OF_DAY);
+		int curMinutes = c.get(Calendar.MINUTE);
+		// int curSeconds = c.get(Calendar.SECOND);
 
+		hour.setCurrentItem(curHours);
+		minute.setCurrentItem(curMinutes);
+		// second.setCurrentItem(curSeconds);
+		// ////////////////////////////////////////
 		// day
-		updateDays(year, month, day);
+		updateDays(year, month, day, hour, minute);
 		day.setCurrentItem(calendar.get(Calendar.DAY_OF_MONTH) - 1);
 
 		btnset.setOnClickListener(new View.OnClickListener() {
@@ -112,7 +151,7 @@ public class ChooseDateDialog extends Dialog {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Calendar c = updateDays(year, month, day);
+				Calendar c = updateDays(year, month, day, hour, minute);
 				dtp.OnDoneButton(ChooseDateDialog.this, c);
 			}
 		});
@@ -126,10 +165,12 @@ public class ChooseDateDialog extends Dialog {
 		});
 
 	}
+
 	/*
 	 * Update days
 	 */
-	Calendar updateDays(WheelView year, WheelView month, WheelView day) {
+	Calendar updateDays(WheelView year, WheelView month, WheelView day,
+			WheelView hour, WheelView minute) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.YEAR,
 				calendar.get(Calendar.YEAR)
@@ -142,9 +183,14 @@ public class ChooseDateDialog extends Dialog {
 		int curDay = Math.min(maxDays, day.getCurrentItem() + 1);
 		day.setCurrentItem(curDay - 1, true);
 		calendar.set(Calendar.DAY_OF_MONTH, curDay);
+		// //Add hour and minute ///
+		calendar.set(Calendar.HOUR_OF_DAY, hour.getCurrentItem());
+		calendar.set(Calendar.MINUTE, minute.getCurrentItem());
+		// ////
 		return calendar;
 
 	}
+
 	/*
 	 * Date numeric adapter
 	 */
@@ -156,14 +202,14 @@ public class ChooseDateDialog extends Dialog {
 				int current) {
 			super(context, minValue, maxValue);
 			this.currentValue = current;
-			setTextSize(20);
+			// setTextSize(20);
 		}
 
 		@Override
 		protected void configureTextView(TextView view) {
 			super.configureTextView(view);
 			if (currentItem == currentValue) {
-				//set color current day
+				// set color current day
 				view.setTextColor(0xFF0000F0);
 			}
 			view.setTypeface(null, Typeface.BOLD);
@@ -175,6 +221,7 @@ public class ChooseDateDialog extends Dialog {
 			return super.getItem(index, cachedView, parent);
 		}
 	}
+
 	/*
 	 * Date array adapter
 	 */
@@ -185,14 +232,14 @@ public class ChooseDateDialog extends Dialog {
 		public DateArrayAdapter(Context context, String[] items, int current) {
 			super(context, items);
 			this.currentValue = current;
-			setTextSize(20);
+			// setTextSize(20);
 		}
 
 		@Override
 		protected void configureTextView(TextView view) {
 			super.configureTextView(view);
 			if (currentItem == currentValue) {
-				//set text color
+				// set text color
 				view.setTextColor(0xFF0000F0);
 			}
 			view.setTypeface(null, Typeface.BOLD);
@@ -204,6 +251,7 @@ public class ChooseDateDialog extends Dialog {
 			return super.getItem(index, cachedView, parent);
 		}
 	}
+
 	/*
 	 * Interface date picker
 	 */

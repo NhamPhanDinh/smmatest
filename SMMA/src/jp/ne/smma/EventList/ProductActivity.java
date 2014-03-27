@@ -40,6 +40,7 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.text.Html;
 import android.text.Html.ImageGetter;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -369,6 +370,7 @@ public class ProductActivity extends Activity {
 
 									}
 								}, null));
+						product_detail.setMovementMethod(LinkMovementMethod.getInstance());
 					} catch (Exception e) {
 						// TơơODO: handle exception
 					} finally {

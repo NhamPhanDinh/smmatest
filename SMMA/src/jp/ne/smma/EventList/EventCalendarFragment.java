@@ -13,20 +13,25 @@ import jp.ne.smma.EventCalendar.Custom.CalendarView;
 import jp.ne.smma.EventList.Controller.GetDataEventCalendar;
 import jp.ne.smma.Ultis.MonthInfo;
 import jp.ne.smma.aboutsmma.DTO.ItemCalendar;
+import jp.ne.smma.aboutsmma.dialog.DialogFillterCalendar;
 import android.animation.ValueAnimator;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.Scroller;
 
-public class EventCalendarFragment extends Fragment implements OnTouchListener {
+public class EventCalendarFragment extends Fragment {
 	/** Called when the activity is first created. */
 	Calendar mCalendar;
 	int pos_listDay = 0;
@@ -47,20 +52,30 @@ public class EventCalendarFragment extends Fragment implements OnTouchListener {
 	public static int current_Year;
 	public static int current_Day;
 
+	ImageView imgFillter;
 	private float _xDelta;
 	private float _yDelta;
 	CalendarView viewLabel;
 	CalendarView viewContent;
 	Scroller mScroller;
-	private GestureDetector gestureDetector;
+	private GestureDetector gesDetectorContent;
+	private GestureDetector gesDetectorLabel;
 	private ValueAnimator mScrollAnimator;
 	boolean checkRightLeft = false;
 	private int month_lenght = 80; // View month height
 
+	DialogFillterCalendar dialogFillter;
+	private ArrayList<Integer> idCompanyFillter = new ArrayList<Integer>();
 	GetDataEventCalendar getDataEvent;
 	List<ItemCalendar> rowCalendar = new ArrayList<ItemCalendar>();
 	FrameLayout linearIncludeCalendar;
 	CalendarView view;
+	private static final int SWIPE_MIN_DISTANCE = 20;
+	private static final int SWIPE_THRESHOLD_VELOCITY = 200;
+	Context context;
+
+	private float posUpX = 0;
+	private float posUpY = 0;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -68,6 +83,9 @@ public class EventCalendarFragment extends Fragment implements OnTouchListener {
 		// TODO Auto-generated method stub
 		View rootView = inflater.inflate(R.layout.event_calendar, container,
 				false);
+		imgFillter = (ImageView) rootView.findViewById(R.id.imgFillter);
+		context = getActivity().getApplicationContext();
+
 		linearIncludeCalendar = (FrameLayout) rootView
 				.findViewById(R.id.linearIncludeCalendar);
 		// set time zone japan
@@ -79,27 +97,218 @@ public class EventCalendarFragment extends Fragment implements OnTouchListener {
 		getCurrentDate();
 		getListMonthInfor();
 
-		
-		///test
-				linearIncludeCalendar.setOnTouchListener(this);
-		// //////////////tesst get dataa
+		gesDetectorContent = new GestureDetector(new GestureListener(false));
+		gesDetectorLabel = new GestureDetector(new GestureListener(true));
+
 		getDataEvent = new GetDataEventCalendar(getActivity(), 0) {
 
 			@Override
 			public void OnTaskCompleted() {
 				// TODO Auto-generated method stub
-				CalendarView view = new CalendarView(getActivity()
+				viewContent = new CalendarView(getActivity()
 						.getApplicationContext(), listMonthInfor,
 						getDataEvent.getItemCalendar());
+				viewLabel = new CalendarView(getActivity()
+						.getApplicationContext(), listMonthInfor,
+						getDataEvent.getItemCalendar(), true);
 				// add view
-				linearIncludeCalendar.addView(view, new ViewGroup.LayoutParams(
-						ViewGroup.LayoutParams.MATCH_PARENT,
-						ViewGroup.LayoutParams.MATCH_PARENT));
+				linearIncludeCalendar.addView(viewContent,
+						new ViewGroup.LayoutParams(
+								ViewGroup.LayoutParams.MATCH_PARENT,
+								ViewGroup.LayoutParams.MATCH_PARENT));
+				linearIncludeCalendar.addView(viewLabel,
+						new ViewGroup.LayoutParams(
+								ViewGroup.LayoutParams.MATCH_PARENT, 300));
+				// Set onTouchListener
+				viewContent.setOnTouchListener(new OnTouchListener() {
+
+					@Override
+					public boolean onTouch(View v, MotionEvent event) {
+						// TODO Auto-generated method stub
+						gesDetectorContent.onTouchEvent(event);
+						return false;
+					}
+				});
+				viewLabel.setOnTouchListener(new OnTouchListener() {
+
+					@Override
+					public boolean onTouch(View v, MotionEvent event) {
+						// TODO Auto-generated method stub
+						gesDetectorLabel.onTouchEvent(event);
+						return false;
+					}
+				});
 			}
 		};
-		
 
+		mScroller = new Scroller(getActivity().getApplicationContext(), null,
+				true);
+		mScrollAnimator = ValueAnimator.ofFloat(0, 1);
+		mScrollAnimator
+				.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+					public void onAnimationUpdate(ValueAnimator valueAnimator) {
+						// translate();
+					}
+				});
+		imgFillter.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				dialogFillter = new DialogFillterCalendar(getActivity()) {
+
+					@Override
+					public void OnTaskCompleted() {
+						// TODO Auto-generated method stub
+						idCompanyFillter = dialogFillter.GetIDCompanyComplete();
+						// log value
+						for (int i = 0; i < idCompanyFillter.size(); i++) {
+							Log.i("EventCalendar", "Id company: "
+									+ idCompanyFillter.get(i));
+						}
+					}
+				};
+
+			}
+		});
 		return rootView;
+	}
+
+	public void translate() {
+		if (!mScroller.isFinished()) {
+			mScroller.computeScrollOffset();
+
+			if (posUpX == 0) {
+				posUpX = mScroller.getCurrX();
+			}
+
+			float dx = mScroller.getCurrX() - posUpX;
+			// float dy = mScroller.getCurrY() - viewContent.getPosY();
+			Log.d("Scroll", "Goodddddddddddddd: " + mScroller.getCurrX() + ": "
+					+ posUpX + " : " + dx);
+			translateX(viewContent, dx);
+			translateX(viewLabel, dx);
+			posUpX = mScroller.getCurrX();
+			// translateY(viewContent, dy);
+		} else {
+			mScrollAnimator.cancel();
+		}
+	}
+
+	private class GestureListener extends SimpleOnGestureListener {
+
+		boolean isLabel = false;
+
+		public GestureListener(boolean isLabel) {
+			// TODO Auto-generated constructor stub
+			this.isLabel = isLabel;
+		}
+
+		@Override
+		public boolean onScroll(MotionEvent e1, MotionEvent e2,
+				float distanceX, float distanceY) {
+			// TODO Auto-generated method stub
+			final float X = e2.getX();
+			final float Y = e2.getY();
+
+			translateX(viewContent, (X - _xDelta));
+			translateX(viewLabel, (X - _xDelta));
+
+			if (!isLabel) {
+				translateY(viewContent, (Y - _yDelta));
+			}
+
+			if (viewContent.getPosX() > 0)
+				viewContent.setPosX(0);
+			if (viewContent.getPosX() < -28119)
+				viewContent.setPosX(-28119);
+
+			if (viewContent.getPosY() > 0)
+				viewContent.setPosY(0);
+			if (viewContent.getPosY() < -28119)
+				viewContent.setPosY(-28119);
+
+			if (viewLabel.getPosX() > 0)
+				viewLabel.setPosX(0);
+			if (viewLabel.getPosX() < -28119)
+				viewLabel.setPosX(-28119);
+
+			_xDelta = X;
+			_yDelta = Y;
+			return super.onScroll(e1, e2, distanceX, distanceY);
+		}
+
+		@Override
+		public boolean onDown(MotionEvent e) {
+			_xDelta = e.getX();
+			_yDelta = e.getY();
+
+			if (!mScroller.isFinished()) {
+				mScroller.forceFinished(true);
+			}
+			return super.onDown(e);
+		}
+
+		@Override
+		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+				float velocityY) {
+
+			// mScroller.fling((int) viewContent.getPosX(),
+			// 0, 1400, 0, Integer.MIN_VALUE,
+			// Integer.MAX_VALUE, 0,0);
+
+			if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE
+					&& Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+
+				Log.d("Gesture", "..................... Right to left");
+
+				mScroller.fling((int) viewContent.getPosX(),
+						(int) viewContent.getPosY(), 1700, 1700,
+						Integer.MIN_VALUE, Integer.MAX_VALUE,
+						Integer.MIN_VALUE, Integer.MAX_VALUE);
+				mScrollAnimator.setDuration(5 * mScroller.getDuration());
+				mScrollAnimator.start();
+				return false; // Right to left
+			} else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE
+					&& Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+				Log.d("Gesture", "..................... Left to right");
+				mScroller.fling((int) viewContent.getPosX(),
+						(int) viewContent.getPosY(), 1700, 1700,
+						Integer.MIN_VALUE, Integer.MAX_VALUE,
+						Integer.MIN_VALUE, Integer.MAX_VALUE);
+				mScrollAnimator.setDuration(5 * mScroller.getDuration());
+				mScrollAnimator.start();
+				return false; // Left to right
+			}
+
+			if (e1.getY() - e2.getY() > SWIPE_MIN_DISTANCE
+					&& Math.abs(velocityY) > SWIPE_THRESHOLD_VELOCITY) {
+				Log.d("Gesture", "..................... Bottom to top");
+				return false; // Bottom to top
+			} else if (e2.getY() - e1.getY() > SWIPE_MIN_DISTANCE
+					&& Math.abs(velocityY) > SWIPE_THRESHOLD_VELOCITY) {
+				Log.d("Gesture", "..................... Top to bottom");
+				return false; // Top to bottom
+			}
+
+			return false;
+		}
+	}
+
+	public void translateX(CalendarView view, float dx) {
+		view.translateX(dx);
+	}
+
+	public void translateY(CalendarView view, float dy) {
+		view.translateY(dy);
+	}
+
+	public float getPosX(CalendarView view) {
+		return view.getPosX();
+	}
+
+	public float getPosY(CalendarView view) {
+		return view.getPosY();
 	}
 
 	void getListMonthInfor() {
@@ -232,23 +441,4 @@ public class EventCalendarFragment extends Fragment implements OnTouchListener {
 		this.rowCalendar = rowCalendar;
 	}
 
-	@Override
-	public boolean onTouch(View v, MotionEvent event) {
-		// TODO Auto-generated method stub
-		Log.e("TestTouch", "-----------------------------------");
-		switch (event.getAction()) {
-        case MotionEvent.ACTION_DOWN:
-        	Log.e("TestTouch", "----------ACTION down-------------------------");
-            v.getParent().requestDisallowInterceptTouchEvent(true);
-            break;
-        case MotionEvent.ACTION_CANCEL:
-        case MotionEvent.ACTION_UP:
-        	Log.e("TestTouch", "-------------ACTION Up----------------------");
-            v.getParent().requestDisallowInterceptTouchEvent(false);
-            break;
-        default:
-            break;
-        }
-		return false;
-	}
 }

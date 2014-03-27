@@ -11,7 +11,17 @@
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:text="@string/tittle_push_setting"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
         <LinearLayout
+            android:layout_marginTop="15dp"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
@@ -28,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:ems="15"
+                android:ems="17"
                 android:text="@string/btn_set_event_list" />
 
             <Button
@@ -36,11 +46,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:ems="15"
+                android:ems="17"
                 android:text="@string/btn_clear_event_list" />
         </LinearLayout>
 
         <LinearLayout
+            android:layout_marginTop="10dp"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
@@ -62,7 +73,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:ems="10"
+                android:ems="14"
                 app:textLeft="@string/btn_on"
                 app:textRight="@string/btn_off" />
 
@@ -91,7 +102,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:button="@drawable/button_radio"
-                        android:ems="10"
+                        android:ems="12"
                         android:text="@string/check_one_week" />
 
                     <RadioButton
@@ -100,7 +111,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:button="@drawable/button_radio"
-                        android:ems="10"
+                        android:ems="12"
                         android:text="@string/check_three_month" />
 
                     <RadioButton
@@ -109,13 +120,14 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:button="@drawable/button_radio"
-                        android:ems="10"
+                        android:ems="12"
                         android:text="@string/check_one_month" />
                 </RadioGroup>
             </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
+            android:layout_marginTop="10dp"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
@@ -138,7 +150,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:ems="10"
+                    android:ems="12"
                     android:text="@string/rotate_active" />
 
                 <RadioButton
@@ -146,9 +158,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:ems="10"
+                    android:ems="12"
                     android:text="@string/rotate_deactive" />
             </RadioGroup>
         </LinearLayout>
     </LinearLayout>
+
 </ScrollView>
