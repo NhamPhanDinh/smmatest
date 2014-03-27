@@ -38,23 +38,23 @@ import android.widget.TextView;
  * About item
  */
 public class AboutFragment extends Fragment {
-	/* Adapter content listview */
-	public static final String[] strContent = new String[] { "仙台文学館", "仙台市天文台",
-			"仙台市歴史民俗資料館", "仙台市八木山動物公園", "せんだいメディアテーク", "宮城県美術館", "仙台市縄文の森広場",
-			"仙台市科学館", "仙台市博物館", "SMMA", "東北大学総合学術博物館", "地底の森ミュージアム仙台市富沢遺跡保存館",
-			"東北福祉大学芹沢銈介美術工芸館" };
-
-	public static final String[] colorCode = new String[] { "#009944",
-			"#d72e8b", "#ea5504", "#000000", "#003f98", "#51318f", "#d7308c",
-			"#014098", "#9e774e", "#008cd6", "#9f774e", "#ea5504", "#51318f" };
-
-	public static final Integer[] imagesItem = { R.drawable.green_item,
-			R.drawable.pink_item, R.drawable.orange_item,
-			R.drawable.black_item, R.drawable.blue_item, R.drawable.blue_dark,
-			R.drawable.pink_item, R.drawable.blue_item, R.drawable.nau_item,
-			R.drawable.blue_item, R.drawable.nau_item, R.drawable.orange_item,
-			R.drawable.blue_dark, R.drawable.blue_item, R.drawable.blue_item,
-			R.drawable.black_item };
+//	/* Adapter content listview */
+//	public static final String[] strContent = new String[] { "仙台文学館", "仙台市天文台",
+//			"仙台市歴史民俗資料館", "仙台市八木山動物公園", "せんだいメディアテーク", "宮城県美術館", "仙台市縄文の森広場",
+//			"仙台市科学館", "仙台市博物館", "SMMA", "東北大学総合学術博物館", "地底の森ミュージアム仙台市富沢遺跡保存館",
+//			"東北福祉大学芹沢銈介美術工芸館" };
+//
+//	public static final String[] colorCode = new String[] { "#009944",
+//			"#d72e8b", "#ea5504", "#000000", "#003f98", "#51318f", "#d7308c",
+//			"#014098", "#9e774e", "#008cd6", "#9f774e", "#ea5504", "#51318f" };
+//
+//	public static final Integer[] imagesItem = { R.drawable.green_item,
+//			R.drawable.pink_item, R.drawable.orange_item,
+//			R.drawable.black_item, R.drawable.blue_item, R.drawable.blue_dark,
+//			R.drawable.pink_item, R.drawable.blue_item, R.drawable.nau_item,
+//			R.drawable.blue_item, R.drawable.nau_item, R.drawable.orange_item,
+//			R.drawable.blue_dark, R.drawable.blue_item, R.drawable.blue_item,
+//			R.drawable.black_item };
 	private ProgressDialog aboutDialog;
 	private AlertDialogManager alert = new AlertDialogManager();
 	public JSONArray mJsonArray;

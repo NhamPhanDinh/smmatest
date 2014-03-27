@@ -9,49 +9,37 @@ import java.util.List;
 import java.util.Locale;
 
 import jp.ne.smma.R;
-import jp.ne.smma.EventCalendar.Controller.TwoWayAbsListView;
-import jp.ne.smma.EventCalendar.Custom.HorzGridViewAdapter;
-import jp.ne.smma.EventCalendar.Custom.MyGridView;
-import android.content.Context;
-import android.content.Intent;
+import jp.ne.smma.EventCalendar.Custom.CalendarView;
+import jp.ne.smma.EventList.Controller.GetDataEventCalendar;
+import jp.ne.smma.Ultis.MonthInfo;
+import jp.ne.smma.aboutsmma.DTO.ItemCalendar;
+import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.widget.GridView;
-import android.widget.TextView;
+import android.widget.FrameLayout;
+import android.widget.Scroller;
 
-public class EventCalendarFragment extends Fragment {
-
-	// public static TwoWayGridView mListView;
-	public static MyGridView mListView;
-	TextView tv_month;
-	LayoutInflater inflater;
-	HorzGridViewAdapter adapter;
-
-	GridView grid;
-
+public class EventCalendarFragment extends Fragment implements OnTouchListener {
+	/** Called when the activity is first created. */
 	Calendar mCalendar;
-
-	List<String> listDay = new ArrayList<String>();// mảng chứa ngày của tháng
-	HashMap<String, Integer> hm_DayOfMonth = new HashMap<String, Integer>();// lưu
-																			// thứ
-																			// và
-																			// key
-																			// tương
-																			// ứng
-																			// của
-																			// nó
-	List<String> listDayOfWeek = new ArrayList<String>();
-
+	int pos_listDay = 0;
+	List<String> listDay;
+	HashMap<String, Integer> hm_DayOfMonth;
+	List<String> listDayOfWeek;
+	ArrayList<MonthInfo> listMonthInfor = new ArrayList<MonthInfo>();
 	// -------------------------------------------------------//
 	// ------mảng chứa các kiểu ngày của các tháng---//
-	List<String> list28 = new ArrayList<String>();
-	List<String> list29 = new ArrayList<String>();
-	List<String> list30 = new ArrayList<String>();
-	List<String> list31 = new ArrayList<String>();
+	List<String> list28;
+	List<String> list29;
+	List<String> list30;
+	List<String> list31;
 	// ------------------------------------------------------//
 
 	// ngày tháng năm hiện tại
@@ -59,85 +47,91 @@ public class EventCalendarFragment extends Fragment {
 	public static int current_Year;
 	public static int current_Day;
 
+	private float _xDelta;
+	private float _yDelta;
+	CalendarView viewLabel;
+	CalendarView viewContent;
+	Scroller mScroller;
+	private GestureDetector gestureDetector;
+	private ValueAnimator mScrollAnimator;
+	boolean checkRightLeft = false;
+	private int month_lenght = 80; // View month height
+
+	GetDataEventCalendar getDataEvent;
+	List<ItemCalendar> rowCalendar = new ArrayList<ItemCalendar>();
+	FrameLayout linearIncludeCalendar;
+	CalendarView view;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-
-		View rootView = inflater.inflate(R.layout.event_calendar,
-				container, false);
-//		requestWindowFeature(Window.FEATURE_NO_TITLE);
-//		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-//				WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//		setContentView(R.layout.event_calendar);
+		// TODO Auto-generated method stub
+		View rootView = inflater.inflate(R.layout.event_calendar, container,
+				false);
+		linearIncludeCalendar = (FrameLayout) rootView
+				.findViewById(R.id.linearIncludeCalendar);
 		// set time zone japan
-		// mCalendar= new GregorianCalendar(TimeZone.getTimeZone("Japan"));
 		mCalendar = Calendar.getInstance();
 		Date dateCurrent = mCalendar.getTime();
 		SimpleDateFormat dayFormat = new SimpleDateFormat("MMMM", Locale.JAPAN);
 		String dayCurrent = dayFormat.format(dateCurrent);
-		
 		createList();
 		getCurrentDate();
-		fitDayInMonth(current_Month);
-		getListDayOfWeek();
+		getListMonthInfor();
 
-		// Log.d("day", listDay.length+"");
-		// Log.d("dow", listDayOfWeek.length+"");
-		//
-		tv_month = (TextView)rootView. findViewById(R.id.tv_month);
-		tv_month.setText(dayCurrent);
-
-		// mListView = (TwoWayGridView) findViewById(R.id.horz_gridview);
-		mListView = (MyGridView) rootView.findViewById(R.id.horz_gridview);
-		LayoutInflater layoutInflater = (LayoutInflater)getActivity().getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		
-		adapter = new HorzGridViewAdapter(listDay, listDayOfWeek,
-				hm_DayOfMonth, layoutInflater, getActivity());
-		mListView.setAdapter(adapter);
-		mListView.setSelection(current_Day - 1);
-		mListView.setOnScrollListener(new TwoWayAbsListView.OnScrollListener() {
+		///test
+				linearIncludeCalendar.setOnTouchListener(this);
+		// //////////////tesst get dataa
+		getDataEvent = new GetDataEventCalendar(getActivity(), 0) {
 
 			@Override
-			public void onScrollStateChanged(TwoWayAbsListView view,
-					int scrollState) {
+			public void OnTaskCompleted() {
 				// TODO Auto-generated method stub
-				// if(scrollState==0)
-				// Toast.makeText(getApplicationContext(), "item ="+scrollState,
-				// Toast.LENGTH_SHORT).show();
+				CalendarView view = new CalendarView(getActivity()
+						.getApplicationContext(), listMonthInfor,
+						getDataEvent.getItemCalendar());
+				// add view
+				linearIncludeCalendar.addView(view, new ViewGroup.LayoutParams(
+						ViewGroup.LayoutParams.MATCH_PARENT,
+						ViewGroup.LayoutParams.MATCH_PARENT));
 			}
+		};
+		
 
-			@Override
-			public void onScroll(TwoWayAbsListView view, int firstVisibleItem,
-					int visibleItemCount, int totalItemCount) {
-				// TODO Auto-generated method stub
-				if (firstVisibleItem + visibleItemCount == totalItemCount) {
-					nextMonth();
-				}
-			}
-		});
-		float scalefactor = getResources().getDisplayMetrics().density * 100;
-		int number = getActivity().getWindowManager().getDefaultDisplay().getWidth();
-		int columns = (int) ((float) number / (float) scalefactor);
-		Log.i("Column", "Column: " + columns);
-		mListView.setNumColumns(columns);
-
-		// add row
-		// LayoutInflater factory = LayoutInflater.from(this);
-		// View myView = factory.inflate(R.layout.item_content, null);
-		// mListView.addHeaderView(myView,);
 		return rootView;
 	}
 
-	/*
-	 * khởi tạo danh sách ngày
-	 */
-	void createList() {
-		// list28 = getResources().getStringArray(R.array.list28);
-		// list29 = getResources().getStringArray(R.array.list29);
-		// list30 = getResources().getStringArray(R.array.list30);
-		// list31 = getResources().getStringArray(R.array.list31);
+	void getListMonthInfor() {
+		for (int i = 0; i < 12; i++) {
+			createList();
+			fitDayInMonth(current_Month);
+			getListDayOfWeek();
+			MonthInfo monthInfor = new MonthInfo();
+			// fitDayInMonth(current_Month);
+			// getListDayOfWeek();
+			monthInfor.setmYear(current_Year);
+			monthInfor.setmMonth(current_Month);
+			monthInfor.setListDay(listDay);
+			monthInfor.setListDayOfWeek(listDayOfWeek);
+			monthInfor.setHm_DayOfMonth(hm_DayOfMonth);
+			listMonthInfor.add(monthInfor);
+			current_Month++;
+			if (current_Month == 12) {
+				current_Month = 0;
+				current_Year++;
+			}
+		}
+	}
 
+	void createList() {
+		listDay = new ArrayList<String>();// mảng chứa ngày của tháng
+		hm_DayOfMonth = new HashMap<String, Integer>();
+		listDayOfWeek = new ArrayList<String>();
+		list28 = new ArrayList<String>();
+		list29 = new ArrayList<String>();
+		list30 = new ArrayList<String>();
+		list31 = new ArrayList<String>();
 		for (int i = 1; i <= 28; i++) {
 			list28.add(i + "");
 		}
@@ -152,86 +146,10 @@ public class EventCalendarFragment extends Fragment {
 		}
 	}
 
-	int pos_listDay = 0;
-
-	/**
-	 * Tháng tiếp theo
-	 */
-	void nextMonth() {
-		pos_listDay = listDay.size();
-		if (current_Month < 11) {
-			current_Month++;
-		} else {
-			current_Month = 0;
-			current_Year++;
-		}
-
-		// settext title
-		mCalendar.set(current_Year, current_Month, 1);
-		Long time = mCalendar.getTimeInMillis();
-		Date dateCurrent = new Date(time);
-		SimpleDateFormat dayFormat = new SimpleDateFormat("MMMM", Locale.JAPAN);
-		String dayCurrent = dayFormat.format(dateCurrent);
-		tv_month.setText(dayCurrent + "-" + current_Year);
-
-		fitDayInMonth(current_Month);
-		getListDayOfWeek();
-		adapter = new HorzGridViewAdapter(listDay, listDayOfWeek,
-				hm_DayOfMonth, inflater, getActivity());
-		mListView.setAdapter(adapter);
-		mListView.setSelection(pos_listDay - 1);
-	}
-
-	// protected void setPreviousMonth() {
-	// if (month.get(GregorianCalendar.MONTH) == month
-	// .getActualMinimum(GregorianCalendar.MONTH)) {
-	// month.set((month.get(GregorianCalendar.YEAR) - 1),
-	// month.getActualMaximum(GregorianCalendar.MONTH), 1);
-	// } else {
-	// month.set(GregorianCalendar.MONTH,
-	// month.get(GregorianCalendar.MONTH) - 1);
-	// }
-	//
-	// }
-	/*
-	 * lấy ngày tháng năm hiện tại
-	 */
 	void getCurrentDate() {
 		current_Year = mCalendar.get(Calendar.YEAR);
 		current_Month = mCalendar.get(Calendar.MONTH);
 		current_Day = mCalendar.get(Calendar.DAY_OF_MONTH);
-		// current_Year = 2014;
-		// current_Month = 2;
-		// current_Day = 3;
-	}
-
-	/*
-	 * get day of week by date
-	 */
-	String getDayOfWeek_ByDate(int year, int month, int day) {
-		// month--;
-		// day--;
-		mCalendar.set(year, month, day);
-		Long time = mCalendar.getTimeInMillis();
-		Date date = new Date(time);
-		SimpleDateFormat formatDayOfWeek = new SimpleDateFormat("EEE",
-				Locale.JAPAN);
-		return formatDayOfWeek.format(date);
-	}
-
-	/*
-	 * get list day of week
-	 */
-	void getListDayOfWeek() {
-		for (int i = pos_listDay; i < listDay.size(); i++) {
-			int day = Integer.parseInt(listDay.get(i));
-			String dayweek = getDayOfWeek_ByDate(current_Year, current_Month,
-					day);
-			listDayOfWeek.add(dayweek);
-			mCalendar.set(current_Year, current_Month, day);
-
-			hm_DayOfMonth.put(dayweek, mCalendar.get(Calendar.DAY_OF_WEEK));
-		}
 	}
 
 	// danh sach ngay cho tung tháng
@@ -266,6 +184,20 @@ public class EventCalendarFragment extends Fragment {
 	}
 
 	/*
+	 * get list day of week
+	 */
+	void getListDayOfWeek() {
+		for (int i = pos_listDay; i < listDay.size(); i++) {
+			int day = Integer.parseInt(listDay.get(i));
+			String dayweek = getDayOfWeek_ByDate(current_Year, current_Month,
+					day);
+			listDayOfWeek.add(dayweek);
+			mCalendar.set(current_Year, current_Month, day);
+			hm_DayOfMonth.put(dayweek, mCalendar.get(Calendar.DAY_OF_WEEK));
+		}
+	}
+
+	/*
 	 * Kiểm tra năm nhuân
 	 */
 	boolean Nhuan(int year) {
@@ -276,13 +208,47 @@ public class EventCalendarFragment extends Fragment {
 		}
 	}
 
-//	@Override
-//	public void onBackPressed() {
-//		// TODO Auto-generated method stub
-//		Intent i = new Intent(getApplicationContext(),EventListActivity.class);
-//		startActivity(i);
-//		finish();
-//		super.onBackPressed();
-//	}
-	
+	/*
+	 * get day of week by date
+	 */
+	String getDayOfWeek_ByDate(int year, int month, int day) {
+		// month--;
+		// day--;
+		mCalendar.set(year, month, day);
+		Long time = mCalendar.getTimeInMillis();
+		Date date = new Date(time);
+		SimpleDateFormat formatDayOfWeek = new SimpleDateFormat("EEE",
+				Locale.JAPAN);
+		return formatDayOfWeek.format(date);
+	}
+
+	/**
+	 * Update data
+	 * 
+	 * @param rowCalendar
+	 */
+	public void updateArrayValue(List<ItemCalendar> rowCalendar) {
+		// TODO Auto-generated method stub
+		this.rowCalendar = rowCalendar;
+	}
+
+	@Override
+	public boolean onTouch(View v, MotionEvent event) {
+		// TODO Auto-generated method stub
+		Log.e("TestTouch", "-----------------------------------");
+		switch (event.getAction()) {
+        case MotionEvent.ACTION_DOWN:
+        	Log.e("TestTouch", "----------ACTION down-------------------------");
+            v.getParent().requestDisallowInterceptTouchEvent(true);
+            break;
+        case MotionEvent.ACTION_CANCEL:
+        case MotionEvent.ACTION_UP:
+        	Log.e("TestTouch", "-------------ACTION Up----------------------");
+            v.getParent().requestDisallowInterceptTouchEvent(false);
+            break;
+        default:
+            break;
+        }
+		return false;
+	}
 }

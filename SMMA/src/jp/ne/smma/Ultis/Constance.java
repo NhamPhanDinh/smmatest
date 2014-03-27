@@ -1,5 +1,11 @@
 package jp.ne.smma.Ultis;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import jp.ne.smma.R;
+import jp.ne.smma.aboutsmma.DTO.ItemCalendar;
+
 /**
  * Constance variable
  */
@@ -65,11 +71,50 @@ public class Constance {
 	public static String TEL_PALCE_DETAIL = "c_add_text_tel";
 
 	public static String WEB_PALCE_DETAIL = "c_add_text_web";
-	
-	//check orientation landscape
+	/* Key get calendar from api */
+	public static String CALENDAR_KEY_ID = "ev_cat_id";
+	public static String CALENDAR_KEY_COMPANYNAME = "ev_company_name";
+	public static String CALENDAR_KEY_EVENTNAME = "ev_name";
+	public static String CALENDAR_KEY_STARTDAY = "ev_date_from";
+	public static String CALENDAR_KEY_ENDDAY = "ev_date_end";
+	public static String CALENDAR_KEY_COLOR = "ev_color";
+
+	// check orientation landscape
 	public static boolean checkLanscape = false;
-	
-	//check orientation portrait
+
+	// check orientation portrait
 	public static boolean checkPortrait = true;
+	/* Array list image company calendar */
+	public static final String[] colorCodeCompany = new String[] { "#51318f",
+			"#d72e8b",
+			"#ea5504",//
+			"#d7308c",//
+			"#009944",//
+			"#9e774e",//
+			"#014098",//
+			"#51318f", //
+			"#008cd6",//-
+			"#003f98", 
+			"#9f774e", //
+			"#ea5504", 
+			"#000000" };
+
+	public static final Integer[] imagesItemCompany = {
+			R.drawable.bizyutukan,
+			R.drawable.tenmondai,
+			R.drawable.rekishi_shiryokan,
+			R.drawable.morino_hiroba,
+			R.drawable.bungakukan,
+			R.drawable.hakubutsukan,
+			R.drawable.kagakukan,
+			R.drawable.serizawa_bizyutsu_kougeikan, 
+			R.drawable.icon_single_smma,//
+			R.drawable.icon_single_smma_event,
+			R.drawable.media_take,
+			R.drawable.tohokudaigaku_hakubutsukan,
+			R.drawable.titeino_mori_musium,
+			R.drawable.doubutsuen };
+	/* Data list */
+	public static List<ItemCalendar> listItemCalendar = new ArrayList<ItemCalendar>();
 
 }

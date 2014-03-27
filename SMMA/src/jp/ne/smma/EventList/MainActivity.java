@@ -69,7 +69,6 @@ public class MainActivity extends FragmentActivity {
 		super.onResume();
 		if(Constance.checkPortrait){
 			 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-			 Log.e("bbbbbbbbbb", "ffffffffffffffffff");
 		}
 		else{
 			 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);

@@ -71,6 +71,7 @@ public class EventListFragment extends Fragment {
 	View mHeader;
 	public JSONArray mJsonArray;
 
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {

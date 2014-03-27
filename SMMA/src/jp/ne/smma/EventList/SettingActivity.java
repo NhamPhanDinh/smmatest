@@ -2,13 +2,16 @@ package jp.ne.smma.EventList;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 import jp.ne.smma.R;
 import jp.ne.smma.EventCalendar.Custom.Switch;
+import jp.ne.smma.EventList.Controller.GetDataEventCalendar;
 import jp.ne.smma.Ultis.ApplicationUntils;
 import jp.ne.smma.Ultis.Constance;
 import jp.ne.smma.Ultis.DialogUtil;
 import jp.ne.smma.aboutsmma.DAO.NotificationDataSource;
+import jp.ne.smma.aboutsmma.DTO.ItemCalendar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -56,6 +59,7 @@ public class SettingActivity extends Activity implements OnClickListener {
 
 	// preferences
 	SharedPreferences preferences;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +68,6 @@ public class SettingActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.setting_activity);
 		if(Constance.checkPortrait){
 			 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-			 Log.e("bbbbbbbbbb", "ffffffffffffffffff");
 		}
 		else{
 			 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -160,6 +163,8 @@ public class SettingActivity extends Activity implements OnClickListener {
 						}
 					}
 				});
+		////////////////////////////////////////
+		
 	}
 
 	/**
@@ -446,5 +451,5 @@ public class SettingActivity extends Activity implements OnClickListener {
 				Constance.strCheckBoxNotifiation);
 		editor.commit();
 	}
-
+	
 }
