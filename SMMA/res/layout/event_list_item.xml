@@ -51,7 +51,7 @@
                 android:paddingRight="5dp"
                 android:textColor="@color/event_item_color_text"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textSize="13sp" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/text_address"
@@ -62,7 +62,7 @@
                 android:paddingTop="3dp"
                 android:textColor="@color/event_item_color_text"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textSize="13sp" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/text_day"
@@ -74,7 +74,7 @@
                 android:paddingTop="3dp"
                 android:textColor="@color/event_item_color_text"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textSize="13sp" />
+                android:textSize="14sp" />
         </LinearLayout>
 
         <ImageView

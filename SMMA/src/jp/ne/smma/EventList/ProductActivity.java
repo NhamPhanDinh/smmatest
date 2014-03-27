@@ -9,11 +9,11 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import jp.ne.smma.R;
 import jp.ne.smma.EventList.Controller.AlertDialogManager;
 import jp.ne.smma.Ultis.ApplicationUntils;
 import jp.ne.smma.Ultis.Constance;
-import jp.ne.smma.Ultis.ImageLoader;
 import jp.ne.smma.Ultis.JSONParser;
 
 import org.apache.http.NameValuePair;
@@ -33,7 +33,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -43,6 +42,7 @@ import android.text.Html.ImageGetter;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -88,13 +88,14 @@ public class ProductActivity extends Activity {
 	AlertDialogManager alert = new AlertDialogManager();
 	// Progress Dialog
 	private ProgressDialog pDialog;
-	ImageLoader imageLoaderProduct;
-	ImageLoader imageLoaderIcon;
+//	ImageLoader imageLoaderProduct;
+//	ImageLoader imageLoaderIcon;
 
 	TextView product_detail;
 	TextView nameTv;
 	TextView computerNameTv;
 	TextView dateTv;
+	WebView mWebView;
 	HashMap<String, String> map;
 
 	String strName = null;
@@ -122,17 +123,17 @@ public class ProductActivity extends Activity {
 		else{
 			 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		}
-		imageLoaderProduct = new ImageLoader(
-				ProductActivity.this.getApplicationContext());
-		imageLoaderIcon = new ImageLoader(
-				ProductActivity.this.getApplicationContext());
-		imgIcon = (ImageView) findViewById(R.id.product_img_icon);
+//		imageLoaderProduct = new ImageLoader(
+//				ProductActivity.this.getApplicationContext());
+//		imageLoaderIcon = new ImageLoader(
+//				ProductActivity.this.getApplicationContext());
+//		imgIcon = (ImageView) findViewById(R.id.product_img_icon);
 		textHeader = (TextView) findViewById(R.id.product_name_header);
-		textName = (TextView) findViewById(R.id.product_text_name);
-		textAddress = (TextView) findViewById(R.id.product_text_address);
-		textPhone = (TextView) findViewById(R.id.product_text_phone);
+//		textName = (TextView) findViewById(R.id.product_text_name);
+//		textAddress = (TextView) findViewById(R.id.product_text_address);
+//		textPhone = (TextView) findViewById(R.id.product_text_phone);
 		backButton = (Button) findViewById(R.id.product_btn_back);
-
+		mWebView = (WebView)findViewById(R.id.webView);
 		imgAdd = (Button) findViewById(R.id.imageButton1);
 		// save db
 		imgAdd.setOnClickListener(new OnClickListener() {
@@ -163,12 +164,12 @@ public class ProductActivity extends Activity {
 		});
 		
 		// load image
-		nameTv = (TextView) findViewById(R.id.product_name);
-		computerNameTv = (TextView) findViewById(R.id.product_computer_name);
-		dateTv = (TextView) findViewById(R.id.product_date);
+//		nameTv = (TextView) findViewById(R.id.product_name);
+//		computerNameTv = (TextView) findViewById(R.id.product_computer_name);
+//		dateTv = (TextView) findViewById(R.id.product_date);
 
 		// Content example
-		product_detail = (TextView) findViewById(R.id.product_detail_txt);
+//		product_detail = (TextView) findViewById(R.id.product_detail_txt);
 
 		new loadImage().execute();
 		backButton.setOnClickListener(new View.OnClickListener() {
@@ -189,29 +190,29 @@ public class ProductActivity extends Activity {
 			}
 		});
 
-		textPhone.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				// Starting a new async task
-				String phone = textPhone.getText().toString();
-				String phoneNumber = phone.replaceAll("TEL: ", "");
-				phoneNumber = phoneNumber.replace(" ", "");
-				Log.d("phone number", phoneNumber);
-				Intent callIntent = new Intent(Intent.ACTION_DIAL, Uri
-						.parse("tel:" + phoneNumber));
-				startActivity(callIntent);
-			}
-		});
-		textAddress.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				// Starting a new async task
-				String url = textAddress.getText().toString();
-				Intent i = new Intent(Intent.ACTION_VIEW);
-				i.setData(Uri.parse(url));
-				startActivity(i);
-			}
-		});
+//		textPhone.setOnClickListener(new View.OnClickListener() {
+//			@Override
+//			public void onClick(View arg0) {
+//				// Starting a new async task
+//				String phone = textPhone.getText().toString();
+//				String phoneNumber = phone.replaceAll("TEL: ", "");
+//				phoneNumber = phoneNumber.replace(" ", "");
+//				Log.d("phone number", phoneNumber);
+//				Intent callIntent = new Intent(Intent.ACTION_DIAL, Uri
+//						.parse("tel:" + phoneNumber));
+//				startActivity(callIntent);
+//			}
+//		});
+//		textAddress.setOnClickListener(new View.OnClickListener() {
+//			@Override
+//			public void onClick(View arg0) {
+//				// Starting a new async task
+//				String url = textAddress.getText().toString();
+//				Intent i = new Intent(Intent.ACTION_VIEW);
+//				i.setData(Uri.parse(url));
+//				startActivity(i);
+//			}
+//		});
 	}
 
 	/**
@@ -264,6 +265,7 @@ public class ProductActivity extends Activity {
 									json.getString("ev_date_from"));
 							map.put(KEY_DATE_END, json.getString("ev_date_end"));
 							map.put(KEY_CONTENT, json.getString("ev_content"));
+							Log.e("ev_content",json.getString("ev_content") );
 							map.put(KEY_IMG_COLOR, json.getString("ev_color"));
 							map.put(KEY_TEXT_FIRST,
 									json.getString("ev_text_first"));
@@ -271,7 +273,7 @@ public class ProductActivity extends Activity {
 							map.put(KEY_WEB, json.getString("ev_web"));
 							map.put(KEY_IMG_URL,
 									json.getString("ev_path_image"));
-
+							
 						}
 					}
 				}
@@ -296,6 +298,8 @@ public class ProductActivity extends Activity {
 						textHeader.setText(fName);
 						textHeader.setBackgroundColor(Color.parseColor(map
 								.get(KEY_IMG_COLOR)));
+						mWebView.loadDataWithBaseURL(null, map.get(KEY_CONTENT),"text/html", "UTF-8",null);
+
 
 						// UrlImageParser p = new UrlImageParser(product_detail,
 						// getApplicationContext());
@@ -304,84 +308,84 @@ public class ProductActivity extends Activity {
 						// p, null);
 						//
 						// product_detail.setText(htmlSpan);
-						product_detail.setText(Html.fromHtml(
-								map.get(KEY_CONTENT), new ImageGetter() {
-
-									@Override
-									public Drawable getDrawable(String source) {
-										// TODO Auto-generated method stub
-
-										Drawable drawable = null;
-										if (source.startsWith("http")) {
-											// load from internet
-
-											URL sourceURL;
-											try {
-												sourceURL = new URL(source);
-												URLConnection urlConnection = sourceURL
-														.openConnection();
-												urlConnection.connect();
-												InputStream inputStream = urlConnection
-														.getInputStream();
-												BufferedInputStream bufferedInputStream = new BufferedInputStream(
-														inputStream);
-												Bitmap bm = BitmapFactory
-														.decodeStream(bufferedInputStream);
-
-												// convert Bitmap to Drawable
-												drawable = new BitmapDrawable(
-														getResources(), bm);
-
-												drawable.setBounds(0, 0,
-														bm.getWidth(),
-														bm.getHeight());
-
-											} catch (MalformedURLException e) {
-												// TODO Auto-generated catch
-												// block
-												e.printStackTrace();
-											} catch (IOException e) {
-												// TODO Auto-generated catch
-												// block
-												e.printStackTrace();
-											}
-
-										} else {
-											// load from local drawable
-
-											int dourceId = getApplicationContext()
-													.getResources()
-													.getIdentifier(source,
-															"drawable",
-															getPackageName());
-
-											drawable = getApplicationContext()
-													.getResources()
-													.getDrawable(dourceId);
-
-											drawable.setBounds(
-													0,
-													0,
-													drawable.getIntrinsicWidth(),
-													drawable.getIntrinsicHeight());
-										}
-
-										return drawable;
-
-									}
-								}, null));
+//						product_detail.setText(Html.fromHtml(
+//								map.get(KEY_CONTENT), new ImageGetter() {
+//
+//									@Override
+//									public Drawable getDrawable(String source) {
+//										// TODO Auto-generated method stub
+//
+//										Drawable drawable = null;
+//										if (source.startsWith("http")) {
+//											// load from internet
+//
+//											URL sourceURL;
+//											try {
+//												sourceURL = new URL(source);
+//												URLConnection urlConnection = sourceURL
+//														.openConnection();
+//												urlConnection.connect();
+//												InputStream inputStream = urlConnection
+//														.getInputStream();
+//												BufferedInputStream bufferedInputStream = new BufferedInputStream(
+//														inputStream);
+//												Bitmap bm = BitmapFactory
+//														.decodeStream(bufferedInputStream);
+//
+//												// convert Bitmap to Drawable
+//												drawable = new BitmapDrawable(
+//														getResources(), bm);
+//
+//												drawable.setBounds(0, 0,
+//														bm.getWidth(),
+//														bm.getHeight());
+//
+//											} catch (MalformedURLException e) {
+//												// TODO Auto-generated catch
+//												// block
+//												e.printStackTrace();
+//											} catch (IOException e) {
+//												// TODO Auto-generated catch
+//												// block
+//												e.printStackTrace();
+//											}
+//
+//										} else {
+//											// load from local drawable
+//
+//											int dourceId = getApplicationContext()
+//													.getResources()
+//													.getIdentifier(source,
+//															"drawable",
+//															getPackageName());
+//
+//											drawable = getApplicationContext()
+//													.getResources()
+//													.getDrawable(dourceId);
+//
+//											drawable.setBounds(
+//													0,
+//													0,
+//													drawable.getIntrinsicWidth(),
+//													drawable.getIntrinsicHeight());
+//										}
+//
+//										return drawable;
+//
+//									}
+//								}, null));
 					} catch (Exception e) {
 						// TơơODO: handle exception
 					} finally {
-						nameTv.setText(map.get(KEY_NAME));
-						computerNameTv.setText(map.get(KEY_COMPANY_NAME));
-						dateTv.setText(map.get(KEY_DATE_FROM) + " ~ "
-								+ map.get(KEY_DATE_END));
-						imageLoaderIcon.DisplayImage(map.get(KEY_IMG_URL),
-								imgIcon);
-						textName.setText(map.get(KEY_TEXT_FIRST));
-						textAddress.setText(map.get(KEY_WEB));
-						textPhone.setText(map.get(KEY_TEL));
+						//nameTv.setText(map.get(KEY_NAME));
+						//computerNameTv.setText(map.get(KEY_COMPANY_NAME));
+//						dateTv.setText(map.get(KEY_DATE_FROM) + " ~ "
+//								+ map.get(KEY_DATE_END));
+//						imageLoaderIcon.DisplayImage(map.get(KEY_IMG_URL),
+//								imgIcon);
+//						textName.setText(map.get(KEY_TEXT_FIRST));
+//						textAddress.setText(map.get(KEY_WEB));
+//						textPhone.setText(map.get(KEY_TEL));
 						// set text
 						strName = map.get(KEY_COMPANY_NAME);
 						strTitle = map.get(KEY_NAME);

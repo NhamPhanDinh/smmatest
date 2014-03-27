@@ -26,6 +26,7 @@ import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -58,6 +59,7 @@ public class PlaceDetailActivity extends Activity implements OnClickListener {
 	private String text1;
 	private String text2;
 	private String urlImagePlace;
+	private WebView mWebViewDetail;
 
 	ProgressDialog pDialog;
 	public JSONArray mJsonArray;
@@ -84,7 +86,8 @@ public class PlaceDetailActivity extends Activity implements OnClickListener {
 		strAdd = (TextView) findViewById(R.id.addPlace);
 		strPhone = (TextView) findViewById(R.id.telPlace);
 		strUrl = (TextView) findViewById(R.id.urlPlace);
-		textContent = (TextView)findViewById(R.id.text_content);
+//		textContent = (TextView)findViewById(R.id.text_content);
+		mWebViewDetail = (WebView)findViewById(R.id.web_view_about);
 		imageMap=(ImageView)findViewById(R.id.imageMap);
 		imageMap.setVisibility(View.GONE);
 		// get data from
@@ -236,7 +239,8 @@ public class PlaceDetailActivity extends Activity implements OnClickListener {
 				public void run() {
 					// some code #3 (Write your code here to run in UI thread)
 					//imgMain.setBackgroundResource(R.drawable.image_main_index);
-					textContent.setText(Html.fromHtml(content));
+//					textContent.setText(Html.fromHtml(content));
+					mWebViewDetail.loadDataWithBaseURL(null, content,"text/html", "UTF-8",null);
 					strTitle.setText(titleItem);
 					linearBannerPlaceDetail.setBackgroundColor(Color
 							.parseColor(colorCode));
