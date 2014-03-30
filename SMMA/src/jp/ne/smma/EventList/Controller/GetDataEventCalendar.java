@@ -34,7 +34,6 @@ public abstract class GetDataEventCalendar {
 	Boolean isInternet;
 	ArrayList<ItemCalendar> rowCalendar = new ArrayList<ItemCalendar>();;
 
-
 	/*
 	 * Contructor class
 	 */
@@ -89,7 +88,7 @@ public abstract class GetDataEventCalendar {
 						params);
 
 				if (mJson == null) {
-					
+
 					showAlertDialog(mContext, "",
 							"Time out when connect server. Please try again",
 							false);
@@ -118,6 +117,7 @@ public abstract class GetDataEventCalendar {
 									// fill data
 									item = new ItemCalendar(
 											json.getString(Constance.CALENDAR_KEY_ID),
+											json.getString(Constance.CALENDAR_EVENT_ID),
 											json.getString(Constance.CALENDAR_KEY_COMPANYNAME),
 											json.getString(Constance.CALENDAR_KEY_EVENTNAME),
 											json.getString(Constance.CALENDAR_KEY_STARTDAY),
@@ -184,5 +184,6 @@ public abstract class GetDataEventCalendar {
 		return rowCalendar;
 
 	}
+
 	public abstract void OnTaskCompleted();
 }

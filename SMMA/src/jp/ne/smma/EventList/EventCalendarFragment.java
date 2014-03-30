@@ -254,7 +254,9 @@ public class EventCalendarFragment extends Fragment {
 		public boolean onDown(MotionEvent e) {
 			_xDelta = e.getX();
 			_yDelta = e.getY();
-
+			
+			viewContent.clickEvent(_xDelta - viewContent.getPosX(), _yDelta - viewContent.getPosY());
+			
 			if (!mScroller.isFinished()) {
 				mScroller.forceFinished(true);
 			}

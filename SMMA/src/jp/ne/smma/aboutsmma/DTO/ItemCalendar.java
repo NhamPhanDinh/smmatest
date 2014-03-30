@@ -5,6 +5,7 @@ package jp.ne.smma.aboutsmma.DTO;
  */
 public class ItemCalendar {
 	private String id;
+	private String event_id;
 	// if no chose, don't draw event 27/3/2014
 	private boolean isChosen;
 	private String companyName;
@@ -40,9 +41,10 @@ public class ItemCalendar {
 	 * @param colorCode
 	 *            - color mode
 	 */
-	public ItemCalendar(String id, String companyName, String eventName,
+	public ItemCalendar(String id,String eventId, String companyName, String eventName,
 			String startDay, String endDay, int iconUrl, String colorCode) {
 		this.id = id;
+		this.event_id = eventId;
 		this.isChosen = isChosen;
 		this.companyName = companyName;
 		this.eventName = eventName;
@@ -79,7 +81,15 @@ public class ItemCalendar {
 		this.colorCode = colorCode;
 
 	}
+	
+	public String getEventId() {
+		return event_id;
+	}
 
+	public void setEventId(String id) {
+		this.event_id = id;
+	}
+	
 	public String getId() {
 		return id;
 	}
