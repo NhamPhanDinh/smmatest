@@ -26,9 +26,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:adjustViewBounds="true"
-            android:visibility="invisible"
             android:contentDescription="@string/image"
-            android:src="@drawable/event_calendar_img1" />
+            android:src="@drawable/event_calendar_img1"
+            android:visibility="invisible" />
 
         <ImageView
             android:id="@+id/imgFillter"
@@ -48,26 +48,45 @@
     <!-- android:padding="5dp" -->
     <!-- android:text="" /> -->
 
-    <FrameLayout
-        android:id="@+id/linearIncludeCalendar"
+    <RelativeLayout
+        android:id="@+id/parentCalendar"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical" >
 
-        <!-- <jp.ne.smma.EventCalendar.Custom.MyGridView -->
-        <!-- xmlns:app="http://schemas.android.com/apk/res-auto" -->
-        <!-- android:id="@+id/horz_gridview" -->
-        <!-- android:layout_width="fill_parent" -->
-        <!-- android:layout_height="fill_parent" -->
-        <!-- android:background="@color/background_grid" -->
-        <!-- app:gravity="center" -->
-        <!-- app:horizontalSpacing="0dp" -->
-        <!-- app:numColumns="auto_fit" -->
-        <!-- app:numRows="1" -->
-        <!-- app:scrollDirectionLandscape="horizontal" -->
-        <!-- app:scrollDirectionPortrait="horizontal" -->
-        <!-- app:stretchMode="none" -->
-        <!-- app:verticalSpacing="0dp" /> -->
-    </FrameLayout>
+        <FrameLayout
+            android:id="@+id/linearIncludeCalendar"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical" >
+
+            <!-- <jp.ne.smma.EventCalendar.Custom.MyGridView -->
+            <!-- xmlns:app="http://schemas.android.com/apk/res-auto" -->
+            <!-- android:id="@+id/horz_gridview" -->
+            <!-- android:layout_width="fill_parent" -->
+            <!-- android:layout_height="fill_parent" -->
+            <!-- android:background="@color/background_grid" -->
+            <!-- app:gravity="center" -->
+            <!-- app:horizontalSpacing="0dp" -->
+            <!-- app:numColumns="auto_fit" -->
+            <!-- app:numRows="1" -->
+            <!-- app:scrollDirectionLandscape="horizontal" -->
+            <!-- app:scrollDirectionPortrait="horizontal" -->
+            <!-- app:stretchMode="none" -->
+            <!-- app:verticalSpacing="0dp" /> -->
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/button1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Button" />
+        </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>

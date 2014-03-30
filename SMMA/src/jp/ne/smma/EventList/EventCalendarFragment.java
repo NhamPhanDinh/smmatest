@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Scroller;
@@ -88,6 +89,15 @@ public class EventCalendarFragment extends Fragment {
 
 		linearIncludeCalendar = (FrameLayout) rootView
 				.findViewById(R.id.linearIncludeCalendar);
+		Button button = (Button) rootView.findViewById(R.id.button1);
+		button.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Log.d("ClickButton","Click duoc roi day :))");
+			}
+		});
 		// set time zone japan
 		mCalendar = Calendar.getInstance();
 		Date dateCurrent = mCalendar.getTime();
