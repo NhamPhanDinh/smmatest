@@ -363,10 +363,11 @@ public class CalendarView extends View {
 						+ startTop + headerLength, paddingLeftEvent
 						+ widthContentEvent, 3 * square + startTop
 						+ headerLength + square);
+
+				paddingTop = square;
+				startTop += (2 * paddingTop);
 			}
 
-			paddingTop = square;
-			startTop += (2 * paddingTop);
 		}
 		// limitHeight = tempLimitHeight;
 		// limitWidth = -tempLimitWidth;
