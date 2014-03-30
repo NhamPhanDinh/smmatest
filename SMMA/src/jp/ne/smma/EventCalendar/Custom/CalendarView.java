@@ -28,10 +28,12 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewParent;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 public class CalendarView extends View {
 	// canvas
@@ -56,6 +58,7 @@ public class CalendarView extends View {
 	int currentDay;
 	ArrayList<MonthInfo> listMonthInfo = new ArrayList<MonthInfo>();
 	ArrayList<ItemCalendar> listContent = new ArrayList<ItemCalendar>();
+	ArrayList<Float> coorListMonth;
 	// This list save the coordinates
 	RectF[] arrayRect;
 
@@ -76,6 +79,8 @@ public class CalendarView extends View {
 	Paint dayPaint;
 
 	Context context;
+
+	TextView monthTv;
 
 	public CalendarView(Context context, ArrayList<MonthInfo> monthInfo,
 			ArrayList<ItemCalendar> listContent) {
@@ -116,7 +121,7 @@ public class CalendarView extends View {
 	}
 
 	public CalendarView(Context context, ArrayList<MonthInfo> monthInfo,
-			ArrayList<ItemCalendar> listContent, boolean isTitle) {
+			ArrayList<ItemCalendar> listContent, boolean isTitle, TextView tv) {
 		this(context, null, 0);
 		this.context = context;
 		WindowManager wm = (WindowManager) context
@@ -159,6 +164,7 @@ public class CalendarView extends View {
 			monthIn.getListDay().remove(0);
 			monthIn.getListDayOfWeek().remove(0);
 		}
+		this.monthTv = tv;
 	}
 
 	public CalendarView(Context context, AttributeSet attrs) {
@@ -201,9 +207,11 @@ public class CalendarView extends View {
 		int positionX = 0;
 		float text_lenght = 10 * this.WITH_SCREEN / 1080;
 
-		canvas.drawRect(0, 0, limitWidth, 2 * square + this.month_height,
+		coorListMonth = new ArrayList<Float>();
+
+		canvas.drawRect(0, 0, 32000, 2 * square + this.month_height,
 				this.backgroundHeaderPaint);
-		canvas.drawRect(0, 0, limitWidth, this.month_height, this.weekendPaint);
+		canvas.drawRect(0, 0, 32000, this.month_height, this.weekendPaint);
 
 		for (int i = 0; i < listMonthInfo.size(); i++) {
 			MonthInfo monthInfo = listMonthInfo.get(i);
@@ -216,11 +224,16 @@ public class CalendarView extends View {
 							+ this.month_height, currentPosition + square
 							+ square * position,
 							2 * square + this.month_height, saturdayPaint);
-				else if (keyDay == 1)
+				else if (keyDay == 1) {
 					canvas.drawRect(currentPosition + square * position, square
 							+ this.month_height, currentPosition + square
 							+ square * position,
 							2 * square + this.month_height, sundaypaint);
+				}
+				/*
+				 * if(keyDay > 29 && keyDay < 3){
+				 * monthTv.setText((monthInfo.getmMonth() + 1) + "月"); }
+				 */
 				canvas.drawText(monthInfo.getListDay().get(position) + "",
 						currentPosition + square / 2 + square * position,
 						square / 2 + text_lenght + this.month_height, mPaint);
@@ -229,13 +242,51 @@ public class CalendarView extends View {
 						currentPosition + square / 2 + square * position, 3
 								* square / 2 + text_lenght + this.month_height,
 						mPaint);
-				if (monthInfo.getListDay().get(position).equals("1"))
+				if (monthInfo.getListDay().get(position).equals("1")) {
 					canvas.drawText((monthInfo.getmMonth() + 1) + "月",
 							currentPosition + square / 2 + square * position,
 							square / 2 + text_lenght, mPaint);
+
+					// List coordinateX of Month label
+					coorListMonth.add(currentPosition + square / 2 + square
+							* position);
+				}
 				positionX += square;
+
 			}
 		}
+
+		// Set text for Month Label
+		float textMonthSize = 30 * this.WITH_SCREEN / 1080;
+		monthTv.setLines(1);
+		monthTv.setBackgroundColor(Color.parseColor("#F1F1F1"));
+		monthTv.setTextSize(textMonthSize / 2);
+		monthTv.setHeight((int) square);
+		monthTv.setGravity(Gravity.CENTER | Gravity.LEFT);
+		monthTv.setTextColor(Color.BLACK);
+		monthTv.setPadding(10, 0, 0, 0);
+		for (int i = 0; i < coorListMonth.size(); i++) {
+			int currentMonth = UntilDateTime.getMonth(dateCurrent) + 1;
+			if (mPosX == 0) {
+				monthTv.setText(currentMonth + "月");
+			} else if (-mPosX > coorListMonth.get(i)
+					&& -mPosX < coorListMonth.get(i + 1)
+					&& i <= (coorListMonth.size() - 1)) {
+				if ((currentMonth + i + 1) % 12 != 0) {
+					monthTv.setText((currentMonth + i + 1) % 12 + "月");
+				} else {
+					monthTv.setText(12 + "月");
+				}
+			}
+		}
+		
+		// Limit scroll in 3 months
+		Calendar c = Calendar.getInstance();
+		c.add(Calendar.MONTH, 3);
+		limitWidth = square
+				* (UntilDateTime.betweenDates(dateCurrent, c.getTime()) - 14) + square
+				/ 2;
+		Log.d("LimitWidth", "LimitWidth: " + limitWidth + " :PosX: " + mPosX);
 	}
 
 	public void drawBackgroundCommon(Canvas canvas) {
@@ -329,16 +380,16 @@ public class CalendarView extends View {
 						* this.WITH_SCREEN / 1080;
 				float ratio = bmp.getWidth() / bmp.getHeight();
 				int width = bmp.getWidth();
-				Log.d("size", width + "");
 				int height = bmp.getHeight();
+				Log.d("Size", "Width+Height: " + width + " : " + height);
 				float scaleWidth = (float) ((square * ratio * scaleTofit) / width);
 				float scaleHeight = (square) / height;
 				Matrix matrix = new Matrix();
 				matrix.postScale(scaleWidth, scaleHeight);
-				// Bitmap image = Bitmap.createScaledBitmap(bmp, (int) ratio
-				// * (int) square, (int) square, true);
-				Bitmap image = Bitmap.createBitmap(bmp, 0, 0, width, height,
-						matrix, false);
+				Bitmap image = Bitmap.createScaledBitmap(bmp, (int) ratio
+						* (int) square, (int) square, true);
+				// Bitmap image = Bitmap.createBitmap(bmp, 0, 0, width, height,
+				// matrix, false);
 				float widthText = contentTextPain.measureText(eventName
 						+ companyName);
 				widthContentEvent = widthText + bmp.getWidth() + 2 * square;

@@ -31,6 +31,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Scroller;
+import android.widget.TextView;
 
 public class EventCalendarFragment extends Fragment {
 	/** Called when the activity is first created. */
@@ -74,7 +75,7 @@ public class EventCalendarFragment extends Fragment {
 	private static final int SWIPE_MIN_DISTANCE = 20;
 	private static final int SWIPE_THRESHOLD_VELOCITY = 200;
 	Context context;
-
+	TextView monthTv;
 	private float posUpX = 0;
 	private float posUpY = 0;
 
@@ -89,15 +90,8 @@ public class EventCalendarFragment extends Fragment {
 
 		linearIncludeCalendar = (FrameLayout) rootView
 				.findViewById(R.id.linearIncludeCalendar);
-		Button button = (Button) rootView.findViewById(R.id.button1);
-		button.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Log.d("ClickButton","Click duoc roi day :))");
-			}
-		});
+		monthTv = (TextView) rootView.findViewById(R.id.monthLabel);
+
 		// set time zone japan
 		mCalendar = Calendar.getInstance();
 		Date dateCurrent = mCalendar.getTime();
@@ -120,7 +114,7 @@ public class EventCalendarFragment extends Fragment {
 						getDataEvent.getItemCalendar());
 				viewLabel = new CalendarView(getActivity()
 						.getApplicationContext(), listMonthInfor,
-						getDataEvent.getItemCalendar(), true);
+						getDataEvent.getItemCalendar(), true, monthTv);
 				// add view
 				linearIncludeCalendar.addView(viewContent,
 						new ViewGroup.LayoutParams(
@@ -148,7 +142,7 @@ public class EventCalendarFragment extends Fragment {
 						return false;
 					}
 				});
-				
+
 				rowCalendar = getDataEvent.getItemCalendar();
 			}
 		};
@@ -227,33 +221,33 @@ public class EventCalendarFragment extends Fragment {
 			final float X = e2.getX();
 			final float Y = e2.getY();
 
-//			translateX(viewContent, (X - _xDelta));
-//			translateX(viewLabel, (X - _xDelta));
-//
-//			if (!isLabel) {
-//				translateY(viewContent, (Y - _yDelta));
-//			}
+			// translateX(viewContent, (X - _xDelta));
+			// translateX(viewLabel, (X - _xDelta));
+			//
+			// if (!isLabel) {
+			// translateY(viewContent, (Y - _yDelta));
+			// }
 			translateX(viewContent, 2 * (X - _xDelta));
-			   translateX(viewLabel,2 * (X - _xDelta));
+			translateX(viewLabel, 2 * (X - _xDelta));
 
-			   if (!isLabel) {
-			    translateY(viewContent,2 * (Y - _yDelta));
-			   }
+			if (!isLabel) {
+				translateY(viewContent, 2 * (Y - _yDelta));
+			}
 
 			if (viewContent.getPosX() > 0)
 				viewContent.setPosX(0);
-			if (viewContent.getPosX() < -28119)
-				viewContent.setPosX(-28119);
+			if (viewContent.getPosX() < -viewLabel.getLimitWidth())
+				viewContent.setPosX(-viewLabel.getLimitWidth());
 
 			if (viewContent.getPosY() > 0)
 				viewContent.setPosY(0);
-			if (viewContent.getPosY() < -28119)
-				viewContent.setPosY(-28119);
+			if (viewContent.getPosY() < -viewLabel.getLimitWidth())
+				viewContent.setPosY(-viewLabel.getLimitWidth());
 
 			if (viewLabel.getPosX() > 0)
 				viewLabel.setPosX(0);
-			if (viewLabel.getPosX() < -28119)
-				viewLabel.setPosX(-28119);
+			if (viewLabel.getPosX() < -viewLabel.getLimitWidth())
+				viewLabel.setPosX(-viewLabel.getLimitWidth());
 
 			_xDelta = X;
 			_yDelta = Y;
@@ -264,13 +258,22 @@ public class EventCalendarFragment extends Fragment {
 		public boolean onDown(MotionEvent e) {
 			_xDelta = e.getX();
 			_yDelta = e.getY();
-			
-			viewContent.clickEvent(_xDelta - viewContent.getPosX(), _yDelta - viewContent.getPosY());
-			
+
 			if (!mScroller.isFinished()) {
 				mScroller.forceFinished(true);
 			}
 			return super.onDown(e);
+		}
+
+		@Override
+		public boolean onSingleTapUp(MotionEvent e) {
+			// TODO Auto-generated method stub
+			_xDelta = e.getX();
+			_yDelta = e.getY();
+
+			viewContent.clickEvent(_xDelta - viewContent.getPosX(), _yDelta
+					- viewContent.getPosY());
+			return super.onSingleTapUp(e);
 		}
 
 		@Override
