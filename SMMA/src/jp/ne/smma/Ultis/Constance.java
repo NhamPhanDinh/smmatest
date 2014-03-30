@@ -72,6 +72,7 @@ public class Constance {
 
 	public static String WEB_PALCE_DETAIL = "c_add_text_web";
 	/* Key get calendar from api */
+	public static String CALENDAR_EVENT_ID = "ev_id";
 	public static String CALENDAR_KEY_ID = "ev_cat_id";
 	public static String CALENDAR_KEY_COMPANYNAME = "ev_company_name";
 	public static String CALENDAR_KEY_EVENTNAME = "ev_name";

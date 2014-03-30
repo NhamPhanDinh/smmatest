@@ -35,8 +35,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 
-import com.costum.android.widget.LoadMoreListView;
-
 public class EventListFragment extends Fragment {
 
 	public static final String KEY_SUCCESS = "success";

@@ -8,16 +8,21 @@ import java.util.List;
 
 import jp.ne.smma.R;
 import jp.ne.smma.EventCalendar.Controller.VersionedGestureDetector;
+import jp.ne.smma.EventList.ProductActivity;
 import jp.ne.smma.Ultis.MonthInfo;
 import jp.ne.smma.Ultis.UntilDateTime;
 import jp.ne.smma.aboutsmma.DTO.ItemCalendar;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -50,6 +55,9 @@ public class CalendarView extends View {
 	int currentDay;
 	ArrayList<MonthInfo> listMonthInfo = new ArrayList<MonthInfo>();
 	ArrayList<ItemCalendar> listContent = new ArrayList<ItemCalendar>();
+	// This list save the coordinates
+	RectF[] arrayRect;
+
 	public float max_length_calendar = 28119;
 	// screen size and height
 	public float WITH_SCREEN;
@@ -66,9 +74,12 @@ public class CalendarView extends View {
 
 	Paint dayPaint;
 
+	Context context;
+
 	public CalendarView(Context context, ArrayList<MonthInfo> monthInfo,
 			ArrayList<ItemCalendar> listContent) {
 		this(context, null, 0);
+		this.context = context;
 		WindowManager wm = (WindowManager) context
 				.getSystemService(Context.WINDOW_SERVICE);
 		Display display = wm.getDefaultDisplay();
@@ -106,6 +117,7 @@ public class CalendarView extends View {
 	public CalendarView(Context context, ArrayList<MonthInfo> monthInfo,
 			ArrayList<ItemCalendar> listContent, boolean isTitle) {
 		this(context, null, 0);
+		this.context = context;
 		WindowManager wm = (WindowManager) context
 				.getSystemService(Context.WINDOW_SERVICE);
 		Display display = wm.getDefaultDisplay();
@@ -280,6 +292,8 @@ public class CalendarView extends View {
 		Bitmap footer_image = Bitmap.createScaledBitmap(footer,
 				(int) ratio_footer * (int) square, (int) square, true);
 
+		arrayRect = new RectF[listContent.size()];
+
 		for (int i = 0; i < listContent.size(); i++) {
 
 			String eventName = listContent.get(i).getEventName() + "";
@@ -295,59 +309,60 @@ public class CalendarView extends View {
 							.toDateFormat(listContent.get(i).getStartDay())) + 1;
 			long longEnd = UntilDateTime.betweenDates(this.dateCurrent,
 					UntilDateTime.toDateFormat(listContent.get(i).getEndDay())) + 1;
-			
-			if(longBegin < 0 && longEnd > 0){
+
+			if (longBegin < 0 && longEnd > 0) {
 				longBegin = 0;
 			}
-			
+
 			paddingLeftEvent = longBegin * square;
 
-			if (true) {
-				if (!listContent.get(i).isChosen() && longBegin <= 90 && longBegin >= 0) {
+			if (!listContent.get(i).isChosen() && longBegin <= 90
+					&& longBegin >= 0) {
 
-					Bitmap bmp = BitmapFactory.decodeResource(getResources(),
-							listContent.get(i).getIconUrl());// listContent.get(i).getIconUrl()
-					float ratio = bmp.getWidth() / bmp.getHeight();
-					Bitmap image = Bitmap.createScaledBitmap(bmp, (int) ratio
-							* (int) square, (int) square, true);
-					float widthText = contentTextPain.measureText(eventName
-							+ companyName);
-					widthContentEvent = widthText + 2 * bmp.getWidth();
+				Bitmap bmp = BitmapFactory.decodeResource(getResources(),
+						listContent.get(i).getIconUrl());// listContent.get(i).getIconUrl()
+				float ratio = bmp.getWidth() / bmp.getHeight();
+				Bitmap image = Bitmap.createScaledBitmap(bmp, (int) ratio
+						* (int) square, (int) square, true);
+				float widthText = contentTextPain.measureText(eventName
+						+ companyName);
+				widthContentEvent = widthText + bmp.getWidth() + 2 * square;
 
-					// draw header for event
-					canvas.drawRect(paddingLeftEvent, 3 * square + startTop
-							+ square / 2, paddingLeftEvent + square
-							* beetweenDays, 3 * square + startTop
-							+ headerLength, dayPaint);
-					// draw content for event
-					canvas.drawRect(paddingLeftEvent, 3 * square + startTop
-							+ headerLength, paddingLeftEvent
-							+ widthContentEvent, 3 * square + startTop
-							+ headerLength + square, bgPaint);
-					// draw logo event
-					canvas.drawBitmap(image, paddingLeftEvent, 3 * square
-							+ startTop + headerLength, null);
-					// draw event name
-					canvas.drawText(eventName, paddingLeftEvent + ratio
-							* (int) square, 3 * square + startTop
-							+ headerLength + text_lenght + square / 2,
-							contentTextPain);
-					// draw company name
-					canvas.drawText(companyName, paddingLeftEvent + 7
-							* (int) square
-							+ listContent.get(i).getEventName().length()
-							* text_lenght * 3, 3 * square + startTop
-							+ headerLength + text_lenght + square / 2,
-							contentTextPain);
+				// draw header for event
+				canvas.drawRect(paddingLeftEvent, 3 * square + startTop
+						+ square / 2, paddingLeftEvent + square * beetweenDays,
+						3 * square + startTop + headerLength, dayPaint);
+				// draw content for event
+				canvas.drawRect(paddingLeftEvent, 3 * square + startTop
+						+ headerLength, paddingLeftEvent + widthContentEvent, 3
+						* square + startTop + headerLength + square, bgPaint);
+				// draw logo event
+				canvas.drawBitmap(image, paddingLeftEvent, 3 * square
+						+ startTop + headerLength, null);
+				// draw event name
+				canvas.drawText(eventName, paddingLeftEvent + (ratio + 1)
+						* (int) square, 3 * square + startTop + headerLength
+						+ text_lenght + square / 2, contentTextPain);
+				// draw company name
+				canvas.drawText(companyName,
+						paddingLeftEvent + (ratio + 2) * (int) square
+								+ contentTextPain.measureText(eventName), 3
+								* square + startTop + headerLength
+								+ text_lenght + square / 2, contentTextPain);
 
-					tempLimitHeight = 4 * square + startTop;
-					if (tempLimitWidth > (paddingLeftEvent + square
-							* (beetweenDays + 1))
-							&& tempLimitWidth != 32000) {
-						tempLimitWidth = paddingLeftEvent + square
-								* (beetweenDays) - 1000;
-					}
+				tempLimitHeight = 4 * square + startTop;
+				if (tempLimitWidth > (paddingLeftEvent + square
+						* (beetweenDays + 1))
+						&& tempLimitWidth != 32000) {
+					tempLimitWidth = paddingLeftEvent + square * (beetweenDays)
+							- 1000;
 				}
+
+				// save Rect Coordinates of event
+				arrayRect[i] = new RectF(paddingLeftEvent, 3 * square
+						+ startTop + headerLength, paddingLeftEvent
+						+ widthContentEvent, 3 * square + startTop
+						+ headerLength + square);
 			}
 
 			paddingTop = square;
@@ -390,6 +405,28 @@ public class CalendarView extends View {
 
 	public float getLimitHeight() {
 		return this.limitHeight;
+	}
+
+	public void clickEvent(float x, float y) {
+		for (int i = 0; i < arrayRect.length; i++) {
+			if (arrayRect[i] != null) {
+				if (x > arrayRect[i].left && x < arrayRect[i].right
+						&& y > arrayRect[i].top && y < arrayRect[i].bottom) {
+					Log.d("ClickEvent", "ClickEvent.............." + i);
+
+					Intent intent = new Intent(context, ProductActivity.class);
+					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					intent.putExtra("itemId", listContent.get(i).getEventId());
+					intent.putExtra("name", listContent.get(i).getCompanyName());
+
+					Log.d("GetIntent", "Id: " + listContent.get(i).getEventId()
+							+ " ;Name: " + listContent.get(i).getCompanyName());
+
+					context.startActivity(intent);
+				}
+			}
+
+		}
 	}
 
 }
