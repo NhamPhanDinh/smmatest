@@ -55,7 +55,7 @@ public class ApplicationUntils {
 						}
 						dateandtime.setTime(converStringtoDate(strDateTime));
 						Log.i("", "You choose: " + c.getTime());
-						String fDate = new SimpleDateFormat("yyyy/MM/dd")
+						String fDate = new SimpleDateFormat("yyyy/MM/dd hh:mm")
 								.format(c.getTime());
 						// check data time
 						fDate = previewDaybyDay(fDate);
@@ -102,6 +102,23 @@ public class ApplicationUntils {
 		}
 		return convertedDate;
 	}
+	/**
+	 * Convert String to Date via yyyy/MM/dd
+	 * 
+	 * @param dateString
+	 * @return date
+	 */
+	public static Date converStringtoDateNotifition(String dateString) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm");
+		Date convertedDate = new Date();
+		try {
+			convertedDate = dateFormat.parse(dateString);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return convertedDate;
+	}
 
 	/**
 	 * Preview day when click checkbox
@@ -115,7 +132,7 @@ public class ApplicationUntils {
 	public static String previewDaybyDay(String oldday) {
 		Log.i("ApplicationUntil", "Old Date: " + oldday);
 		Date oldDate = converStringtoDate(oldday);
-		java.text.DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+		java.text.DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm");
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(oldDate);
 		switch (Constance.strCheckBoxNotifiation) {

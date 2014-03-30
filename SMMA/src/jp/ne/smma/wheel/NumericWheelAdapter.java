@@ -67,6 +67,7 @@ public class NumericWheelAdapter extends AbstractWheelTextAdapter {
         this.minValue = minValue;
         this.maxValue = maxValue;
         this.format = format;
+        setTextSize(14);
     }
 
     @Override
