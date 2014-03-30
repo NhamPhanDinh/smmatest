@@ -6,8 +6,8 @@ import java.util.List;
 import jp.ne.smma.R;
 import jp.ne.smma.Ultis.ConnectionDetector;
 import jp.ne.smma.Ultis.Constance;
+import jp.ne.smma.Ultis.ImageLoader;
 import jp.ne.smma.Ultis.JSONParser;
-import jp.ne.smma.aboutsmma.DTO.RowAboutItem;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -22,10 +22,10 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -36,7 +36,7 @@ import android.widget.Toast;
  * Place detail activity
  */
 public class PlaceDetailActivity extends Activity implements OnClickListener {
-	private ImageView imgMain;
+	private WebView imgMain;
 	private ImageView imageMap;
 	private TextView strTitle;
 	private TextView strAdd;
@@ -65,35 +65,42 @@ public class PlaceDetailActivity extends Activity implements OnClickListener {
 	public JSONArray mJsonArray;
 	Boolean isInternet = false;
 	ConnectionDetector checkInternet;
-	
-	
+	ImageLoader mImgLoader;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.place_detail_activity);
-		if(Constance.checkPortrait){
-			 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-		}
-		else{
-			 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		if (Constance.checkPortrait) {
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		} else {
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		}
 		// get data from xml
 		linearBannerPlaceDetail = (LinearLayout) findViewById(R.id.linearBannerPlaceDetail);
-		imgMain = (ImageView) findViewById(R.id.imgContent);
+		//imgMain = (ImageView) findViewById(R.id.imgContent);
 		strTitle = (TextView) findViewById(R.id.title);
 		strAdd = (TextView) findViewById(R.id.addPlace);
 		strPhone = (TextView) findViewById(R.id.telPlace);
 		strUrl = (TextView) findViewById(R.id.urlPlace);
-//		textContent = (TextView)findViewById(R.id.text_content);
-		mWebViewDetail = (WebView)findViewById(R.id.web_view_about);
-		imageMap=(ImageView)findViewById(R.id.imageMap);
+		imgMain = (WebView) findViewById(R.id.image_place_detail);
+		WebSettings settings = imgMain.getSettings();
+		settings.setUseWideViewPort(true);
+		settings.setLoadWithOverviewMode(true);
+		imgMain.getSettings().setUseWideViewPort(true);
+		// textContent = (TextView)findViewById(R.id.text_content);
+		mWebViewDetail = (WebView) findViewById(R.id.web_view_about);
+		imageMap = (ImageView) findViewById(R.id.imageMap);
 		imageMap.setVisibility(View.GONE);
+		mImgLoader = new ImageLoader(
+				PlaceDetailActivity.this.getApplicationContext());
 		// get data from
 		intent = getIntent();
 		titleItem = intent.getStringExtra(Constance.COLOR_TEXT_INDEX_ABOUT);
 		colorCode = intent.getStringExtra(Constance.COLOR_ITEM_ABOUT);
 		placeID = intent.getStringExtra(Constance.KEY_ABOUT_PLACE);
+		Log.e("kkkkkkkkkkkkk", placeID);
 		latitude = intent.getDoubleExtra(Constance.LATITUDE_ABOUT, 40.714728);
 		longitude = intent
 				.getDoubleExtra(Constance.LONGITUDE_ABOUT, -73.998672);
@@ -106,7 +113,7 @@ public class PlaceDetailActivity extends Activity implements OnClickListener {
 		// strUrl.setText("仙台市太白区山田上ノ台町10-1 ");
 		pDialog = new ProgressDialog(PlaceDetailActivity.this);
 		new loadData().execute("");
-		
+
 		strPhone.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -120,7 +127,7 @@ public class PlaceDetailActivity extends Activity implements OnClickListener {
 				startActivity(callIntent);
 			}
 		});
-		
+
 		strUrl.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -155,22 +162,23 @@ public class PlaceDetailActivity extends Activity implements OnClickListener {
 					Toast.LENGTH_SHORT).show();
 		}
 	}
-//	public void clickCall(View v){
-//		String phone = strPhone.getText().toString();
-//		String phoneNumber = phone.replaceAll("TEL: ", "");
-//		phoneNumber = phoneNumber.replace(" ", "");
-//		Log.d("phone number", phoneNumber);
-//		Intent callIntent = new Intent(Intent.ACTION_DIAL, Uri
-//				.parse("tel:" + phoneNumber));
-//		startActivity(callIntent);
-//	}
-	
-//	public void openURL(View v){
-//		String url = strUrl.getText().toString();
-//		Intent i = new Intent(Intent.ACTION_VIEW);
-//		i.setData(Uri.parse(url));
-//		startActivity(i);
-//	}
+
+	// public void clickCall(View v){
+	// String phone = strPhone.getText().toString();
+	// String phoneNumber = phone.replaceAll("TEL: ", "");
+	// phoneNumber = phoneNumber.replace(" ", "");
+	// Log.d("phone number", phoneNumber);
+	// Intent callIntent = new Intent(Intent.ACTION_DIAL, Uri
+	// .parse("tel:" + phoneNumber));
+	// startActivity(callIntent);
+	// }
+
+	// public void openURL(View v){
+	// String url = strUrl.getText().toString();
+	// Intent i = new Intent(Intent.ACTION_VIEW);
+	// i.setData(Uri.parse(url));
+	// startActivity(i);
+	// }
 
 	public void backIcon(View v) {
 		finish();
@@ -210,7 +218,8 @@ public class PlaceDetailActivity extends Activity implements OnClickListener {
 						// Log.e("json about",
 						// json.getString(Constance.KEY_ABOUT_COLOR)+
 						// json.getString(Constance.KEY_ABOUT_PATH_IMAGE)+json.getString(Constance.KEY_ABOUT_COMPANY_NAME));
-						urlImagePlace = json.getString(Constance.PATH_IMG_PALCE_DETAIL);
+						urlImagePlace = json
+								.getString(Constance.PATH_IMG_PALCE_DETAIL);
 						content = json
 								.getString(Constance.CONTENT_PALCE_DETAIL);
 						textTel = json.getString(Constance.TEL_PALCE_DETAIL);
@@ -237,11 +246,18 @@ public class PlaceDetailActivity extends Activity implements OnClickListener {
 			runOnUiThread(new Runnable() {
 				public void run() {
 					// some code #3 (Write your code here to run in UI thread)
-					//imgMain.setBackgroundResource(R.drawable.image_main_index);
-//					textContent.setText(Html.fromHtml(content));
+					// imgMain.setBackgroundResource(R.drawable.image_main_index);
+					// textContent.setText(Html.fromHtml(content));
+
 					mWebViewDetail.setBackgroundColor(0x00000000);
-					mWebViewDetail.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
-					mWebViewDetail.loadDataWithBaseURL(null, content,"text/html", "UTF-8",null);
+					mWebViewDetail.setLayerType(WebView.LAYER_TYPE_SOFTWARE,
+							null);
+					mWebViewDetail.loadDataWithBaseURL(null, content,
+							"text/html", "UTF-8", null);
+					String img =  "<img src="  + urlImagePlace + " " +  "width="+ "100%" + " " + "style=" + "margin: 0px 0px" + ">" ;
+							
+					imgMain.loadDataWithBaseURL(null,img ,
+							"text/html", "UTF-8", null);
 					strTitle.setText(titleItem);
 					linearBannerPlaceDetail.setBackgroundColor(Color
 							.parseColor(colorCode));

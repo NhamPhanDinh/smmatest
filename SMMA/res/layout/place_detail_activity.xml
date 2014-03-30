@@ -42,23 +42,33 @@
 
     <ScrollView
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+        android:layout_height="fill_parent" 
+        android:background="#FFFAD5">
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:background="#FFFAD5"
             android:orientation="vertical"
             android:padding="5dp" >
 
-<!--             <TextView -->
-<!--                 android:id="@+id/text_content" -->
-<!--                 android:layout_width="fill_parent" -->
-<!--                 android:layout_height="wrap_content" /> -->
-			<WebView 
-			    android:background="@android:color/transparent"
-			    android:id="@+id/web_view_about"
-			    android:layout_width="fill_parent"
-			    android:layout_height="wrap_content"/>
+            <!-- <TextView -->
+            <!-- android:id="@+id/text_content" -->
+            <!-- android:layout_width="fill_parent" -->
+            <!-- android:layout_height="wrap_content" /> -->
+
+            <WebView
+                android:id="@+id/image_place_detail"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"  />
+
+            <WebView
+                android:id="@+id/web_view_about"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent" />
+
             <ImageView
                 android:id="@+id/imgContent"
                 android:layout_width="fill_parent"
@@ -99,16 +109,16 @@
 
                     <TextView
                         android:id="@+id/urlPlace"
-                        android:onClick="openURL"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:onClick="openURL"
                         android:text="" />
 
                     <TextView
                         android:id="@+id/telPlace"
-                        android:onClick="clickCall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:onClick="clickCall"
                         android:text="" />
                 </LinearLayout>
             </LinearLayout>
