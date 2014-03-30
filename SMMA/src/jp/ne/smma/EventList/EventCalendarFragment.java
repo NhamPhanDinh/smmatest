@@ -100,7 +100,7 @@ public class EventCalendarFragment extends Fragment {
 		gesDetectorContent = new GestureDetector(new GestureListener(false));
 		gesDetectorLabel = new GestureDetector(new GestureListener(true));
 
-		getDataEvent = new GetDataEventCalendar(getActivity(), 0) {
+		getDataEvent = new GetDataEventCalendar(getActivity(), 1) {
 
 			@Override
 			public void OnTaskCompleted() {

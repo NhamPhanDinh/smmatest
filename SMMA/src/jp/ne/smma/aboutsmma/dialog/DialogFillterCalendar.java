@@ -3,12 +3,15 @@ package jp.ne.smma.aboutsmma.dialog;
 import java.util.ArrayList;
 import java.util.List;
 
+import jp.ne.smma.Ultis.Constance;
 import jp.ne.smma.aboutsmma.DTO.ItemCalendar;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.preference.PreferenceManager;
 import android.widget.ListView;
 
 /**
@@ -24,8 +27,11 @@ public abstract class DialogFillterCalendar {
 	private Context context;
 	private ArrayList<Integer> idCompanyComplete = new ArrayList<Integer>();
 
-	
 	private List<ItemCalendar> rowCalendar;
+	// value list
+	private boolean[] dialogValueList= new boolean[idCompany.length];
+	/** A list of current values. */
+	private boolean[] valueList;
 
 	/**
 	 * Constructor class
@@ -38,38 +44,69 @@ public abstract class DialogFillterCalendar {
 		this.context = context;
 		this.rowCalendar = rowCalendar;
 		// get data from xml
+		//dialogValueList=valueList.clone();
 		showMultiChoiceItems();
+	}
+
+	private void loadSavedPreferences() {
+		SharedPreferences sharedPreferences = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		boolean checkBoxValue = sharedPreferences.getBoolean("CheckBox_Value",
+				false);
+		// String name = sharedPreferences.getString("storedName", "YourName");
+		// if (checkBoxValue) {
+		// checkBox.setChecked(true);
+		// } else {
+		// checkBox.setChecked(false);
+		// }
+		//
+		// editText.setText(name);
+	}
+
+	private void savePreferences(String key, boolean value) {
+		SharedPreferences sharedPreferences = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		Editor editor = sharedPreferences.edit();
+		editor.putBoolean(key, value);
+		editor.commit();
 	}
 
 	/**
 	 * show MultiChoice Items
 	 */
 	private void showMultiChoiceItems() {
+		// check have click
+
 		AlertDialog builder = new AlertDialog.Builder(context)
 				.setTitle("絞り込む表示選択")
-				.setMultiChoiceItems(
-						province,
-						new boolean[] { false, false, false, false, false,
-								false, false, false, false, false, false, false },
+				 .setMultiChoiceItems(
+				 province,
+				 new boolean[] { false, false, false, false, false,
+				 false, false, false, false, false, false, false },
+//				.setMultiChoiceItems(province, dialogValueList,
 						new OnMultiChoiceClickListener() {
 
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which, boolean isChecked) {
 								// TODO Auto-generated method stub
+								//dialogValueList[which] = isChecked;
 							}
 						})
 				.setNegativeButton("完了", new DialogInterface.OnClickListener() {
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-
+						Constance.idCompanyClick.clear();
 						for (int i = 0; i < idCompany.length; i++) {
 							if (listview.getCheckedItemPositions().get(i)) {
 								// s += idCompany[i] + ":"
 								// + listview.getAdapter().getItem(i)
 								// + " ";
 								idCompanyComplete.add(idCompany[i]);
+								// add constance
+								//Constance.idCompanyClick.add(idCompany[i]);
+
 							}
 						}
 						OnTaskCompleted();

@@ -119,5 +119,7 @@ public class Constance {
 			R.drawable.kagakukan, };
 	/* Data list */
 	public static List<ItemCalendar> listItemCalendar = new ArrayList<ItemCalendar>();
+	/* Click item */
+	public static ArrayList<Integer> idCompanyClick = new ArrayList<Integer>();
 
 }
