@@ -19,6 +19,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Rect;
@@ -321,9 +322,23 @@ public class CalendarView extends View {
 
 				Bitmap bmp = BitmapFactory.decodeResource(getResources(),
 						listContent.get(i).getIconUrl());// listContent.get(i).getIconUrl()
+				// float ratio = bmp.getWidth() / bmp.getHeight();
+				// Bitmap image = Bitmap.createScaledBitmap(bmp, (int) ratio
+				// * (int) square, (int) square, true);
+				float scaleTofit = getScaleRatio(bmp.getWidth())
+						* this.WITH_SCREEN / 1080;
 				float ratio = bmp.getWidth() / bmp.getHeight();
-				Bitmap image = Bitmap.createScaledBitmap(bmp, (int) ratio
-						* (int) square, (int) square, true);
+				int width = bmp.getWidth();
+				Log.d("size", width + "");
+				int height = bmp.getHeight();
+				float scaleWidth = (float) ((square * ratio * scaleTofit) / width);
+				float scaleHeight = (square) / height;
+				Matrix matrix = new Matrix();
+				matrix.postScale(scaleWidth, scaleHeight);
+				// Bitmap image = Bitmap.createScaledBitmap(bmp, (int) ratio
+				// * (int) square, (int) square, true);
+				Bitmap image = Bitmap.createBitmap(bmp, 0, 0, width, height,
+						matrix, false);
 				float widthText = contentTextPain.measureText(eventName
 						+ companyName);
 				widthContentEvent = widthText + bmp.getWidth() + 2 * square;
@@ -340,9 +355,10 @@ public class CalendarView extends View {
 				canvas.drawBitmap(image, paddingLeftEvent, 3 * square
 						+ startTop + headerLength, null);
 				// draw event name
-				canvas.drawText(eventName, paddingLeftEvent + (ratio + 1)
-						* (int) square, 3 * square + startTop + headerLength
-						+ text_lenght + square / 2, contentTextPain);
+				canvas.drawText(eventName, paddingLeftEvent
+						+ (ratio * scaleTofit + 1) * (int) square, 3 * square
+						+ startTop + headerLength + text_lenght + square / 2,
+						contentTextPain);
 				// draw company name
 				canvas.drawText(companyName,
 						paddingLeftEvent + (ratio + 2) * (int) square
@@ -372,6 +388,22 @@ public class CalendarView extends View {
 		// limitHeight = tempLimitHeight;
 		// limitWidth = -tempLimitWidth;
 		Log.i("Limit", "Width: " + limitWidth + " :Height " + limitHeight);
+	}
+
+	private float getScaleRatio(int width) {
+
+		float result = 0;
+		if (width == 900 || width == 882)
+			result = 1;
+		else if (width == 444 || width == 438)
+			result = (float) 1.23;
+		else if (width == 393)
+			result = (float) 1.09;
+		else if (width == 588)
+			result = (float) 1.195;
+		else if (width == 588)
+			result = (float) 2.21;
+		return result;
 	}
 
 	public void translateX(float dx) {
