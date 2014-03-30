@@ -5,6 +5,8 @@ package jp.ne.smma.aboutsmma.DTO;
  */
 public class ItemCalendar {
 	private String id;
+	// if no chose, don't draw event 27/3/2014
+	private boolean isChosen;
 	private String companyName;
 	private String eventName;
 	private String startDay;
@@ -18,9 +20,12 @@ public class ItemCalendar {
 	public ItemCalendar() {
 
 	}
+
 	/**
 	 * Contructor variable
-	 * @param id - Id
+	 * 
+	 * @param id
+	 *            - Id
 	 * 
 	 * @param companyName
 	 *            - name company
@@ -35,9 +40,10 @@ public class ItemCalendar {
 	 * @param colorCode
 	 *            - color mode
 	 */
-	public ItemCalendar(String id,String companyName, String eventName, String startDay,
-			String endDay, int iconUrl, String colorCode) {
-		this.id=id;
+	public ItemCalendar(String id, String companyName, String eventName,
+			String startDay, String endDay, int iconUrl, String colorCode) {
+		this.id = id;
+		this.isChosen = isChosen;
 		this.companyName = companyName;
 		this.eventName = eventName;
 		this.startDay = startDay;
@@ -46,6 +52,7 @@ public class ItemCalendar {
 		this.colorCode = colorCode;
 
 	}
+
 	/**
 	 * Contructor variable
 	 * 
@@ -127,6 +134,14 @@ public class ItemCalendar {
 
 	public void setColorCode(String colorCode) {
 		this.colorCode = colorCode;
+	}
+
+	public boolean isChosen() {
+		return isChosen;
+	}
+
+	public void setChosen(boolean isChosen) {
+		this.isChosen = isChosen;
 	}
 
 }

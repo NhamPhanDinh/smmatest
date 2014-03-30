@@ -89,6 +89,7 @@ public abstract class GetDataEventCalendar {
 						params);
 
 				if (mJson == null) {
+					
 					showAlertDialog(mContext, "",
 							"Time out when connect server. Please try again",
 							false);

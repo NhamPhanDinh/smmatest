@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import jp.ne.smma.R;
 import jp.ne.smma.EventList.EventListFragment;
+import jp.ne.smma.Ultis.Constance;
 import jp.ne.smma.Ultis.ImageLoader;
 import android.app.Activity;
 import android.content.Context;
@@ -69,12 +70,24 @@ public class EventListAdapter extends BaseAdapter {
 		name.setText(event.get(EventListFragment.KEY_NAME));
 		address.setText(event.get(EventListFragment.KEY_ADDRESS));
 		day.setText(event.get(EventListFragment.KEY_DAY));
-		event_thumb_bg.setBackgroundColor(Color.parseColor(event
-				.get(EventListFragment.KEY_IMG_COLOR)));
+		// test
+		String colorMode="";
+//		for (int i = 0; i < Constance.idCompany.length; i++) {
+//			Log.i("", "event.get(Constance.KEY_ABOUT_CAT_ID): "+event.get(Constance.KEY_ABOUT_CAT_ID));
+//			if (event.get(Constance.KEY_ABOUT_CAT_ID).equals(Constance.idCompany[i])==false) {
+//				colorMode="#000000";
+//			}else{
+				colorMode=event.get(EventListFragment.KEY_IMG_COLOR);
+//			}
+//		}
+
+
+			event_thumb_bg.setBackgroundColor(Color.parseColor(colorMode));
+
 
 		LayerDrawable bgShape = (LayerDrawable) event_arrow_img.getBackground();
 		bgShape.setColorFilter(
-				Color.parseColor(event.get(EventListFragment.KEY_IMG_COLOR)),
+				Color.parseColor(colorMode),
 				PorterDuff.Mode.ADD);
 		/*
 		 * LayerDrawable bgDrawable = (LayerDrawable) event_arrow_img

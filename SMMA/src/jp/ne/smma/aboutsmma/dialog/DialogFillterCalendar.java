@@ -1,6 +1,9 @@
 package jp.ne.smma.aboutsmma.dialog;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import jp.ne.smma.aboutsmma.DTO.ItemCalendar;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -21,15 +24,19 @@ public abstract class DialogFillterCalendar {
 	private Context context;
 	private ArrayList<Integer> idCompanyComplete = new ArrayList<Integer>();
 
+	
+	private List<ItemCalendar> rowCalendar;
+
 	/**
 	 * Constructor class
 	 * 
 	 * @param context
 	 *            - Context Activity
 	 */
-	public DialogFillterCalendar(Context context) {
+	public DialogFillterCalendar(Context context, List<ItemCalendar> rowCalendar) {
 		// TODO Auto-generated constructor stub
 		this.context = context;
+		this.rowCalendar = rowCalendar;
 		// get data from xml
 		showMultiChoiceItems();
 	}
@@ -81,6 +88,21 @@ public abstract class DialogFillterCalendar {
 		return idCompanyComplete;
 
 	}
+
+	// filt event 27/3/2014
+	public void filtCompanyId(ArrayList<Integer> idCompanyComplete) {
+		for (int i = 0; i < this.rowCalendar.size(); i++) {
+			this.rowCalendar.get(i).setChosen(true);
+		}
+		for (int i = 0; i < this.rowCalendar.size(); i++) {
+			for (int j = 0; j < idCompanyComplete.size(); j++) {
+				if (this.rowCalendar.get(i).getId()
+						.equals(idCompanyComplete.get(j).toString()))
+					this.rowCalendar.get(i).setChosen(false);
+			}
+		}
+	}
+
 	/*
 	 * Asbtract onTaskCompleted
 	 */

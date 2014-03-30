@@ -30,7 +30,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView.FindListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
@@ -49,7 +48,6 @@ public class EventListFragment extends Fragment {
 	public static final String KEY_ERROR = "error";
 	public static final String KEY_IMG_COLOR = "ev_color";
 	public static final String KEY_IMG_URL = "ev_path_image";
-	public static final String url = "http://dev9.ominext.com/smma/?page_id=27649";
 	// ListView list;
 	private EventListAdapter adapter;
 	private ArrayList<HashMap<String, String>> eventList;
@@ -167,7 +165,7 @@ public class EventListFragment extends Fragment {
 				params.add(new BasicNameValuePair("id", String
 						.valueOf(pageNumber)));
 
-				JSONObject mJson = jsonParser.getJSONFromUrl(url, params);
+				JSONObject mJson = jsonParser.getJSONFromUrl(Constance.url, params);
 				pageNumber = pageNumber + 1;
 				if (mJson == null) {
 					showAlertDialog(getActivity(), "", "TIME OUT", false);
@@ -288,7 +286,7 @@ public class EventListFragment extends Fragment {
 				params1.add(new BasicNameValuePair("id", String
 						.valueOf(pageNumber)));
 
-				JSONObject mJson = jsonParser.getJSONFromUrl(url, params1);
+				JSONObject mJson = jsonParser.getJSONFromUrl(Constance.url, params1);
 				pageNumber = pageNumber + 1;
 				if (mJson == null) {
 					showAlertDialog(getActivity(), "", "TIME OUT", false);

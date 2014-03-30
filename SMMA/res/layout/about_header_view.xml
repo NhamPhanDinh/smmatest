@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:contentDescription="@string/image"
-        android:src="@drawable/event_list2" />
+        android:src="@drawable/about_smma_header" />
 
     <TextView
         android:id="@+id/txtContentAbout"

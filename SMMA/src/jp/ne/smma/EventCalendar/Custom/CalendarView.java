@@ -20,6 +20,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
@@ -46,6 +47,7 @@ public class CalendarView extends View {
 	HashMap<String, Integer> hm_DayOfWeek;
 	Calendar mCalendar;
 	Date dateCurrent;
+	int currentDay;
 	ArrayList<MonthInfo> listMonthInfo = new ArrayList<MonthInfo>();
 	ArrayList<ItemCalendar> listContent = new ArrayList<ItemCalendar>();
 	public float max_length_calendar = 28119;
@@ -55,15 +57,23 @@ public class CalendarView extends View {
 	public float HEIGHT_SCREEN;
 
 	private boolean isTitle = false;
-	
+	private boolean isFooter = false;
+
 	float square = 0;
 	private float month_height = 0;
-	
+	private float limitWidth = 32000;
+	private float limitHeight = 8000;
+
 	Paint dayPaint;
 
 	public CalendarView(Context context, ArrayList<MonthInfo> monthInfo,
 			ArrayList<ItemCalendar> listContent) {
 		this(context, null, 0);
+		WindowManager wm = (WindowManager) context
+				.getSystemService(Context.WINDOW_SERVICE);
+		Display display = wm.getDefaultDisplay();
+		this.WITH_SCREEN = display.getWidth(); // deprecated
+		this.HEIGHT_SCREEN = display.getHeight(); // deprecated
 		this.listMonthInfo = monthInfo;
 		this.backgroundCommonPaint = new Paint();
 		this.backgroundCommonPaint.setColor(Color.parseColor("#FFFAD5"));
@@ -72,11 +82,11 @@ public class CalendarView extends View {
 		this.weekendPaint = new Paint();
 		this.weekendPaint.setColor(Color.parseColor("#F1F1F1"));
 		mPaint = new Paint();
-		mPaint.setTextSize(30);
+		mPaint.setTextSize(30 * this.WITH_SCREEN / 1080);
 		mPaint.setTextAlign(Align.CENTER);
 		mPaint.setColor(Color.BLACK);
 		contentTextPain = new Paint();
-		contentTextPain.setTextSize(30);
+		contentTextPain.setTextSize(30 * this.WITH_SCREEN / 1080);
 		contentTextPain.setTextAlign(Align.LEFT);
 		contentTextPain.setColor(Color.BLACK);
 		this.saturdayPaint = new Paint();
@@ -86,13 +96,8 @@ public class CalendarView extends View {
 		mCalendar = Calendar.getInstance();
 		dateCurrent = mCalendar.getTime();
 		this.listContent = listContent;
-		WindowManager wm = (WindowManager) context
-				.getSystemService(Context.WINDOW_SERVICE);
-		Display display = wm.getDefaultDisplay();
-		this.WITH_SCREEN = display.getWidth(); // deprecated
-		this.HEIGHT_SCREEN = display.getHeight(); // deprecated
 		square = this.WITH_SCREEN / 14;
-		month_height = square * 4 / 3;
+		month_height = square;
 		dayPaint = new Paint();
 		dayPaint.setColor(Color.TRANSPARENT);
 		// this.max_length_calendar = getMaxLengthCalendar();
@@ -101,6 +106,11 @@ public class CalendarView extends View {
 	public CalendarView(Context context, ArrayList<MonthInfo> monthInfo,
 			ArrayList<ItemCalendar> listContent, boolean isTitle) {
 		this(context, null, 0);
+		WindowManager wm = (WindowManager) context
+				.getSystemService(Context.WINDOW_SERVICE);
+		Display display = wm.getDefaultDisplay();
+		this.WITH_SCREEN = display.getWidth(); // deprecated
+		this.HEIGHT_SCREEN = display.getHeight(); // deprecated
 		this.listMonthInfo = monthInfo;
 		this.backgroundCommonPaint = new Paint();
 		this.backgroundCommonPaint.setColor(Color.parseColor("#FFFAD5"));
@@ -109,11 +119,11 @@ public class CalendarView extends View {
 		this.weekendPaint = new Paint();
 		this.weekendPaint.setColor(Color.parseColor("#F1F1F1"));
 		mPaint = new Paint();
-		mPaint.setTextSize(30);
+		mPaint.setTextSize(30 * this.WITH_SCREEN / 1080);
 		mPaint.setTextAlign(Align.CENTER);
 		mPaint.setColor(Color.BLACK);
 		contentTextPain = new Paint();
-		contentTextPain.setTextSize(30);
+		contentTextPain.setTextSize(30 * this.WITH_SCREEN / 1080);
 		contentTextPain.setTextAlign(Align.LEFT);
 		contentTextPain.setColor(Color.BLACK);
 		this.saturdayPaint = new Paint();
@@ -123,17 +133,19 @@ public class CalendarView extends View {
 		mCalendar = Calendar.getInstance();
 		dateCurrent = mCalendar.getTime();
 		this.listContent = listContent;
-		WindowManager wm = (WindowManager) context
-				.getSystemService(Context.WINDOW_SERVICE);
-		Display display = wm.getDefaultDisplay();
-		this.WITH_SCREEN = display.getWidth(); // deprecated
-		this.HEIGHT_SCREEN = display.getHeight(); // deprecated
 		square = this.WITH_SCREEN / 14;
-		month_height = square * 4 / 3;
+		month_height = square;
 		// this.max_length_calendar = getMaxLengthCalendar();
 		this.isTitle = isTitle;
 		dayPaint = new Paint();
 		dayPaint.setColor(Color.TRANSPARENT);
+		// clear first month
+		MonthInfo monthIn = listMonthInfo.get(0);
+		currentDay = this.dateCurrent.getDate();
+		for (int j = 0; j < currentDay - 1; j++) {
+			monthIn.getListDay().remove(0);
+			monthIn.getListDayOfWeek().remove(0);
+		}
 	}
 
 	public CalendarView(Context context, AttributeSet attrs) {
@@ -174,11 +186,12 @@ public class CalendarView extends View {
 	public void drawHeaderCalendar(Canvas canvas) {
 		// draw title
 		int positionX = 0;
-		float text_lenght = 10;
-		
-		canvas.drawRect(0, 0, 32000, 2 * square + this.month_height,this.backgroundHeaderPaint);
-		canvas.drawRect(0, 0, 32000, this.month_height,this.weekendPaint);
-		
+		float text_lenght = 10 * this.WITH_SCREEN / 1080;
+
+		canvas.drawRect(0, 0, limitWidth, 2 * square + this.month_height,
+				this.backgroundHeaderPaint);
+		canvas.drawRect(0, 0, limitWidth, this.month_height, this.weekendPaint);
+
 		for (int i = 0; i < listMonthInfo.size(); i++) {
 			MonthInfo monthInfo = listMonthInfo.get(i);
 			int currentPosition = positionX;
@@ -213,8 +226,8 @@ public class CalendarView extends View {
 	}
 
 	public void drawBackgroundCommon(Canvas canvas) {
-		canvas.drawRect(0, 2 * square + this.month_height, 32000, 8000 + +this.month_height, this.backgroundCommonPaint);
-		canvas.drawRect(0, 0, 32000, this.month_height, this.backgroundCommonPaint);
+		canvas.drawRect(0, 2 * square + this.month_height, 32000 * 2,
+				limitHeight * 2, this.backgroundCommonPaint);
 	}
 
 	public void drawWeekend(Canvas canvas) {
@@ -228,7 +241,7 @@ public class CalendarView extends View {
 				if (keyDay == 7 || keyDay == 1)
 					canvas.drawRect(currentPosition + square * position, square
 							+ this.month_height, currentPosition + square
-							+ square * position, 8000 + this.month_height,
+							+ square * position, limitHeight * 2,
 							this.weekendPaint);
 				positionX += square;
 			}
@@ -247,18 +260,31 @@ public class CalendarView extends View {
 	}
 
 	public void drawEvent(Canvas canvas) {
-		int width_icon = 300;
-		int height_icon = 80;
-		float text_lenght = 10;
+		float text_lenght = 10 * this.WITH_SCREEN / 1080;
 		Paint bgPaint = new Paint();
 		bgPaint.setColor(Color.WHITE);
-		float paddingTop = 60;
+		float paddingTop = 0;
 		float headerLength = square;
-		float contentLength = 200;
-		float contentWith = 2200;
+		float contentLength = 200 * this.WITH_SCREEN / 1080;
+		float widthContentEvent = 2200 * this.WITH_SCREEN / 1080;
 		float startTop = paddingTop;
+		// Padding left of event
+		float paddingLeftEvent;
+
+		float tempLimitHeight = 0;
+		float tempLimitWidth = 0;
+
+		Bitmap footer = BitmapFactory.decodeResource(getResources(),
+				R.drawable.footer);// listContent.get(i).getIconUrl()
+		float ratio_footer = footer.getWidth() / footer.getHeight();
+		Bitmap footer_image = Bitmap.createScaledBitmap(footer,
+				(int) ratio_footer * (int) square, (int) square, true);
+
 		for (int i = 0; i < listContent.size(); i++) {
-			
+
+			String eventName = listContent.get(i).getEventName() + "";
+			String companyName = listContent.get(i).getCompanyName() + "";
+
 			dayPaint.setColor(Color.parseColor(listContent.get(i)
 					.getColorCode()));
 			long beetweenDays = UntilDateTime.betweenDates(UntilDateTime
@@ -266,43 +292,70 @@ public class CalendarView extends View {
 					UntilDateTime.toDateFormat(listContent.get(i).getEndDay())) + 1;
 			long longBegin = UntilDateTime.betweenDates(this.dateCurrent,
 					UntilDateTime
-							.toDateFormat(listContent.get(i).getStartDay())) - 1;
-			// draw header for event
-			canvas.drawRect((longBegin + dateCurrent.getDate()) * square, 2
-					* square + startTop + this.month_height,
-					(longBegin + dateCurrent.getDate()) * square + square
-							* beetweenDays, 2 * square + startTop
-							+ headerLength + this.month_height, dayPaint);
-			// draw content for event
-			canvas.drawRect((longBegin + dateCurrent.getDate()) * square, 2
-					* square + startTop + headerLength + this.month_height,
-					(longBegin + dateCurrent.getDate()) * square + contentWith,
-					2 * square + startTop + headerLength + square
-							+ this.month_height, bgPaint);
-			Bitmap bmp = BitmapFactory.decodeResource(getResources(),
-					listContent.get(i).getIconUrl());// listContent.get(i).getIconUrl()
-			Bitmap image = Bitmap.createScaledBitmap(bmp, 7 * (int) square,
-					(int) square, true);
-			canvas.drawBitmap(image, (longBegin + dateCurrent.getDate())
-					* square, 2 * square + startTop + headerLength
-					+ this.month_height, null);
-			// draw event name
-			canvas.drawText(listContent.get(i).getEventName() + "",
-					(longBegin + dateCurrent.getDate()) * square + 7
-							* (int) square, 2 * square + startTop
-							+ headerLength + text_lenght + square / 2
-							+ this.month_height, contentTextPain);
-			// draw company name
-			canvas.drawText(listContent.get(i).getCompanyName() + "",
-					(longBegin + dateCurrent.getDate()) * square + 7
+							.toDateFormat(listContent.get(i).getStartDay())) + 1;
+			long longEnd = UntilDateTime.betweenDates(this.dateCurrent,
+					UntilDateTime.toDateFormat(listContent.get(i).getEndDay())) + 1;
+			
+			if(longBegin < 0 && longEnd > 0){
+				longBegin = 0;
+			}
+			
+			paddingLeftEvent = longBegin * square;
+
+			if (true) {
+				if (!listContent.get(i).isChosen() && longBegin <= 90 && longBegin >= 0) {
+
+					Bitmap bmp = BitmapFactory.decodeResource(getResources(),
+							listContent.get(i).getIconUrl());// listContent.get(i).getIconUrl()
+					float ratio = bmp.getWidth() / bmp.getHeight();
+					Bitmap image = Bitmap.createScaledBitmap(bmp, (int) ratio
+							* (int) square, (int) square, true);
+					float widthText = contentTextPain.measureText(eventName
+							+ companyName);
+					widthContentEvent = widthText + 2 * bmp.getWidth();
+
+					// draw header for event
+					canvas.drawRect(paddingLeftEvent, 3 * square + startTop
+							+ square / 2, paddingLeftEvent + square
+							* beetweenDays, 3 * square + startTop
+							+ headerLength, dayPaint);
+					// draw content for event
+					canvas.drawRect(paddingLeftEvent, 3 * square + startTop
+							+ headerLength, paddingLeftEvent
+							+ widthContentEvent, 3 * square + startTop
+							+ headerLength + square, bgPaint);
+					// draw logo event
+					canvas.drawBitmap(image, paddingLeftEvent, 3 * square
+							+ startTop + headerLength, null);
+					// draw event name
+					canvas.drawText(eventName, paddingLeftEvent + ratio
+							* (int) square, 3 * square + startTop
+							+ headerLength + text_lenght + square / 2,
+							contentTextPain);
+					// draw company name
+					canvas.drawText(companyName, paddingLeftEvent + 7
 							* (int) square
 							+ listContent.get(i).getEventName().length()
-							* text_lenght * 3, 2 * square + startTop
-							+ headerLength + text_lenght + square / 2
-							+ this.month_height, contentTextPain);
-			paddingTop = 260;
-			startTop += paddingTop;
+							* text_lenght * 3, 3 * square + startTop
+							+ headerLength + text_lenght + square / 2,
+							contentTextPain);
+
+					tempLimitHeight = 4 * square + startTop;
+					if (tempLimitWidth > (paddingLeftEvent + square
+							* (beetweenDays + 1))
+							&& tempLimitWidth != 32000) {
+						tempLimitWidth = paddingLeftEvent + square
+								* (beetweenDays) - 1000;
+					}
+				}
+			}
+
+			paddingTop = square;
+			startTop += (2 * paddingTop);
 		}
+		// limitHeight = tempLimitHeight;
+		// limitWidth = -tempLimitWidth;
+		Log.i("Limit", "Width: " + limitWidth + " :Height " + limitHeight);
 	}
 
 	public void translateX(float dx) {
@@ -329,6 +382,14 @@ public class CalendarView extends View {
 
 	public void setPosY(float mPosY) {
 		this.mPosY = mPosY;
+	}
+
+	public float getLimitWidth() {
+		return this.limitWidth;
+	}
+
+	public float getLimitHeight() {
+		return this.limitHeight;
 	}
 
 }

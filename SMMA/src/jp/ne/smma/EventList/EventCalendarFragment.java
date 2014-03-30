@@ -138,6 +138,8 @@ public class EventCalendarFragment extends Fragment {
 						return false;
 					}
 				});
+				
+				rowCalendar = getDataEvent.getItemCalendar();
 			}
 		};
 
@@ -155,16 +157,20 @@ public class EventCalendarFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				dialogFillter = new DialogFillterCalendar(getActivity()) {
+				dialogFillter = new DialogFillterCalendar(getActivity(),
+						rowCalendar) {
 
 					@Override
 					public void OnTaskCompleted() {
 						// TODO Auto-generated method stub
 						idCompanyFillter = dialogFillter.GetIDCompanyComplete();
+						// filt event , don't draw event 27/3/2014
+						dialogFillter.filtCompanyId(idCompanyFillter);
+						viewContent.invalidate();
 						// log value
-						for (int i = 0; i < idCompanyFillter.size(); i++) {
+						for (int i = 0; i < rowCalendar.size(); i++) {
 							Log.i("EventCalendar", "Id company: "
-									+ idCompanyFillter.get(i));
+									+ rowCalendar.get(i).isChosen());
 						}
 					}
 				};
@@ -211,12 +217,18 @@ public class EventCalendarFragment extends Fragment {
 			final float X = e2.getX();
 			final float Y = e2.getY();
 
-			translateX(viewContent, (X - _xDelta));
-			translateX(viewLabel, (X - _xDelta));
+//			translateX(viewContent, (X - _xDelta));
+//			translateX(viewLabel, (X - _xDelta));
+//
+//			if (!isLabel) {
+//				translateY(viewContent, (Y - _yDelta));
+//			}
+			translateX(viewContent, 2 * (X - _xDelta));
+			   translateX(viewLabel,2 * (X - _xDelta));
 
-			if (!isLabel) {
-				translateY(viewContent, (Y - _yDelta));
-			}
+			   if (!isLabel) {
+			    translateY(viewContent,2 * (Y - _yDelta));
+			   }
 
 			if (viewContent.getPosX() > 0)
 				viewContent.setPosX(0);

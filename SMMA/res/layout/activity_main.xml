@@ -8,6 +8,7 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:background="@color/background_header_main"
         android:orientation="horizontal" >
 
         <ImageView

@@ -14,16 +14,16 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:layout_gravity="center"
+            android:gravity="center"
             android:text="@string/tittle_push_setting"
             android:textSize="22sp"
             android:textStyle="bold" />
 
         <LinearLayout
-            android:layout_marginTop="15dp"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
             android:orientation="vertical" >
 
             <TextView
@@ -51,9 +51,9 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_marginTop="10dp"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:orientation="vertical" >
 
             <TextView
@@ -93,43 +93,49 @@
                     android:id="@+id/radioCheckBox"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                  
                     android:orientation="vertical" >
 
                     <RadioButton
                         android:id="@+id/checkOneWeek"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:button="@drawable/button_radio"
-                        android:ems="12"
+                        android:button="@null"
+                        android:drawableRight="@drawable/button_radio"
+                        android:ems="10"
+                        android:drawablePadding="10dp"
+                        android:gravity="right|center"
                         android:text="@string/check_one_week" />
 
                     <RadioButton
+                         android:drawablePadding="25dp"
                         android:id="@+id/checkThreeDay"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:button="@drawable/button_radio"
-                        android:ems="12"
+                        android:button="@null"
+                        android:drawableRight="@drawable/button_radio"
+                        android:ems="10"
+                        android:gravity="right|center"
                         android:text="@string/check_three_month" />
 
                     <RadioButton
+                         android:drawablePadding="35dp"
                         android:id="@+id/checkOneDay"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:button="@drawable/button_radio"
-                        android:ems="12"
+                        android:button="@null"
+                        android:drawableRight="@drawable/button_radio"
+                        android:ems="10"
+                        android:gravity="right|center"
                         android:text="@string/check_one_month" />
                 </RadioGroup>
             </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
-            android:layout_marginTop="10dp"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:orientation="vertical" >
 
             <TextView

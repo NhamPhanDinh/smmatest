@@ -35,7 +35,7 @@ public class Constance {
 	public static String CHECK_CHECKBOXNOTIFIATION = "CHECK_CHECKBOXNOTIFIATION";
 
 	/* Url API */
-	public static String url = "http://dev9.ominext.com/smma/?page_id=27649";
+	public static String url = "http://www.smma.jp/smma_api.php";
 
 	/* Key success get json */
 	public static String KEY_SUCCESS = "success";
@@ -85,35 +85,37 @@ public class Constance {
 	// check orientation portrait
 	public static boolean checkPortrait = true;
 	/* Array list image company calendar */
-	public static final String[] colorCodeCompany = new String[] { "#51318f",
+	public static final Integer[] idCompany = new Integer[] { 10, 17, 18, 9, 11, 19, 12, 8,
+			16, 15, 13, 14,55 };
+	public static final String[] colorCodeCompany = new String[] { 
+			"#009944",
 			"#d72e8b",
-			"#ea5504",//
-			"#d7308c",//
-			"#009944",//
-			"#9e774e",//
-			"#014098",//
-			"#51318f", //
-			"#008cd6",//-
-			"#003f98", 
-			"#9f774e", //
+			"#ea5504",
+			"#000000",
+			"#003f98",
+			"#51318f",
+			"#d7308c",
+			"#014098", 
+			"#9e774e",
+			"#9f774e",
 			"#ea5504", 
-			"#000000" };
+			"#9e774e", //
+			"#008cd6" };
 
 	public static final Integer[] imagesItemCompany = {
-			R.drawable.bizyutukan,
+			R.drawable.bungakukan,
 			R.drawable.tenmondai,
 			R.drawable.rekishi_shiryokan,
-			R.drawable.morino_hiroba,
-			R.drawable.bungakukan,
-			R.drawable.hakubutsukan,
-			R.drawable.kagakukan,
-			R.drawable.serizawa_bizyutsu_kougeikan, 
-			R.drawable.icon_single_smma,//
-			R.drawable.icon_single_smma_event,
+			R.drawable.doubutsuen,
 			R.drawable.media_take,
-			R.drawable.tohokudaigaku_hakubutsukan,
+			R.drawable.bizyutukan,
+			R.drawable.morino_hiroba,
+			R.drawable.kagakukan, 
+			R.drawable.hakubutsukan,//
+			R.drawable.serizawa_bizyutsu_kougeikan,
 			R.drawable.titeino_mori_musium,
-			R.drawable.doubutsuen };
+			R.drawable.tohokudaigaku_hakubutsukan,
+			R.drawable.kagakukan, };
 	/* Data list */
 	public static List<ItemCalendar> listItemCalendar = new ArrayList<ItemCalendar>();
 
