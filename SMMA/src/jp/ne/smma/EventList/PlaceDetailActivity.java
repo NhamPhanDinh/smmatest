@@ -88,6 +88,7 @@ public class PlaceDetailActivity extends Activity implements OnClickListener {
 		WebSettings settings = imgMain.getSettings();
 		settings.setUseWideViewPort(true);
 		settings.setLoadWithOverviewMode(true);
+		imgMain.setBackgroundColor(Color.TRANSPARENT);
 		imgMain.getSettings().setUseWideViewPort(true);
 		// textContent = (TextView)findViewById(R.id.text_content);
 		mWebViewDetail = (WebView) findViewById(R.id.web_view_about);
