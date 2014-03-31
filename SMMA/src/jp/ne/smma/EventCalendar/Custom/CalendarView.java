@@ -375,7 +375,7 @@ public class CalendarView extends View {
 				// Bitmap image = Bitmap.createScaledBitmap(bmp, (int) ratio
 				// * (int) square, (int) square, true);
 				float scaleTofit = getScaleRatio(listContent.get(i)
-						.getIconUrl()) * (float) (this.WITH_SCREEN / 1080);
+						.getIconUrl());
 				float ratio = bmp.getWidth() / bmp.getHeight();
 				int width = bmp.getWidth();
 				int height = bmp.getHeight();
@@ -403,6 +403,10 @@ public class CalendarView extends View {
 						* square + startTop + headerLength + square, bgPaint);
 				if (longBegin < 0)
 					paddingLeftEvent = 0;
+				// draw content for event
+				canvas.drawRect(paddingLeftEvent, 3 * square + startTop
+						+ headerLength, paddingLeftEvent + widthContentEvent, 3
+						* square + startTop + headerLength + square, bgPaint);
 				// draw logo event
 				canvas.drawBitmap(image, paddingLeftEvent, 3 * square
 						+ startTop + headerLength, null);
@@ -465,7 +469,7 @@ public class CalendarView extends View {
 		else if (id == 2130837601)
 			result = (float) 1.24;
 		else if (id == 2130837525)
-			result = (float) 1.15;
+			result = (float) 1.105;
 		else if (id == 2130837605)
 			result = 1;
 		else if (id == 2130837593)
@@ -473,7 +477,7 @@ public class CalendarView extends View {
 		else if (id == 2130837605)
 			result = (float) 1.23;
 		else if (id == 2130837573)
-			result = (float) 1.21;
+			result = (float) 1.2;
 		else if (id == 2130837578)
 			result = (float) 1.2;
 		else if (id == 2130837604)
