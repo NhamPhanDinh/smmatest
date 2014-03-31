@@ -20,8 +20,8 @@
     <string name="check_three_month">３日前</string>
     <string name="check_one_week">1 週間前</string>
     <string name="active_rotate">画面設定</string>
-    <string name="rotate_active">アクティブ</string>
-    <string name="rotate_deactive">非アクティブ</string>
+    <string name="rotate_active">縦画面表示</string>
+    <string name="rotate_deactive">横画面表示</string>
     <!-- Dialog clear event -->
     <string name="content_message">個別イベントの通知をすべてクリアします。 よろしいですか</string>
     <string name="dialog_cancel">キャンセル</string>

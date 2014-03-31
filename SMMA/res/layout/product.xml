@@ -26,6 +26,7 @@
                 android:background="@drawable/btn_back" />
 
             <Button
+                android:visibility="invisible"
                 android:id="@+id/imageButton1"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
