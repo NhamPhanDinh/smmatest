@@ -279,13 +279,13 @@ public class CalendarView extends View {
 				}
 			}
 		}
-		
+
 		// Limit scroll in 3 months
 		Calendar c = Calendar.getInstance();
 		c.add(Calendar.MONTH, 3);
 		limitWidth = square
-				* (UntilDateTime.betweenDates(dateCurrent, c.getTime()) - 14) + square
-				/ 2;
+				* (UntilDateTime.betweenDates(dateCurrent, c.getTime()) - 14)
+				+ square / 2;
 		Log.d("LimitWidth", "LimitWidth: " + limitWidth + " :PosX: " + mPosX);
 	}
 
@@ -330,7 +330,7 @@ public class CalendarView extends View {
 		float paddingTop = 0;
 		float headerLength = square;
 		float contentLength = 200 * this.WITH_SCREEN / 1080;
-		float widthContentEvent = 2200 * this.WITH_SCREEN / 1080;
+		float widthContentEvent = 600 * this.WITH_SCREEN / 1080;
 		float startTop = paddingTop;
 		// Padding left of event
 		float paddingLeftEvent;
@@ -361,35 +361,34 @@ public class CalendarView extends View {
 							.toDateFormat(listContent.get(i).getStartDay())) + 1;
 			long longEnd = UntilDateTime.betweenDates(this.dateCurrent,
 					UntilDateTime.toDateFormat(listContent.get(i).getEndDay())) + 1;
-
 			if (longBegin < 0 && longEnd > 0) {
-				longBegin = 0;
+				beetweenDays--;
 			}
 
 			paddingLeftEvent = longBegin * square;
 
-			if (!listContent.get(i).isChosen() && longBegin <= 90
-					&& longBegin >= 0) {
+			if (!listContent.get(i).isChosen() && longBegin <= 90) {
 
 				Bitmap bmp = BitmapFactory.decodeResource(getResources(),
 						listContent.get(i).getIconUrl());// listContent.get(i).getIconUrl()
 				// float ratio = bmp.getWidth() / bmp.getHeight();
 				// Bitmap image = Bitmap.createScaledBitmap(bmp, (int) ratio
 				// * (int) square, (int) square, true);
-				float scaleTofit = getScaleRatio(bmp.getWidth())
-						* this.WITH_SCREEN / 1080;
+				float scaleTofit = getScaleRatio(listContent.get(i)
+						.getIconUrl()) * this.WITH_SCREEN / 1080;
 				float ratio = bmp.getWidth() / bmp.getHeight();
 				int width = bmp.getWidth();
 				int height = bmp.getHeight();
-				Log.d("Size", "Width+Height: " + width + " : " + height);
+				Log.d("size", "id  " + listContent.get(i).getIconUrl()
+						+ " width " + width);
 				float scaleWidth = (float) ((square * ratio * scaleTofit) / width);
 				float scaleHeight = (square) / height;
 				Matrix matrix = new Matrix();
 				matrix.postScale(scaleWidth, scaleHeight);
-				Bitmap image = Bitmap.createScaledBitmap(bmp, (int) ratio
-						* (int) square, (int) square, true);
-				// Bitmap image = Bitmap.createBitmap(bmp, 0, 0, width, height,
-				// matrix, false);
+				// Bitmap image = Bitmap.createScaledBitmap(bmp, (int) ratio
+				// * (int) square, (int) square, true);
+				Bitmap image = Bitmap.createBitmap(bmp, 0, 0, width, height,
+						matrix, false);
 				float widthText = contentTextPain.measureText(eventName
 						+ companyName);
 				widthContentEvent = widthText + bmp.getWidth() + 2 * square;
@@ -402,20 +401,21 @@ public class CalendarView extends View {
 				canvas.drawRect(paddingLeftEvent, 3 * square + startTop
 						+ headerLength, paddingLeftEvent + widthContentEvent, 3
 						* square + startTop + headerLength + square, bgPaint);
+				if (longBegin < 0)
+					paddingLeftEvent = 0;
 				// draw logo event
 				canvas.drawBitmap(image, paddingLeftEvent, 3 * square
 						+ startTop + headerLength, null);
 				// draw event name
-				canvas.drawText(eventName, paddingLeftEvent
-						+ (ratio * scaleTofit + 1) * (int) square, 3 * square
-						+ startTop + headerLength + text_lenght + square / 2,
-						contentTextPain);
+				canvas.drawText(eventName, paddingLeftEvent + (ratio + 1)
+						* (int) square, 3 * square + startTop + headerLength
+						+ text_lenght + square / 2, contentTextPain);
 				// draw company name
-				canvas.drawText(companyName,
-						paddingLeftEvent + (ratio + 2) * (int) square
-								+ contentTextPain.measureText(eventName), 3
-								* square + startTop + headerLength
-								+ text_lenght + square / 2, contentTextPain);
+				// canvas.drawText(companyName,
+				// paddingLeftEvent + (ratio + 2) * (int) square
+				// + contentTextPain.measureText(eventName), 3
+				// * square + startTop + headerLength
+				// + text_lenght + square / 2, contentTextPain);
 
 				tempLimitHeight = 4 * square + startTop;
 				if (tempLimitWidth > (paddingLeftEvent + square
@@ -441,19 +441,43 @@ public class CalendarView extends View {
 		Log.i("Limit", "Width: " + limitWidth + " :Height " + limitHeight);
 	}
 
-	private float getScaleRatio(int width) {
-
+	private float getScaleRatio(int id) {
+		// 03-31 09:26:23.125: D/size(26231): id 2130837604 width 900
+		// 03-31 09:26:23.135: D/size(26231): id 2130837601 width 444
+		// 03-31 09:26:23.145: D/size(26231): id 2130837525 width 393
+		// 03-31 09:26:23.155: D/size(26231): id 2130837605 width 900
+		// 03-31 09:26:23.165: D/size(26231): id 2130837593 width 882
+		// 03-31 09:26:23.165: D/size(26231): id 2130837605 width 900
+		// 03-31 09:26:23.175: D/size(26231): id 2130837573 width 438
+		// 03-31 09:26:23.186: D/size(26231): id 2130837605 width 900
+		// 03-31 09:26:23.186: D/size(26231): id 2130837573 width 438
+		// 03-31 09:26:23.186: D/size(26231): id 2130837525 width 393
+		// 03-31 09:26:23.196: D/size(26231): id 2130837601 width 444
+		// 03-31 09:26:23.206: D/size(26231): id 2130837578 width 588
+		// 03-31 09:26:23.246: D/size(26231): id 2130837604 width 900
+		// 03-31 09:26:23.256: D/size(26231): id 2130837525 width 393
+		// 03-31 09:26:23.266: D/size(26231): id 2130837578 width 588
+		// 03-31 09:26:23.286: D/size(26231): id 2130837573 width 438
+		// 03-31 09:26:23.286: D/size(26231): id 2130837525 width 393
 		float result = 0;
-		if (width == 900 || width == 882)
+		if (id == 2130837604)
 			result = 1;
-		else if (width == 444 || width == 438)
+		else if (id == 2130837601)
+			result = (float) 1.24;
+		else if (id == 2130837525)
+			result = (float) 1.15;
+		else if (id == 2130837605)
+			result = 1;
+		else if (id == 2130837593)
+			result = (float) 1.01;
+		else if (id == 2130837605)
 			result = (float) 1.23;
-		else if (width == 393)
-			result = (float) 1.09;
-		else if (width == 588)
-			result = (float) 1.195;
-		else if (width == 588)
-			result = (float) 2.21;
+		else if (id == 2130837573)
+			result = (float) 1.21;
+		else if (id == 2130837578)
+			result = (float) 1.2;
+		else if (id == 2130837604)
+			result = (float) 1.23;
 		return result;
 	}
 
