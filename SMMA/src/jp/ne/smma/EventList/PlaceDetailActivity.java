@@ -122,7 +122,7 @@ public class PlaceDetailActivity extends Activity implements OnClickListener {
 		strPhone = (TextView) findViewById(R.id.telPlace);
 		strUrl = (TextView) findViewById(R.id.urlPlace);
 		// imgMain = (WebView) findViewById(R.id.image_place_detail);
-		mImageMain = (ImageView) findViewById(R.id.image_place_detail);
+		//mImageMain = (ImageView) findViewById(R.id.image_place_detail);
 		// mWinMgr = (WindowManager)
 		// this.getSystemService(Context.WINDOW_SERVICE);
 		// displayWidth = mWinMgr.getDefaultDisplay().getWidth();
