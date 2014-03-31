@@ -57,7 +57,7 @@
             <!-- android:layout_width="fill_parent" -->
             <!-- android:layout_height="wrap_content" /> -->
 
-            <WebView
+            <ImageView
                 android:id="@+id/image_place_detail"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"

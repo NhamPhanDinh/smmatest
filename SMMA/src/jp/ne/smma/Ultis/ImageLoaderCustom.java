@@ -24,14 +24,14 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.widget.ImageView;
 
-public class ImageLoader {
+public class ImageLoaderCustom {
     
     MemoryCache memoryCache=new MemoryCache();
     FileCache fileCache;
     private Map<ImageView, String> imageViews=Collections.synchronizedMap(new WeakHashMap<ImageView, String>());
     ExecutorService executorService; 
     
-    public ImageLoader(Context context){
+    public ImageLoaderCustom(Context context){
         fileCache=new FileCache(context);
         executorService=Executors.newFixedThreadPool(5);
     }

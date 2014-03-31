@@ -5,7 +5,7 @@ import java.util.HashMap;
 import jp.ne.smma.R;
 import jp.ne.smma.EventList.EventListFragment;
 import jp.ne.smma.Ultis.Constance;
-import jp.ne.smma.Ultis.ImageLoader;
+import jp.ne.smma.Ultis.ImageLoaderCustom;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
@@ -29,14 +29,14 @@ public class EventListAdapter extends BaseAdapter {
 	private Activity activity;
 	private ArrayList<HashMap<String, String>> data;
 	private static LayoutInflater inflater = null;
-	public ImageLoader imageLoader;
+	public ImageLoaderCustom imageLoader;
 
 	public EventListAdapter(Activity a, ArrayList<HashMap<String, String>> d) {
 		activity = a;
 		data = d;
 		inflater = (LayoutInflater) activity
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		imageLoader = new ImageLoader(activity.getApplicationContext());
+		imageLoader = new ImageLoaderCustom(activity.getApplicationContext());
 	}
 
 	public int getCount() {

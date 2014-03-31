@@ -4,7 +4,7 @@ import java.util.List;
 
 import jp.ne.smma.R;
 import jp.ne.smma.EventList.EventListFragment;
-import jp.ne.smma.Ultis.ImageLoader;
+import jp.ne.smma.Ultis.ImageLoaderCustom;
 import jp.ne.smma.aboutsmma.DTO.RowAboutItem;
 import android.app.Activity;
 import android.content.Context;
@@ -22,13 +22,13 @@ import android.widget.TextView;
 public class CustomListViewAdapter extends ArrayAdapter<RowAboutItem> {
 
 	Context context;
-	public ImageLoader imageLoader; 
+	public ImageLoaderCustom imageLoader; 
 	
 	public CustomListViewAdapter(Context context, int resourceId,
 			List<RowAboutItem> items) {
 		super(context, resourceId, items);
 		this.context = context;
-		imageLoader=new ImageLoader(context);
+		imageLoader=new ImageLoaderCustom(context);
 	}
 
 	/* private view holder class */

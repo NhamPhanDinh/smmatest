@@ -1,12 +1,12 @@
 package jp.ne.smma.EventList;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import jp.ne.smma.R;
 import jp.ne.smma.Ultis.ConnectionDetector;
 import jp.ne.smma.Ultis.Constance;
-import jp.ne.smma.Ultis.ImageLoader;
 import jp.ne.smma.Ultis.JSONParser;
 
 import org.apache.http.NameValuePair;
@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -35,6 +36,21 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
+import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
+import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
+import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.nostra13.universalimageloader.utils.StorageUtils;
 
 /**
  * Place detail activity
@@ -78,10 +94,15 @@ public class PlaceDetailActivity extends Activity implements OnClickListener {
 
 	// Connection detector class
 	ConnectionDetector cd;
-	//private static final String HTML_FORMAT = "<html><body style=\"text-align: center; background-color: black; vertical-align: center;\"><img src = \"%s\" /></body></html>";
-	
+	// private static final String HTML_FORMAT =
+	// "<html><body style=\"text-align: center; background-color: black; vertical-align: center;\"><img src = \"%s\" /></body></html>";
+
 	WindowManager mWinMgr;
 	public static int displayWidth = 0, displayHeight = 0;
+
+	ImageLoader imageLoader;
+	ImageLoaderConfiguration config;
+	DisplayImageOptions options;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -100,24 +121,24 @@ public class PlaceDetailActivity extends Activity implements OnClickListener {
 		strAdd = (TextView) findViewById(R.id.addPlace);
 		strPhone = (TextView) findViewById(R.id.telPlace);
 		strUrl = (TextView) findViewById(R.id.urlPlace);
-//		imgMain = (WebView) findViewById(R.id.image_place_detail);
-		 mImageMain = (ImageView) findViewById(R.id.image_place_detail);
-//		mWinMgr = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
-//		displayWidth = mWinMgr.getDefaultDisplay().getWidth();
-//		displayHeight = mWinMgr.getDefaultDisplay().getHeight();
-//		mSettings = imgMain.getSettings();
-//		mSettings.setUseWideViewPort(true);
-//		mSettings.setLoadWithOverviewMode(true);
-//		mSettings.setBuiltInZoomControls(true);
-//		imgMain.setBackgroundColor(Color.TRANSPARENT);
-//		imgMain.getSettings().setUseWideViewPort(true);
+		// imgMain = (WebView) findViewById(R.id.image_place_detail);
+		mImageMain = (ImageView) findViewById(R.id.image_place_detail);
+		// mWinMgr = (WindowManager)
+		// this.getSystemService(Context.WINDOW_SERVICE);
+		// displayWidth = mWinMgr.getDefaultDisplay().getWidth();
+		// displayHeight = mWinMgr.getDefaultDisplay().getHeight();
+		// mSettings = imgMain.getSettings();
+		// mSettings.setUseWideViewPort(true);
+		// mSettings.setLoadWithOverviewMode(true);
+		// mSettings.setBuiltInZoomControls(true);
+		// imgMain.setBackgroundColor(Color.TRANSPARENT);
+		// imgMain.getSettings().setUseWideViewPort(true);
 		// textContent = (TextView)findViewById(R.id.text_content);
 		mWebViewDetail = (WebView) findViewById(R.id.web_view_about);
 		imageMap = (ImageView) findViewById(R.id.imageMap);
 
 		imageMap.setVisibility(View.GONE);
-		mImgLoader = new ImageLoader(
-				PlaceDetailActivity.this.getApplicationContext());
+
 		// get data from
 		intent = getIntent();
 		titleItem = intent.getStringExtra(Constance.COLOR_TEXT_INDEX_ABOUT);
@@ -161,6 +182,27 @@ public class PlaceDetailActivity extends Activity implements OnClickListener {
 				startActivity(i);
 			}
 		});
+
+		// Init config for Universal Loader Image
+		imageLoader = ImageLoader.getInstance();
+		File cacheDir = StorageUtils.getCacheDirectory(getApplicationContext());
+
+		config = new ImageLoaderConfiguration.Builder(getApplicationContext())
+				.threadPriority(Thread.NORM_PRIORITY - 2)
+				.denyCacheImageMultipleSizesInMemory()
+				.discCacheFileNameGenerator(new Md5FileNameGenerator())
+				.tasksProcessingOrder(QueueProcessingType.LIFO)
+				.writeDebugLogs() // Remove for release app
+				.build();
+
+		imageLoader.init(config);
+
+		options = new DisplayImageOptions.Builder()
+				// .showImageOnLoading(R.drawable.ic_stub)
+				// .showImageForEmptyUri(R.drawable.ic_empty)
+				// .showImageOnFail(R.drawable.ic_error)
+				.cacheInMemory(true).cacheOnDisc(true).considerExifParams(true)
+				.bitmapConfig(Bitmap.Config.RGB_565).build();
 
 	}
 
@@ -262,9 +304,6 @@ public class PlaceDetailActivity extends Activity implements OnClickListener {
 
 		@Override
 		protected void onPostExecute(String result) {
-			if (pDialog != null) {
-				pDialog.dismiss();
-			}
 			imageMap.setVisibility(View.VISIBLE);
 			runOnUiThread(new Runnable() {
 				public void run() {
@@ -290,14 +329,48 @@ public class PlaceDetailActivity extends Activity implements OnClickListener {
 								WebView.LAYER_TYPE_SOFTWARE, null);
 						mWebViewDetail.loadDataWithBaseURL(null, content,
 								"text/html", "UTF-8", null);
-						 mImgLoader.DisplayImage(urlImagePlace, mImageMain);
-//						String img = "<img src=" + urlImagePlace + " "
-//								+ "width=" + "100%" + " " + "style="
-//								+ "margin: 0px 0px" + ">";
-						//final String html = String.format(HTML_FORMAT, urlImagePlace);
-						
-//						imgMain.loadDataWithBaseURL(null, img, "text/html",
-//								"UTF-8", null);
+
+						// Use ImageLoader Universal to lazy load Image
+						imageLoader.displayImage(urlImagePlace, mImageMain,
+								options);
+						imageLoader.displayImage(urlImagePlace, mImageMain,
+								options, new ImageLoadingListener() {
+									
+									@Override
+									public void onLoadingStarted(String imageUri, View view) {
+										// TODO Auto-generated method stub
+										
+									}
+									
+									@Override
+									public void onLoadingFailed(String imageUri, View view,
+											FailReason failReason) {
+										// TODO Auto-generated method stub
+										
+									}
+									
+									@Override
+									public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+										// TODO Auto-generated method stub
+										//pDialog.dismiss();
+										Log.d("ProgressDialog", "Run in here.");
+									}
+									
+									@Override
+									public void onLoadingCancelled(String imageUri, View view) {
+										// TODO Auto-generated method stub
+										
+									}
+								});
+
+						// String img = "<img src=" + urlImagePlace + " "
+						// + "width=" + "100%" + " " + "style="
+						// + "margin: 0px 0px" + ">";
+						// final String html = String.format(HTML_FORMAT,
+						// urlImagePlace);
+
+						// imgMain.loadDataWithBaseURL(null, img, "text/html",
+						// "UTF-8", null);
 						strTitle.setText(titleItem);
 						linearBannerPlaceDetail.setBackgroundColor(Color
 								.parseColor(colorCode));
@@ -315,7 +388,10 @@ public class PlaceDetailActivity extends Activity implements OnClickListener {
 
 				}
 			});
-
+			
+			if (pDialog != null) {
+				pDialog.dismiss();
+			}
 		}
 
 		@Override
@@ -325,6 +401,7 @@ public class PlaceDetailActivity extends Activity implements OnClickListener {
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(false);
 			pDialog.show();
+
 		}
 
 	}
