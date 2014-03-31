@@ -98,9 +98,9 @@ public class Constance {
 			"#d7308c",
 			"#014098", 
 			"#9e774e",
-			"#9f774e",
+			"#51318f",/////
 			"#ea5504", 
-			"#9e774e", //
+			"#9f774e", //
 			"#008cd6" };
 
 	public static final Integer[] imagesItemCompany = {
