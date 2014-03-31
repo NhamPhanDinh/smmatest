@@ -375,7 +375,7 @@ public class CalendarView extends View {
 				// Bitmap image = Bitmap.createScaledBitmap(bmp, (int) ratio
 				// * (int) square, (int) square, true);
 				float scaleTofit = getScaleRatio(listContent.get(i)
-						.getIconUrl()) * this.WITH_SCREEN / 1080;
+						.getIconUrl()) * (float) (this.WITH_SCREEN / 1080);
 				float ratio = bmp.getWidth() / bmp.getHeight();
 				int width = bmp.getWidth();
 				int height = bmp.getHeight();
