@@ -331,37 +331,37 @@ public class PlaceDetailActivity extends Activity implements OnClickListener {
 								"text/html", "UTF-8", null);
 
 						// Use ImageLoader Universal to lazy load Image
-						imageLoader.displayImage(urlImagePlace, mImageMain,
-								options);
-						imageLoader.displayImage(urlImagePlace, mImageMain,
-								options, new ImageLoadingListener() {
-									
-									@Override
-									public void onLoadingStarted(String imageUri, View view) {
-										// TODO Auto-generated method stub
-										
-									}
-									
-									@Override
-									public void onLoadingFailed(String imageUri, View view,
-											FailReason failReason) {
-										// TODO Auto-generated method stub
-										
-									}
-									
-									@Override
-									public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-										// TODO Auto-generated method stub
-										//pDialog.dismiss();
-										Log.d("ProgressDialog", "Run in here.");
-									}
-									
-									@Override
-									public void onLoadingCancelled(String imageUri, View view) {
-										// TODO Auto-generated method stub
-										
-									}
-								});
+//						imageLoader.displayImage(urlImagePlace, mImageMain,
+//								options);
+//						imageLoader.displayImage(urlImagePlace, mImageMain,
+//								options, new ImageLoadingListener() {
+//									
+//									@Override
+//									public void onLoadingStarted(String imageUri, View view) {
+//										// TODO Auto-generated method stub
+//										
+//									}
+//									
+//									@Override
+//									public void onLoadingFailed(String imageUri, View view,
+//											FailReason failReason) {
+//										// TODO Auto-generated method stub
+//										
+//									}
+//									
+//									@Override
+//									public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+//										// TODO Auto-generated method stub
+//										//pDialog.dismiss();
+//										Log.d("ProgressDialog", "Run in here.");
+//									}
+//									
+//									@Override
+//									public void onLoadingCancelled(String imageUri, View view) {
+//										// TODO Auto-generated method stub
+//										
+//									}
+//								});
 
 						// String img = "<img src=" + urlImagePlace + " "
 						// + "width=" + "100%" + " " + "style="
