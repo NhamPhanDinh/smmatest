@@ -15,7 +15,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
@@ -25,6 +28,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageView;
@@ -37,6 +41,7 @@ import android.widget.Toast;
  */
 public class PlaceDetailActivity extends Activity implements OnClickListener {
 	private WebView imgMain;
+	private ImageView mImageMain;
 	private ImageView imageMap;
 	private TextView strTitle;
 	private TextView strAdd;
@@ -66,6 +71,17 @@ public class PlaceDetailActivity extends Activity implements OnClickListener {
 	Boolean isInternet = false;
 	ConnectionDetector checkInternet;
 	ImageLoader mImgLoader;
+	WebSettings mSettings;
+	// flag for Internet connection status
+	Boolean isInternetPresent = false;
+	String LOGTAG = "show img";
+
+	// Connection detector class
+	ConnectionDetector cd;
+	//private static final String HTML_FORMAT = "<html><body style=\"text-align: center; background-color: black; vertical-align: center;\"><img src = \"%s\" /></body></html>";
+	
+	WindowManager mWinMgr;
+	public static int displayWidth = 0, displayHeight = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -79,20 +95,26 @@ public class PlaceDetailActivity extends Activity implements OnClickListener {
 		}
 		// get data from xml
 		linearBannerPlaceDetail = (LinearLayout) findViewById(R.id.linearBannerPlaceDetail);
-		//imgMain = (ImageView) findViewById(R.id.imgContent);
+		// imgMain = (ImageView) findViewById(R.id.imgContent);
 		strTitle = (TextView) findViewById(R.id.title);
 		strAdd = (TextView) findViewById(R.id.addPlace);
 		strPhone = (TextView) findViewById(R.id.telPlace);
 		strUrl = (TextView) findViewById(R.id.urlPlace);
-		imgMain = (WebView) findViewById(R.id.image_place_detail);
-		WebSettings settings = imgMain.getSettings();
-		settings.setUseWideViewPort(true);
-		settings.setLoadWithOverviewMode(true);
-		imgMain.setBackgroundColor(Color.TRANSPARENT);
-		imgMain.getSettings().setUseWideViewPort(true);
+//		imgMain = (WebView) findViewById(R.id.image_place_detail);
+		 mImageMain = (ImageView) findViewById(R.id.image_place_detail);
+//		mWinMgr = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
+//		displayWidth = mWinMgr.getDefaultDisplay().getWidth();
+//		displayHeight = mWinMgr.getDefaultDisplay().getHeight();
+//		mSettings = imgMain.getSettings();
+//		mSettings.setUseWideViewPort(true);
+//		mSettings.setLoadWithOverviewMode(true);
+//		mSettings.setBuiltInZoomControls(true);
+//		imgMain.setBackgroundColor(Color.TRANSPARENT);
+//		imgMain.getSettings().setUseWideViewPort(true);
 		// textContent = (TextView)findViewById(R.id.text_content);
 		mWebViewDetail = (WebView) findViewById(R.id.web_view_about);
 		imageMap = (ImageView) findViewById(R.id.imageMap);
+
 		imageMap.setVisibility(View.GONE);
 		mImgLoader = new ImageLoader(
 				PlaceDetailActivity.this.getApplicationContext());
@@ -250,21 +272,47 @@ public class PlaceDetailActivity extends Activity implements OnClickListener {
 					// imgMain.setBackgroundResource(R.drawable.image_main_index);
 					// textContent.setText(Html.fromHtml(content));
 
-					mWebViewDetail.setBackgroundColor(0x00000000);
-					mWebViewDetail.setLayerType(WebView.LAYER_TYPE_SOFTWARE,
-							null);
-					mWebViewDetail.loadDataWithBaseURL(null, content,
-							"text/html", "UTF-8", null);
-					String img =  "<img src="  + urlImagePlace + " " +  "width="+ "100%" + " " + "style=" + "margin: 0px 0px" + ">" ;
-							
-					imgMain.loadDataWithBaseURL(null,img ,
-							"text/html", "UTF-8", null);
-					strTitle.setText(titleItem);
-					linearBannerPlaceDetail.setBackgroundColor(Color
-							.parseColor(colorCode));
-					strAdd.setText(text1);
-					strPhone.setText("TEL:" + textTel);
-					strUrl.setText(textWeb);
+					cd = new ConnectionDetector(
+							PlaceDetailActivity.this.getApplicationContext());
+					// list = (ListView)findViewById(R.id.list);
+
+					isInternetPresent = cd.isConnectingToInternet();
+					if (isInternetPresent) {
+						if (Constance.bCheckNetworkTimeOut) {
+							showAlertDialog(
+									PlaceDetailActivity.this,
+									"",
+									"Can not get data from server, please check internet and try again",
+									false);
+						}
+						mWebViewDetail.setBackgroundColor(0x00000000);
+						mWebViewDetail.setLayerType(
+								WebView.LAYER_TYPE_SOFTWARE, null);
+						mWebViewDetail.loadDataWithBaseURL(null, content,
+								"text/html", "UTF-8", null);
+						 mImgLoader.DisplayImage(urlImagePlace, mImageMain);
+//						String img = "<img src=" + urlImagePlace + " "
+//								+ "width=" + "100%" + " " + "style="
+//								+ "margin: 0px 0px" + ">";
+						//final String html = String.format(HTML_FORMAT, urlImagePlace);
+						
+//						imgMain.loadDataWithBaseURL(null, img, "text/html",
+//								"UTF-8", null);
+						strTitle.setText(titleItem);
+						linearBannerPlaceDetail.setBackgroundColor(Color
+								.parseColor(colorCode));
+						strAdd.setText(text1);
+						strPhone.setText("TEL:" + textTel);
+						strUrl.setText(textWeb);
+
+					} else {
+						showAlertDialog(
+								PlaceDetailActivity.this,
+								"No Internet Connection",
+								"You don't have internet connection, please try again",
+								false);
+					}
+
 				}
 			});
 
@@ -280,4 +328,90 @@ public class PlaceDetailActivity extends Activity implements OnClickListener {
 		}
 
 	}
+
+	@SuppressWarnings("deprecation")
+	public void showAlertDialog(final Context context, String title,
+			String message, Boolean status) {
+		AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+
+		// Setting Dialog Title
+		alertDialog.setTitle(title);
+		alertDialog.setCancelable(false);
+		// Setting Dialog Message
+		alertDialog.setMessage(message);
+
+		// Setting OK Button
+		alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				finish();
+			}
+		});
+
+		// Showing Alert Message
+		alertDialog.show();
+	}
+
+	@SuppressWarnings("deprecation")
+	public void showAlert(final Context context, String title, String message,
+			Boolean status) {
+		AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+
+		// Setting Dialog Title
+		alertDialog.setTitle(title);
+		alertDialog.setCancelable(false);
+		// Setting Dialog Message
+		alertDialog.setMessage(message);
+		// Showing Alert Message
+		alertDialog.show();
+	}
+
+	// notify webkit that our virtual view size changed size (after inv-zoom)
+	// private void viewSizeChanged(int w, int h, int textwrapWidth,
+	// float scale, int anchorX, int anchorY, boolean ignoreHeight) {
+	// if (DebugFlags.WEB_VIEW_CORE) {
+	// Log.v(LOGTAG, "viewSizeChanged w=" + w + "; h=" + h
+	// + "; textwrapWidth=" + textwrapWidth + "; scale="
+	// + scale);
+	// }
+	// if (w == 0) {
+	// Log.w(LOGTAG, "skip viewSizeChanged as w is 0");
+	// return;
+	// }
+	// int width = w;
+	// if (mSettings.getUseWideViewPort()) {
+	// if (mViewportWidth == -1) {
+	// if (mSettings.getLayoutAlgorithm() == WebSettings.LayoutAlgorithm.NORMAL)
+	// {
+	// width = WebView.DEFAULT_VIEWPORT_WIDTH;
+	// } else {
+	// /*
+	// * if a page's minimum preferred width is wider than the
+	// * given "w", use it instead to get better layout result. If
+	// * we start a page with MAX_ZOOM_WIDTH, "w" will be always
+	// * wider. If we start a page with screen width, due to the
+	// * delay between {@link #didFirstLayout} and
+	// * {@link #viewSizeChanged},
+	// * {@link #nativeGetContentMinPrefWidth} will return a more
+	// * accurate value than initial 0 to result a better layout.
+	// * In the worse case, the native width will be adjusted when
+	// * next zoom or screen orientation change happens.
+	// */
+	// width = Math.min(WebView.sMaxViewportWidth, Math
+	// .max(w, Math.max(
+	// WebView.DEFAULT_VIEWPORT_WIDTH,
+	// nativeGetContentMinPrefWidth())));
+	// }
+	// } else if (mViewportWidth > 0) {
+	// width = Math.max(w, mViewportWidth);
+	// } else {
+	// width = textwrapWidth;
+	// }
+	//
+	// }
+	//
+	// skip viewSizeChanged as w is 0
+	//
+	// WebView mWebView = (WebView) findViewById(R.id.webview);
+	// mWebView.getSettings().setBuiltInZoomControls(true);
+
 }
