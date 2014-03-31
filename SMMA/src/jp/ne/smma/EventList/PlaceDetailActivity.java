@@ -30,26 +30,21 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
+import android.webkit.WebSettings.RenderPriority;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
-import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
-import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
-import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 
 /**
@@ -122,7 +117,7 @@ public class PlaceDetailActivity extends Activity implements OnClickListener {
 		strPhone = (TextView) findViewById(R.id.telPlace);
 		strUrl = (TextView) findViewById(R.id.urlPlace);
 		// imgMain = (WebView) findViewById(R.id.image_place_detail);
-		//mImageMain = (ImageView) findViewById(R.id.image_place_detail);
+		// mImageMain = (ImageView) findViewById(R.id.image_place_detail);
 		// mWinMgr = (WindowManager)
 		// this.getSystemService(Context.WINDOW_SERVICE);
 		// displayWidth = mWinMgr.getDefaultDisplay().getWidth();
@@ -135,6 +130,11 @@ public class PlaceDetailActivity extends Activity implements OnClickListener {
 		// imgMain.getSettings().setUseWideViewPort(true);
 		// textContent = (TextView)findViewById(R.id.text_content);
 		mWebViewDetail = (WebView) findViewById(R.id.web_view_about);
+		mWebViewDetail.setWebChromeClient(new WebChromeClient());
+		mWebViewDetail.getSettings().setDefaultFontSize(14);
+		mWebViewDetail.getSettings().setRenderPriority(RenderPriority.HIGH);
+		mWebViewDetail.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+
 		imageMap = (ImageView) findViewById(R.id.imageMap);
 
 		imageMap.setVisibility(View.GONE);
@@ -325,43 +325,47 @@ public class PlaceDetailActivity extends Activity implements OnClickListener {
 									false);
 						}
 						mWebViewDetail.setBackgroundColor(0x00000000);
-						mWebViewDetail.setLayerType(
-								WebView.LAYER_TYPE_SOFTWARE, null);
+//						mWebViewDetail.setLayerType(
+//								WebView.LAYER_TYPE_SOFTWARE, null);
 						mWebViewDetail.loadDataWithBaseURL(null, content,
 								"text/html", "UTF-8", null);
 
 						// Use ImageLoader Universal to lazy load Image
-//						imageLoader.displayImage(urlImagePlace, mImageMain,
-//								options);
-//						imageLoader.displayImage(urlImagePlace, mImageMain,
-//								options, new ImageLoadingListener() {
-//									
-//									@Override
-//									public void onLoadingStarted(String imageUri, View view) {
-//										// TODO Auto-generated method stub
-//										
-//									}
-//									
-//									@Override
-//									public void onLoadingFailed(String imageUri, View view,
-//											FailReason failReason) {
-//										// TODO Auto-generated method stub
-//										
-//									}
-//									
-//									@Override
-//									public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-//										// TODO Auto-generated method stub
-//										//pDialog.dismiss();
-//										Log.d("ProgressDialog", "Run in here.");
-//									}
-//									
-//									@Override
-//									public void onLoadingCancelled(String imageUri, View view) {
-//										// TODO Auto-generated method stub
-//										
-//									}
-//								});
+						// imageLoader.displayImage(urlImagePlace, mImageMain,
+						// options);
+						// imageLoader.displayImage(urlImagePlace, mImageMain,
+						// options, new ImageLoadingListener() {
+						//
+						// @Override
+						// public void onLoadingStarted(String imageUri, View
+						// view) {
+						// // TODO Auto-generated method stub
+						//
+						// }
+						//
+						// @Override
+						// public void onLoadingFailed(String imageUri, View
+						// view,
+						// FailReason failReason) {
+						// // TODO Auto-generated method stub
+						//
+						// }
+						//
+						// @Override
+						// public void onLoadingComplete(String imageUri, View
+						// view, Bitmap loadedImage) {
+						// // TODO Auto-generated method stub
+						// //pDialog.dismiss();
+						// Log.d("ProgressDialog", "Run in here.");
+						// }
+						//
+						// @Override
+						// public void onLoadingCancelled(String imageUri, View
+						// view) {
+						// // TODO Auto-generated method stub
+						//
+						// }
+						// });
 
 						// String img = "<img src=" + urlImagePlace + " "
 						// + "width=" + "100%" + " " + "style="
@@ -388,7 +392,7 @@ public class PlaceDetailActivity extends Activity implements OnClickListener {
 
 				}
 			});
-			
+
 			if (pDialog != null) {
 				pDialog.dismiss();
 			}
