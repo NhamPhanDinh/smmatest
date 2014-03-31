@@ -94,6 +94,7 @@ public class ProductActivity extends Activity {
 	String dateFrom = null;
 	String dateEnd = null;
 
+//	TextView productTittle;
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	@SuppressLint("NewApi")
 	protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +125,7 @@ public class ProductActivity extends Activity {
 		mWebView = (WebView)findViewById(R.id.webView);
 		imgAdd = (Button) findViewById(R.id.imageButton1);
 		imgButtonIcon=(ImageButton)findViewById(R.id.imageButton2);
+//		productTittle=(TextView)findViewById(R.id.product_name_tittle);
 		imgButtonIcon.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -330,6 +332,7 @@ public class ProductActivity extends Activity {
 						strTitle = map.get(KEY_NAME);
 						strDate = map.get(KEY_DATE_FROM) + " ~ "
 								+ map.get(KEY_DATE_END);
+//						productTittle.setText(strTitle);
 						try {
 							id = Integer.parseInt(map.get(KEY_ID));
 						} catch (Exception e2) {
