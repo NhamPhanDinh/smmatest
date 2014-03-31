@@ -482,6 +482,8 @@ public class CalendarView extends View {
 			result = (float) 1.2;
 		else if (id == 2130837604)
 			result = (float) 1.23;
+		else if (id == 2130837545)
+			result = (float) 1.23;
 		else
 			result = 1;
 		return result;
