@@ -291,7 +291,7 @@ public class CalendarView extends View {
 
 	public void drawBackgroundCommon(Canvas canvas) {
 		canvas.drawRect(0, 2 * square + this.month_height, 32000 * 2,
-				limitHeight * 2, this.backgroundCommonPaint);
+				10000, this.backgroundCommonPaint);
 	}
 
 	public void drawWeekend(Canvas canvas) {
@@ -305,7 +305,7 @@ public class CalendarView extends View {
 				if (keyDay == 7 || keyDay == 1)
 					canvas.drawRect(currentPosition + square * position, square
 							+ this.month_height, currentPosition + square
-							+ square * position, limitHeight * 2,
+							+ square * position, 10000,
 							this.weekendPaint);
 				positionX += square;
 			}
@@ -335,9 +335,6 @@ public class CalendarView extends View {
 		// Padding left of event
 		float paddingLeftEvent;
 
-		float tempLimitHeight = 0;
-		float tempLimitWidth = 0;
-
 		Bitmap footer = BitmapFactory.decodeResource(getResources(),
 				R.drawable.footer);// listContent.get(i).getIconUrl()
 		float ratio_footer = footer.getWidth() / footer.getHeight();
@@ -345,6 +342,8 @@ public class CalendarView extends View {
 				(int) ratio_footer * (int) square, (int) square, true);
 
 		arrayRect = new RectF[listContent.size()];
+
+		int count = 0;
 
 		for (int i = 0; i < listContent.size(); i++) {
 
@@ -371,9 +370,7 @@ public class CalendarView extends View {
 
 				Bitmap bmp = BitmapFactory.decodeResource(getResources(),
 						listContent.get(i).getIconUrl());// listContent.get(i).getIconUrl()
-				// float ratio = bmp.getWidth() / bmp.getHeight();
-				// Bitmap image = Bitmap.createScaledBitmap(bmp, (int) ratio
-				// * (int) square, (int) square, true);
+
 				float scaleTofit = getScaleRatio(listContent.get(i)
 						.getIconUrl());
 				float ratio = bmp.getWidth() / bmp.getHeight();
@@ -385,13 +382,21 @@ public class CalendarView extends View {
 				float scaleHeight = (square) / height;
 				Matrix matrix = new Matrix();
 				matrix.postScale(scaleWidth, scaleHeight);
-				// Bitmap image = Bitmap.createScaledBitmap(bmp, (int) ratio
-				// * (int) square, (int) square, true);
+
 				Bitmap image = Bitmap.createBitmap(bmp, 0, 0, width, height,
 						matrix, false);
-				float widthText = contentTextPain.measureText(eventName
-						+ companyName);
-				widthContentEvent = widthText + bmp.getWidth() + 2 * square;
+
+				// Limit string 35 char
+				String eventName35 = "";
+				if (eventName.length() > 35) {
+					eventName35 = eventName.substring(0, 35) + "...";
+				} else {
+					eventName35 = eventName;
+				}
+
+				// Calculate width of text
+				float widthText = contentTextPain.measureText(eventName35);
+				widthContentEvent = widthText + image.getWidth() + square;
 
 				// draw header for event
 				canvas.drawRect(paddingLeftEvent, 3 * square + startTop
@@ -411,7 +416,7 @@ public class CalendarView extends View {
 				canvas.drawBitmap(image, paddingLeftEvent, 3 * square
 						+ startTop + headerLength, null);
 				// draw event name
-				canvas.drawText(eventName, paddingLeftEvent + (ratio + 1)
+				canvas.drawText(eventName35, paddingLeftEvent + (ratio + 1)
 						* (int) square, 3 * square + startTop + headerLength
 						+ text_lenght + square / 2, contentTextPain);
 				// draw company name
@@ -421,14 +426,6 @@ public class CalendarView extends View {
 				// * square + startTop + headerLength
 				// + text_lenght + square / 2, contentTextPain);
 
-				tempLimitHeight = 4 * square + startTop;
-				if (tempLimitWidth > (paddingLeftEvent + square
-						* (beetweenDays + 1))
-						&& tempLimitWidth != 32000) {
-					tempLimitWidth = paddingLeftEvent + square * (beetweenDays)
-							- 1000;
-				}
-
 				// save Rect Coordinates of event
 				arrayRect[i] = new RectF(paddingLeftEvent, 3 * square
 						+ startTop + headerLength, paddingLeftEvent
@@ -437,12 +434,12 @@ public class CalendarView extends View {
 
 				paddingTop = square;
 				startTop += (2 * paddingTop);
+				count++;
 			}
-
 		}
-		// limitHeight = tempLimitHeight;
-		// limitWidth = -tempLimitWidth;
-		Log.i("Limit", "Width: " + limitWidth + " :Height " + limitHeight);
+		// limit height scroll
+		limitHeight = count * 2 * square + 12 * square;
+		Log.i("Limit", "Square: " + square + " :Height " + limitHeight);
 	}
 
 	private float getScaleRatio(int id) {

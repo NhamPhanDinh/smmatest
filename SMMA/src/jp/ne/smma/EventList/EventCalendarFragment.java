@@ -21,15 +21,19 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Scroller;
 import android.widget.TextView;
 
@@ -74,10 +78,14 @@ public class EventCalendarFragment extends Fragment {
 	CalendarView view;
 	private static final int SWIPE_MIN_DISTANCE = 20;
 	private static final int SWIPE_THRESHOLD_VELOCITY = 200;
-	Context context;
 	TextView monthTv;
 	private float posUpX = 0;
 	private float posUpY = 0;
+
+	LinearLayout footer;
+	private int WITH_SCREEN;
+	private int HEIGHT_SCREEN;
+	private int idGetDataCalendar = 1;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -86,7 +94,24 @@ public class EventCalendarFragment extends Fragment {
 		View rootView = inflater.inflate(R.layout.event_calendar, container,
 				false);
 		imgFillter = (ImageView) rootView.findViewById(R.id.imgFillter);
-		context = getActivity().getApplicationContext();
+		footer = (LinearLayout) rootView
+				.findViewById(R.id.event_calendar_footer);
+		footer.setVisibility(View.GONE);
+		footer.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				getDataCalendar();
+			}
+		});
+
+		WindowManager wm = (WindowManager) getActivity()
+				.getApplicationContext().getSystemService(
+						Context.WINDOW_SERVICE);
+		Display display = wm.getDefaultDisplay();
+		WITH_SCREEN = display.getWidth(); // deprecated
+		HEIGHT_SCREEN = display.getHeight(); // deprecated
 
 		linearIncludeCalendar = (FrameLayout) rootView
 				.findViewById(R.id.linearIncludeCalendar);
@@ -104,7 +129,8 @@ public class EventCalendarFragment extends Fragment {
 		gesDetectorContent = new GestureDetector(new GestureListener(false));
 		gesDetectorLabel = new GestureDetector(new GestureListener(true));
 
-		getDataEvent = new GetDataEventCalendar(getActivity(), 1) {
+		getDataEvent = new GetDataEventCalendar(getActivity(),
+				idGetDataCalendar) {
 
 			@Override
 			public void OnTaskCompleted() {
@@ -142,6 +168,8 @@ public class EventCalendarFragment extends Fragment {
 						return false;
 					}
 				});
+
+				idGetDataCalendar++;
 
 				rowCalendar = getDataEvent.getItemCalendar();
 			}
@@ -182,6 +210,58 @@ public class EventCalendarFragment extends Fragment {
 			}
 		});
 		return rootView;
+	}
+
+	public void getDataCalendar() {
+		getDataEvent = new GetDataEventCalendar(getActivity(),
+				idGetDataCalendar) {
+
+			@Override
+			public void OnTaskCompleted() {
+				// TODO Auto-generated method stub
+				if (getDataEvent.getItemCalendar().size() != 0) {
+					viewContent = new CalendarView(getActivity()
+							.getApplicationContext(), listMonthInfor,
+							getDataEvent.getItemCalendar());
+					viewLabel = new CalendarView(getActivity()
+							.getApplicationContext(), listMonthInfor,
+							getDataEvent.getItemCalendar(), true, monthTv);
+					// add view
+					linearIncludeCalendar.removeAllViews();
+					linearIncludeCalendar.addView(viewContent,
+							new ViewGroup.LayoutParams(
+									ViewGroup.LayoutParams.MATCH_PARENT,
+									ViewGroup.LayoutParams.MATCH_PARENT));
+					linearIncludeCalendar.addView(viewLabel,
+							new ViewGroup.LayoutParams(
+									ViewGroup.LayoutParams.MATCH_PARENT, 300));
+					// Set onTouchListener
+					viewContent.setOnTouchListener(new OnTouchListener() {
+
+						@Override
+						public boolean onTouch(View v, MotionEvent event) {
+							// TODO Auto-generated method stub
+							gesDetectorContent.onTouchEvent(event);
+							return false;
+						}
+					});
+					viewLabel.setOnTouchListener(new OnTouchListener() {
+
+						@Override
+						public boolean onTouch(View v, MotionEvent event) {
+							// TODO Auto-generated method stub
+							gesDetectorLabel.onTouchEvent(event);
+							return false;
+						}
+					});
+
+					rowCalendar = getDataEvent.getItemCalendar();
+					idGetDataCalendar++;
+				}
+
+				// viewContent.invalidate();
+			}
+		};
 	}
 
 	public void translate() {
@@ -241,8 +321,27 @@ public class EventCalendarFragment extends Fragment {
 
 			if (viewContent.getPosY() > 0)
 				viewContent.setPosY(0);
-			if (viewContent.getPosY() < -viewLabel.getLimitWidth())
-				viewContent.setPosY(-viewLabel.getLimitWidth());
+
+			// Check footer visible
+			boolean check = false;
+			if (-viewContent.getPosY() >= (viewContent.getLimitHeight() - HEIGHT_SCREEN)) {
+				if ((viewContent.getLimitHeight() - HEIGHT_SCREEN) < 0) {
+					viewContent.setPosY(0);
+				} else {
+					viewContent
+							.setPosY(-(viewContent.getLimitHeight() - HEIGHT_SCREEN));
+				}
+				footer.setVisibility(View.VISIBLE);
+				check = true;
+			} else if (-viewContent.getPosY() < (viewContent.getLimitHeight()
+					- HEIGHT_SCREEN - 50)) {
+				// TranslateAnimation animate = new TranslateAnimation(0, 0, 0,
+				// footer.getHeight());
+				// animate.setDuration(500);
+				// animate.setFillAfter(true);
+				// footer.startAnimation(animate);
+				footer.setVisibility(View.GONE);
+			}
 
 			if (viewLabel.getPosX() > 0)
 				viewLabel.setPosX(0);

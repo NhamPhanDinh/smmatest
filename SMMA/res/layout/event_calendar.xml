@@ -67,7 +67,7 @@
             <!-- app:verticalSpacing="0dp" /> -->
         </FrameLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:orientation="vertical" >
@@ -76,7 +76,44 @@
                 android:id="@+id/monthLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
-        </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/event_calendar_footer"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:background="@color/footer_background"
+                android:orientation="horizontal" >
+
+                <LinearLayout
+                    android:layout_width="76dp"
+                    android:layout_height="match_parent" >
+
+                    <ImageView
+                        android:id="@+id/imageView1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:paddingLeft="18dp"
+                        android:paddingRight="18dp"
+                        android:src="@drawable/footer_btn" />
+                </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/textView1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:paddingLeft="18dp"
+                        android:paddingRight="18dp"
+                        android:text="@string/event_footer_text"
+                        android:textColor="@color/footer_text_color"
+                        android:textSize="20dp" />
+
+            </RelativeLayout>
+        </RelativeLayout>
     </RelativeLayout>
 
 </LinearLayout>
