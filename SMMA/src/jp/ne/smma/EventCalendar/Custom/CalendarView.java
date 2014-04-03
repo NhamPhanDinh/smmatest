@@ -290,8 +290,8 @@ public class CalendarView extends View {
 	}
 
 	public void drawBackgroundCommon(Canvas canvas) {
-		canvas.drawRect(0, 2 * square + this.month_height, 32000 * 2,
-				10000, this.backgroundCommonPaint);
+		canvas.drawRect(0, 2 * square + this.month_height, 32000 * 2, 10000,
+				this.backgroundCommonPaint);
 	}
 
 	public void drawWeekend(Canvas canvas) {
@@ -305,8 +305,7 @@ public class CalendarView extends View {
 				if (keyDay == 7 || keyDay == 1)
 					canvas.drawRect(currentPosition + square * position, square
 							+ this.month_height, currentPosition + square
-							+ square * position, 10000,
-							this.weekendPaint);
+							+ square * position, 10000, this.weekendPaint);
 				positionX += square;
 			}
 		}
@@ -349,6 +348,7 @@ public class CalendarView extends View {
 
 			String eventName = listContent.get(i).getEventName() + "";
 			String companyName = listContent.get(i).getCompanyName() + "";
+			String colorCode = listContent.get(i).getColorCode();
 
 			dayPaint.setColor(Color.parseColor(listContent.get(i)
 					.getColorCode()));
@@ -395,36 +395,41 @@ public class CalendarView extends View {
 				}
 
 				// Calculate width of text
-				float widthText = contentTextPain.measureText(eventName35);
-				widthContentEvent = widthText + image.getWidth() + square;
+				float widthText = contentTextPain.measureText(eventName35
+						+ companyName);
+				widthContentEvent = widthText + image.getWidth() + square + 5;
 
 				// draw header for event
 				canvas.drawRect(paddingLeftEvent, 3 * square + startTop
 						+ square / 2, paddingLeftEvent + square * beetweenDays,
 						3 * square + startTop + headerLength, dayPaint);
-				// draw content for event
-				canvas.drawRect(paddingLeftEvent, 3 * square + startTop
-						+ headerLength, paddingLeftEvent + widthContentEvent, 3
-						* square + startTop + headerLength + square, bgPaint);
+
 				if (longBegin < 0)
 					paddingLeftEvent = 0;
 				// draw content for event
 				canvas.drawRect(paddingLeftEvent, 3 * square + startTop
 						+ headerLength, paddingLeftEvent + widthContentEvent, 3
 						* square + startTop + headerLength + square, bgPaint);
+
 				// draw logo event
 				canvas.drawBitmap(image, paddingLeftEvent, 3 * square
 						+ startTop + headerLength, null);
-				// draw event name
-				canvas.drawText(eventName35, paddingLeftEvent + (ratio + 1)
-						* (int) square, 3 * square + startTop + headerLength
-						+ text_lenght + square / 2, contentTextPain);
+
 				// draw company name
-				// canvas.drawText(companyName,
-				// paddingLeftEvent + (ratio + 2) * (int) square
-				// + contentTextPain.measureText(eventName), 3
-				// * square + startTop + headerLength
-				// + text_lenght + square / 2, contentTextPain);
+				Paint companyPaint = new Paint();
+				companyPaint.setTextSize(30 * this.WITH_SCREEN / 1080);
+				companyPaint.setTextAlign(Align.LEFT);
+				companyPaint.setColor(Color.parseColor(colorCode));
+				canvas.drawText(companyName, paddingLeftEvent + square + 5, 3
+						* square + startTop + headerLength + text_lenght
+						+ square / 2, companyPaint);
+
+				// draw event name
+				canvas.drawText(eventName35,
+						paddingLeftEvent + (ratio + 1) * (int) square
+								+ contentTextPain.measureText(companyName), 3
+								* square + startTop + headerLength
+								+ text_lenght + square / 2, contentTextPain);
 
 				// save Rect Coordinates of event
 				arrayRect[i] = new RectF(paddingLeftEvent, 3 * square

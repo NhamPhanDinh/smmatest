@@ -16,7 +16,9 @@ import jp.ne.smma.aboutsmma.DTO.ItemCalendar;
 import jp.ne.smma.aboutsmma.dialog.DialogFillterCalendar;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -87,6 +89,9 @@ public class EventCalendarFragment extends Fragment {
 	private int WITH_SCREEN;
 	private int HEIGHT_SCREEN;
 	private int idGetDataCalendar = 1;
+	boolean checkHeader = false;
+	private Handler handler;
+	private Runnable runnable;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -157,7 +162,15 @@ public class EventCalendarFragment extends Fragment {
 					public boolean onTouch(View v, MotionEvent event) {
 						// TODO Auto-generated method stub
 						gesDetectorContent.onTouchEvent(event);
-						return false;
+						boolean detectedUp = event.getAction() == MotionEvent.ACTION_UP;
+						if (!gesDetectorContent.onTouchEvent(event)
+								&& detectedUp) {
+							Log.d("UpAction", "UpAction");
+							showHeaderAfterTime();
+							handler.removeCallbacks(runnable);
+							return true;
+						}
+						return true;
 					}
 				});
 				viewLabel.setOnTouchListener(new OnTouchListener() {
@@ -302,12 +315,14 @@ public class EventCalendarFragment extends Fragment {
 			final float X = e2.getX();
 			final float Y = e2.getY();
 
-			// translateX(viewContent, (X - _xDelta));
-			// translateX(viewLabel, (X - _xDelta));
-			//
-			// if (!isLabel) {
-			// translateY(viewContent, (Y - _yDelta));
-			// }
+			if (Y > _yDelta) {
+				MainActivity.showHideHeader(true);
+				checkHeader = true;
+			}
+
+			Log.d("Toa Do", "Toado: Y: " + Y + " _yDelta: " + _yDelta
+					+ " Height: " + MainActivity.mainHeader.getHeight());
+
 			translateX(viewContent, 2 * (X - _xDelta));
 			translateX(viewLabel, 2 * (X - _xDelta));
 
@@ -362,6 +377,11 @@ public class EventCalendarFragment extends Fragment {
 			if (!mScroller.isFinished()) {
 				mScroller.forceFinished(true);
 			}
+
+			if (handler != null || runnable != null) {
+				// handler.removeCallbacks(runnable);
+			}
+
 			return super.onDown(e);
 		}
 
@@ -420,6 +440,21 @@ public class EventCalendarFragment extends Fragment {
 
 			return false;
 		}
+	}
+
+	public void showHeaderAfterTime() {
+
+		handler = new Handler();
+		handler.postDelayed(runnable, 3000);
+		runnable = new Runnable() {
+			@Override
+			public void run() {
+				handler.postDelayed(this, 3000);
+			}
+		};
+
+		MainActivity.showHideHeader(false);
+		checkHeader = false;
 	}
 
 	public void translateX(CalendarView view, float dx) {
@@ -568,4 +603,12 @@ public class EventCalendarFragment extends Fragment {
 		this.rowCalendar = rowCalendar;
 	}
 
+	@Override
+	public void onDestroy() {
+		// TODO Auto-generated method stub
+		if (handler != null || runnable != null) {
+			//handler.removeCallbacks(runnable);
+		}
+		super.onDestroy();
+	}
 }

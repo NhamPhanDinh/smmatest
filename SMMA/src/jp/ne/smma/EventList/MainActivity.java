@@ -2,6 +2,7 @@ package jp.ne.smma.EventList;
 
 import jp.ne.smma.R;
 import jp.ne.smma.Ultis.Constance;
+import android.R.bool;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -12,6 +13,7 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.viewpagerindicator.IconPageIndicator;
 import com.viewpagerindicator.PageIndicator;
@@ -22,23 +24,28 @@ public class MainActivity extends FragmentActivity {
 	private ImageView btnSetting;
 	// preferences
 	SharedPreferences preferences;
+	static RelativeLayout mainHeader;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		if(Constance.checkPortrait ){
-			 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+		if (Constance.checkPortrait) {
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		} else {
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		}
-		else{
-			 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-		}
+
 		PagerAdapter pageAdapter = new PagerAdapter(getSupportFragmentManager());
 		ViewPager pager = (ViewPager) findViewById(R.id.myViewPager);
 		pager.setAdapter(pageAdapter);
 		pager.setOffscreenPageLimit(2);
 		mIndicator = (IconPageIndicator) findViewById(R.id.indicator);
 		mIndicator.setViewPager(pager);
+
+		mainHeader = (RelativeLayout) findViewById(R.id.main_header);
+
 		// get xml
 		btnSetting = (ImageView) findViewById(R.id.btnSetting);
 		btnSetting.setOnClickListener(new OnClickListener() {
@@ -64,16 +71,23 @@ public class MainActivity extends FragmentActivity {
 				Constance.CHECK_CHECKBOXNOTIFIATION, 0);
 
 	}
+
 	@Override
-	public void onResume(){
+	public void onResume() {
 		super.onResume();
-		if(Constance.checkPortrait){
-			 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-		}
-		else{
-			 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		if (Constance.checkPortrait) {
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		} else {
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		}
 	}
-
-
+	
+	public static void showHideHeader(boolean check) {
+		if(check){
+			mainHeader.setVisibility(View.VISIBLE);
+		}
+		else {
+			mainHeader.setVisibility(View.GONE);
+		}
+	}
 }
