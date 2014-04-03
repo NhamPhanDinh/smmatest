@@ -34,6 +34,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Scroller;
 import android.widget.TextView;
 
@@ -82,7 +83,7 @@ public class EventCalendarFragment extends Fragment {
 	private float posUpX = 0;
 	private float posUpY = 0;
 
-	LinearLayout footer;
+	RelativeLayout footer;
 	private int WITH_SCREEN;
 	private int HEIGHT_SCREEN;
 	private int idGetDataCalendar = 1;
@@ -94,7 +95,7 @@ public class EventCalendarFragment extends Fragment {
 		View rootView = inflater.inflate(R.layout.event_calendar, container,
 				false);
 		imgFillter = (ImageView) rootView.findViewById(R.id.imgFillter);
-		footer = (LinearLayout) rootView
+		footer = (RelativeLayout) rootView
 				.findViewById(R.id.event_calendar_footer);
 		footer.setVisibility(View.GONE);
 		footer.setOnClickListener(new OnClickListener() {
