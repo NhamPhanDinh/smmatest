@@ -52,6 +52,7 @@ public class AboutFragment extends Fragment {
 	private ListView listview;
 	private TextView txtContentTitle;
 
+	View mFooter;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -61,12 +62,13 @@ public class AboutFragment extends Fragment {
 		// get data from XML
 		listview = (ListView) rootView.findViewById(R.id.listview);
 		mHeader = inflater.inflate(R.layout.about_header_view, null, false);
+		mFooter=inflater.inflate(R.layout.event_footer_about, null, false);
 //		txtContentTitle = (TextView) rootView
 //				.findViewById(R.id.txtContentAbout);
 		// add data list view
 		rowItems = new ArrayList<RowAboutItem>();
 		listview.addHeaderView(mHeader,null, false);
-
+		listview.addFooterView(mFooter,null, false);
 	
 
 		// for (int i = 0; i < strContent.length; i++) {

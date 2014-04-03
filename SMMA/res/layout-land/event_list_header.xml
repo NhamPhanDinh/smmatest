@@ -9,7 +9,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:src="@drawable/banner_evenlist" />
+        android:src="@drawable/banner1" />
     
 
 </LinearLayout>
