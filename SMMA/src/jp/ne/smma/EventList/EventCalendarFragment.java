@@ -162,15 +162,15 @@ public class EventCalendarFragment extends Fragment {
 					public boolean onTouch(View v, MotionEvent event) {
 						// TODO Auto-generated method stub
 						gesDetectorContent.onTouchEvent(event);
-						boolean detectedUp = event.getAction() == MotionEvent.ACTION_UP;
-						if (!gesDetectorContent.onTouchEvent(event)
-								&& detectedUp) {
-							Log.d("UpAction", "UpAction");
-							showHeaderAfterTime();
-							handler.removeCallbacks(runnable);
-							return true;
-						}
-						return true;
+						//boolean detectedUp = event.getAction() == MotionEvent.ACTION_UP;
+						// if (!gesDetectorContent.onTouchEvent(event)
+						// && detectedUp) {
+						// Log.d("UpAction", "UpAction");
+						// // showHeaderAfterTime();
+						// // handler.removeCallbacks(runnable);
+						// return true;
+						// }
+						return false;
 					}
 				});
 				viewLabel.setOnTouchListener(new OnTouchListener() {
@@ -314,26 +314,32 @@ public class EventCalendarFragment extends Fragment {
 			// TODO Auto-generated method stub
 			final float X = e2.getX();
 			final float Y = e2.getY();
-
+			
 			if (Y > _yDelta) {
 				MainActivity.showHideHeader(true);
 				checkHeader = true;
 			}
 
-			Log.d("Toa Do", "Toado: Y: " + Y + " _yDelta: " + _yDelta
-					+ " Height: " + MainActivity.mainHeader.getHeight());
+			float speed = getActivity().getResources().getDisplayMetrics().heightPixels * 0.002f;
+			Log.d("Toc Do", "Speed: " + speed);
+//			translateX(viewContent, (X - _xDelta));
+//			translateX(viewLabel,(X - _xDelta));
+//
+//			if (!isLabel) {
+//				translateY(viewContent, (Y - _yDelta));
+//			}
 
-			translateX(viewContent, 2 * (X - _xDelta));
-			translateX(viewLabel, 2 * (X - _xDelta));
+			translateX(viewContent, (-distanceX));
+			translateX(viewLabel,(-distanceX));
 
 			if (!isLabel) {
-				translateY(viewContent, 2 * (Y - _yDelta));
+				translateY(viewContent, (-distanceY));
 			}
-
+			
 			if (viewContent.getPosX() > 0)
 				viewContent.setPosX(0);
-			if (viewContent.getPosX() < -viewLabel.getLimitWidth())
-				viewContent.setPosX(-viewLabel.getLimitWidth());
+			if (viewContent.getPosX() < -viewContent.getLimitWidth())
+				viewContent.setPosX(-viewContent.getLimitWidth());
 
 			if (viewContent.getPosY() > 0)
 				viewContent.setPosY(0);
@@ -361,8 +367,8 @@ public class EventCalendarFragment extends Fragment {
 
 			if (viewLabel.getPosX() > 0)
 				viewLabel.setPosX(0);
-			if (viewLabel.getPosX() < -viewLabel.getLimitWidth())
-				viewLabel.setPosX(-viewLabel.getLimitWidth());
+			if (viewLabel.getPosX() < -viewContent.getLimitWidth())
+				viewLabel.setPosX(-viewContent.getLimitWidth());
 
 			_xDelta = X;
 			_yDelta = Y;
@@ -403,7 +409,7 @@ public class EventCalendarFragment extends Fragment {
 			// mScroller.fling((int) viewContent.getPosX(),
 			// 0, 1400, 0, Integer.MIN_VALUE,
 			// Integer.MAX_VALUE, 0,0);
-
+			
 			if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE
 					&& Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
 
@@ -450,6 +456,7 @@ public class EventCalendarFragment extends Fragment {
 			@Override
 			public void run() {
 				handler.postDelayed(this, 3000);
+				Log.d("Handler", "Handler");
 			}
 		};
 
@@ -607,7 +614,7 @@ public class EventCalendarFragment extends Fragment {
 	public void onDestroy() {
 		// TODO Auto-generated method stub
 		if (handler != null || runnable != null) {
-			//handler.removeCallbacks(runnable);
+			// handler.removeCallbacks(runnable);
 		}
 		super.onDestroy();
 	}
