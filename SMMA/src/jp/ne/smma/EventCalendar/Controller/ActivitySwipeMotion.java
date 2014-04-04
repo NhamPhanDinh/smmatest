@@ -40,12 +40,16 @@ public class ActivitySwipeMotion implements ActivitySwipeInterface,
 			event.getPointerCoords(0, mMovePos);
 			Log.i("SwipeMotion", "SwipeMotion Move");
 			float dy = mDownPos.y - mMovePos.y;
+			float dx = mDownPos.x - mMovePos.x;
 
 			// Check for vertical wipe
-			if (dy > 0)
-				onSwipeUp();
-			else
-				onSwipeDown();
+			if (Math.abs(dy) > Math.abs(dx)) {
+				if (dy > 0)
+					onSwipeUp();
+				else
+					onSwipeDown();
+				return true;
+			}
 			return true;
 		}
 		// Get the position where swipe ends
