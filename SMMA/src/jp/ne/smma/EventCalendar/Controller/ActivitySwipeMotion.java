@@ -1,6 +1,7 @@
 package jp.ne.smma.EventCalendar.Controller;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.MotionEvent.PointerCoords;
 import android.view.View;
@@ -10,6 +11,7 @@ public class ActivitySwipeMotion implements ActivitySwipeInterface,
 	static final int MIN_DISTANCE = 100;
 	private PointerCoords mDownPos = new PointerCoords();
 	private PointerCoords mUpPos = new PointerCoords();
+	private PointerCoords mMovePos = new PointerCoords();
 
 	public ActivitySwipeMotion(Activity activity) {
 	}
@@ -31,9 +33,21 @@ public class ActivitySwipeMotion implements ActivitySwipeInterface,
 		// Capture the position where swipe begins
 		case MotionEvent.ACTION_DOWN: {
 			event.getPointerCoords(0, mDownPos);
+			Log.i("SwipeMotion", "SwipeMotion Down");
 			return true;
 		}
+		case MotionEvent.ACTION_MOVE: {
+			event.getPointerCoords(0, mMovePos);
+			Log.i("SwipeMotion", "SwipeMotion Move");
+			float dy = mDownPos.y - mMovePos.y;
 
+			// Check for vertical wipe
+			if (dy > 0)
+				onSwipeUp();
+			else
+				onSwipeDown();
+			return true;
+		}
 		// Get the position where swipe ends
 		case MotionEvent.ACTION_UP: {
 			event.getPointerCoords(0, mUpPos);
