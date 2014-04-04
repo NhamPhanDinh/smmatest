@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import jp.ne.smma.R;
+import jp.ne.smma.EventCalendar.Controller.ActivitySwipeMotion;
 import jp.ne.smma.EventList.Controller.AlertDialogManager;
 import jp.ne.smma.EventList.Controller.EventListAdapter;
 import jp.ne.smma.Ultis.ConnectionDetector;
@@ -24,6 +25,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -34,6 +36,7 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
@@ -69,6 +72,11 @@ public class EventListFragment extends Fragment {
 	View mHeader;
 	public JSONArray mJsonArray;
 	private GestureDetector gesDetectorBanner;
+	private final int SWIPE_MIN_DISTANCE = 20;
+	private final int SWIPE_THRESHOLD_VELOCITY = 200;
+	boolean checkHeader = false;
+	private Handler handler = new Handler();
+	private Runnable runnable;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -106,28 +114,44 @@ public class EventListFragment extends Fragment {
 			}
 		});
 
-		gesDetectorBanner = new GestureDetector(new MyGestureListener());
-		mHeader.setOnTouchListener(new OnTouchListener() {
+//		gesDetectorBanner = new GestureDetector(new MyGestureListener());
+//		mHeader.setOnTouchListener(new OnTouchListener() {
+//
+//			@Override
+//			public boolean onTouch(View v, MotionEvent event) {
+//				// TODO Auto-generated method stub
+//				gesDetectorBanner.onTouchEvent(event);
+//				return false;
+//			}
+//		});
 
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				// TODO Auto-generated method stub
-				gesDetectorBanner.onTouchEvent(event);
-				return false;
-			}
-		});
+		// test swipe down
+	 	mHeader.setOnTouchListener(mActivitySwipeMotion);
 
-		// ((LoadMoreListView) listEvent)
-		// .setOnLoadMoreListener(new OnLoadMoreListener() {
-		// public void onLoadMore() {
-		// // Do the work to load more items at the end of list
-		// // here
-		// new LoadDataTask().execute();
-		// }
-		// });
-		// test code
 		return rootView;
 	}
+
+	ActivitySwipeMotion mActivitySwipeMotion = new ActivitySwipeMotion(
+			getActivity()) {
+		public void onSwipeLeft() {
+			Log.i("Calendar", "Swiping Left");
+		}
+
+		public void onSwipeRight() {
+			Log.i("Calendar", "Swiping Right");
+		}
+
+		public void onSwipeDown() {
+			Log.i("Calendar", "Swiping Down");
+			MainActivity.showHideHeader(true);
+			checkHeader = true;
+			handler.postDelayed(sendData, 3000);
+		}
+
+		public void onSwipeUp() {
+			Log.i("Calendar", "Swiping Up");
+		}
+	};
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -152,7 +176,53 @@ public class EventListFragment extends Fragment {
 		@Override
 		public boolean onDown(MotionEvent e) {
 			Log.d("TouchEventList", "TouchEventList");
+//			MainActivity.showHideHeader(true);
+//			checkHeader = true;
+//			handler.postDelayed(sendData, 3000);
 			return super.onDown(e);
+		}
+
+		@Override
+		public boolean onScroll(MotionEvent e1, MotionEvent e2,
+				float distanceX, float distanceY) {
+			// TODO Auto-generated method stub
+			Log.d("TouchEventList", "TouchEventList onScroll");
+			return super.onScroll(e1, e2, distanceX, distanceY);
+		}
+
+		@Override
+		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+				float velocityY) {
+			// TODO Auto-generated method stub
+			Log.d("TouchEventList", "TouchEventList onFling");
+			if (e2.getY() - e1.getY() > SWIPE_MIN_DISTANCE
+					&& Math.abs(velocityY) > SWIPE_THRESHOLD_VELOCITY) {
+				Log.d("Gesture", "..................... Top to bottom");
+				return false; // Top to bottom
+			}
+			return super.onFling(e1, e2, velocityX, velocityY);
+		}
+	}
+
+	private final Runnable sendData = new Runnable() {
+		public void run() {
+			try {
+				// prepare and send the data here..
+
+				MainActivity.showHideHeader(false);
+				checkHeader = false;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	};
+
+	@Override
+	public void onDestroyView() {
+		// TODO Auto-generated method stub
+		super.onDestroyView();
+		if (handler != null || sendData != null) {
+			handler.removeCallbacks(sendData);
 		}
 	}
 

@@ -80,8 +80,8 @@ public class EventCalendarFragment extends Fragment {
 	List<ItemCalendar> rowCalendar = new ArrayList<ItemCalendar>();
 	FrameLayout linearIncludeCalendar;
 	CalendarView view;
-	private static final int SWIPE_MIN_DISTANCE = 20;
-	private static final int SWIPE_THRESHOLD_VELOCITY = 200;
+	private final int SWIPE_MIN_DISTANCE = 20;
+	private final int SWIPE_THRESHOLD_VELOCITY = 200;
 	TextView monthTv;
 	private float posUpX = 0;
 	private float posUpY = 0;

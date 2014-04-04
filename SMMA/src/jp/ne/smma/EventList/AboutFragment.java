@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jp.ne.smma.R;
+import jp.ne.smma.EventCalendar.Controller.ActivitySwipeMotion;
 import jp.ne.smma.EventList.Controller.AlertDialogManager;
 import jp.ne.smma.Ultis.ApplicationUntils;
 import jp.ne.smma.Ultis.ConnectionDetector;
@@ -26,6 +27,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -57,6 +59,9 @@ public class AboutFragment extends Fragment {
 	private TextView txtContentTitle;
 	private ImageView bannerShow;
 	View mFooter;
+	boolean checkHeader = false;
+	private Handler handler = new Handler();
+	private Runnable runnable;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -64,19 +69,19 @@ public class AboutFragment extends Fragment {
 
 		View rootView = inflater.inflate(R.layout.about_activity, container,
 				false);
-		
+
 		// get data from XML
 		listview = (ListView) rootView.findViewById(R.id.listview);
 		mHeader = inflater.inflate(R.layout.about_header_view, null, false);
 		mFooter = inflater.inflate(R.layout.event_footer_about, null, false);
-		
+
 		// txtContentTitle = (TextView) rootView
 		// .findViewById(R.id.txtContentAbout);
 		// add data list view
 		rowItems = new ArrayList<RowAboutItem>();
 		listview.addHeaderView(mHeader, null, false);
 		listview.addFooterView(mFooter, null, false);
-		bannerShow=(ImageView)mFooter.findViewById(R.id.bannerShow);
+		bannerShow = (ImageView) mFooter.findViewById(R.id.bannerShow);
 		// for (int i = 0; i < strContent.length; i++) {
 		// RowAboutItem item = new RowAboutItem(colorCode[i], imagesItem[i],
 		// strContent[i]);
@@ -128,7 +133,7 @@ public class AboutFragment extends Fragment {
 		// }
 		// });
 		bannerShow.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
@@ -138,7 +143,54 @@ public class AboutFragment extends Fragment {
 				startActivity(i);
 			}
 		});
+
+		mHeader.setOnTouchListener(mAboutSwipeMotion);
+
 		return rootView;
+	}
+
+	ActivitySwipeMotion mAboutSwipeMotion = new ActivitySwipeMotion(
+			getActivity()) {
+		public void onSwipeLeft() {
+			Log.i("Calendar", "Swiping Left");
+		}
+
+		public void onSwipeRight() {
+			Log.i("Calendar", "Swiping Right");
+		}
+
+		public void onSwipeDown() {
+			Log.i("Calendar", "Swiping Down");
+			MainActivity.showHideHeader(true);
+			checkHeader = true;
+			handler.postDelayed(sendData, 3000);
+		}
+
+		public void onSwipeUp() {
+			Log.i("Calendar", "Swiping Up");
+		}
+	};
+
+	private final Runnable sendData = new Runnable() {
+		public void run() {
+			try {
+				// prepare and send the data here..
+
+				MainActivity.showHideHeader(false);
+				checkHeader = false;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	};
+
+	@Override
+	public void onDestroyView() {
+		// TODO Auto-generated method stub
+		super.onDestroyView();
+		if (handler != null || sendData != null) {
+			handler.removeCallbacks(sendData);
+		}
 	}
 
 	@Override
@@ -293,6 +345,5 @@ public class AboutFragment extends Fragment {
 		// Showing Alert Message
 		alertDialog.show();
 	}
-
 
 }
