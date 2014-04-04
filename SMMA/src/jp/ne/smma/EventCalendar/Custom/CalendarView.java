@@ -118,6 +118,13 @@ public class CalendarView extends View {
 		dayPaint = new Paint();
 		dayPaint.setColor(Color.TRANSPARENT);
 		// this.max_length_calendar = getMaxLengthCalendar();
+		// Limit scroll in 3 months
+		Calendar c = Calendar.getInstance();
+		c.add(Calendar.MONTH, 3);
+		limitWidth = square
+				* (UntilDateTime.betweenDates(dateCurrent, c.getTime()) - 14)
+				+ square / 2;
+		Log.d("LimitWidth", "LimitWidth: " + limitWidth + " :PosX: " + mPosX);
 	}
 
 	public CalendarView(Context context, ArrayList<MonthInfo> monthInfo,
@@ -209,9 +216,9 @@ public class CalendarView extends View {
 
 		coorListMonth = new ArrayList<Float>();
 
-		canvas.drawRect(0, 0, 32000, 2 * square + this.month_height,
+		canvas.drawRect(0, 0, limitWidth *  2, 2 * square + this.month_height,
 				this.backgroundHeaderPaint);
-		canvas.drawRect(0, 0, 32000, this.month_height, this.weekendPaint);
+		canvas.drawRect(0, 0, limitWidth *  2, this.month_height, this.weekendPaint);
 
 		for (int i = 0; i < listMonthInfo.size(); i++) {
 			MonthInfo monthInfo = listMonthInfo.get(i);
@@ -279,18 +286,10 @@ public class CalendarView extends View {
 				}
 			}
 		}
-
-		// Limit scroll in 3 months
-		Calendar c = Calendar.getInstance();
-		c.add(Calendar.MONTH, 3);
-		limitWidth = square
-				* (UntilDateTime.betweenDates(dateCurrent, c.getTime()) - 14)
-				+ square / 2;
-		Log.d("LimitWidth", "LimitWidth: " + limitWidth + " :PosX: " + mPosX);
 	}
 
 	public void drawBackgroundCommon(Canvas canvas) {
-		canvas.drawRect(0, 2 * square + this.month_height, 32000 * 2, 10000,
+		canvas.drawRect(0, 2 * square + this.month_height, limitWidth * 2, 10000,
 				this.backgroundCommonPaint);
 	}
 
@@ -397,7 +396,8 @@ public class CalendarView extends View {
 				// Calculate width of text
 				float widthText = contentTextPain.measureText(eventName35
 						+ companyName);
-				widthContentEvent = widthText + image.getWidth() + square + 5;
+				widthContentEvent = widthText + image.getWidth() + square
+						+ contentTextPain.measureText("a");
 
 				// draw header for event
 				canvas.drawRect(paddingLeftEvent, 3 * square + startTop
@@ -420,9 +420,10 @@ public class CalendarView extends View {
 				companyPaint.setTextSize(30 * this.WITH_SCREEN / 1080);
 				companyPaint.setTextAlign(Align.LEFT);
 				companyPaint.setColor(Color.parseColor(colorCode));
-				canvas.drawText(companyName, paddingLeftEvent + square + 5, 3
-						* square + startTop + headerLength + text_lenght
-						+ square / 2, companyPaint);
+				canvas.drawText(companyName, paddingLeftEvent + square
+						+ contentTextPain.measureText("a"), 3 * square
+						+ startTop + headerLength + text_lenght + square / 2,
+						companyPaint);
 
 				// draw event name
 				canvas.drawText(eventName35,
