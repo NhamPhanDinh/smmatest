@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import jp.ne.smma.R;
-import jp.ne.smma.EventCalendar.Controller.ActivitySwipeMotion;
-import jp.ne.smma.EventCalendar.Controller.MyGestureListener;
 import jp.ne.smma.EventList.Controller.AlertDialogManager;
 import jp.ne.smma.EventList.Controller.EventListAdapter;
 import jp.ne.smma.Ultis.ConnectionDetector;
@@ -26,12 +24,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.GestureDetector;
-import android.view.GestureDetector.OnGestureListener;
-import android.view.MotionEvent.PointerCoords;
+import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -39,7 +35,6 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ImageView;
 import android.widget.ListView;
 
 public class EventListFragment extends Fragment {
@@ -73,12 +68,7 @@ public class EventListFragment extends Fragment {
 	ConnectionDetector cd;
 	View mHeader;
 	public JSONArray mJsonArray;
-
-	private ImageView imgBanner;
-	private Handler handler = new Handler();
-	static final int MIN_DISTANCE = 100;
-	private PointerCoords mDownPos = new PointerCoords();
-	private PointerCoords mUpPos = new PointerCoords();
+	private GestureDetector gesDetectorBanner;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -87,43 +77,6 @@ public class EventListFragment extends Fragment {
 		btnLoadMore = inflater.inflate(R.layout.event_list_footer, null, false);
 		listEvent = (ListView) rootView.findViewById(R.id.list_event);
 		mHeader = inflater.inflate(R.layout.event_list_header, null, false);
-
-		mHeader.setFocusable(true);
-		mHeader.setClickable(true);
-		mHeader.setOnTouchListener(new OnTouchListener() {
-
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				// TODO Auto-generated method stub
-				switch (event.getAction()) {
-				case MotionEvent.ACTION_DOWN: {
-					Log.i("", "--------------ACTION_DOWN--------------");
-					event.getPointerCoords(0, mDownPos);
-					float dy = mDownPos.y - mUpPos.y;
-					float dx = mDownPos.x - mUpPos.x;
-					Log.i("", "--------------mDownPos.y --------------:"+mDownPos.y );
-					Log.i("", "--------------mUpPos.y--------------:"+mUpPos.y);
-					Log.i("", "--------------dy--------------:"+dy);
-					Log.i("", "--------------dx--------------:"+dx);
-					Log.i("", "-------------- mHeader.getHeight()--------------:"+ mHeader.getHeight());
-					if (Math.abs(dy) > mHeader.getHeight()) {
-						if (dy > 0) {
-							Log.i("", "--------------1--------------");
-							// onSwipeUp();
-						} else {
-							Log.i("", "---------------0--------------");
-							MainActivity.showHideHeader(true);
-							handler.postDelayed(sendData, 3000);
-						}
-						return true;
-					}
-					return true;
-				}
-				}
-				return false;
-			}
-		});
-
 		listEvent.addHeaderView(mHeader, null, false);
 		listEvent.addFooterView(btnLoadMore);
 
@@ -153,6 +106,17 @@ public class EventListFragment extends Fragment {
 			}
 		});
 
+		gesDetectorBanner = new GestureDetector(new MyGestureListener());
+		mHeader.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				// TODO Auto-generated method stub
+				gesDetectorBanner.onTouchEvent(event);
+				return false;
+			}
+		});
+
 		// ((LoadMoreListView) listEvent)
 		// .setOnLoadMoreListener(new OnLoadMoreListener() {
 		// public void onLoadMore() {
@@ -162,63 +126,8 @@ public class EventListFragment extends Fragment {
 		// }
 		// });
 		// test code
-		// imgBanner=(ImageView)mHeader.findViewById(R.id.image_banner);
-		// mHeader.setOnTouchListener(mActivitySwipeMotion);
-		// listEvent.setOnTouchListener(new OnTouchListener() {
-		//
-		// @Override
-		// public boolean onTouch(View v, MotionEvent arg1) {
-		// // TODO Auto-generated method stub
-		// listEvent.dispatchTouchEvent(arg1);
-		//
-		// return false;
-		// }
-		// });
-
 		return rootView;
 	}
-
-	ActivitySwipeMotion mActivitySwipeMotion = new ActivitySwipeMotion(
-			getActivity()) {
-		public void onSwipeLeft() {
-			Log.i("Calendar", "Swiping Left");
-		}
-
-		public void onSwipeRight() {
-			Log.i("Calendar", "Swiping Right");
-		}
-
-		public void onSwipeDown() {
-			Log.i("Calendar", "Swiping Down");
-			MainActivity.showHideHeader(true);
-			handler.postDelayed(sendData, 3000);
-		}
-
-		public void onSwipeUp() {
-			Log.i("Calendar", "Swiping Up");
-		}
-	};
-
-	@Override
-	public void onDestroyView() {
-		// TODO Auto-generated method stub
-		super.onDestroyView();
-		if (handler != null || sendData != null) {
-			handler.removeCallbacks(sendData);
-		}
-	}
-
-	private final Runnable sendData = new Runnable() {
-		public void run() {
-			try {
-				// prepare and send the data here..
-
-				MainActivity.showHideHeader(false);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	};
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -237,6 +146,14 @@ public class EventListFragment extends Fragment {
 					false);
 		}
 
+	}
+
+	private class MyGestureListener extends SimpleOnGestureListener {
+		@Override
+		public boolean onDown(MotionEvent e) {
+			Log.d("TouchEventList", "TouchEventList");
+			return super.onDown(e);
+		}
 	}
 
 	/**

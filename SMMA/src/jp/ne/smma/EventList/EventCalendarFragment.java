@@ -95,6 +95,7 @@ public class EventCalendarFragment extends Fragment {
 	private Runnable runnable;
 
 	LinearLayout linearBanner;
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -164,14 +165,15 @@ public class EventCalendarFragment extends Fragment {
 					public boolean onTouch(View v, MotionEvent event) {
 						// TODO Auto-generated method stub
 						gesDetectorContent.onTouchEvent(event);
-						boolean detectedUp = event.getAction() == MotionEvent.ACTION_UP;
-						if (!gesDetectorContent.onTouchEvent(event)
-								&& detectedUp) {
-							Log.d("UpAction", "UpAction");
-							
-							return true;
-						}
-						return true;
+						// boolean detectedUp = event.getAction() ==
+						// MotionEvent.ACTION_UP;
+						// if (!gesDetectorContent.onTouchEvent(event)
+						// && detectedUp) {
+						// Log.d("UpAction", "UpAction");
+						//
+						// return true;
+						// }
+						return false;
 					}
 				});
 				viewLabel.setOnTouchListener(new OnTouchListener() {
@@ -224,40 +226,41 @@ public class EventCalendarFragment extends Fragment {
 
 			}
 		});
-		//test swipe down
-		linearBanner=(LinearLayout)rootView.findViewById(R.id.linearBanner);
+		// test swipe down
+		linearBanner = (LinearLayout) rootView.findViewById(R.id.linearBanner);
 		linearBanner.setOnTouchListener(mActivitySwipeMotion);
-		
-		
+
 		return rootView;
 	}
-	 ActivitySwipeMotion mActivitySwipeMotion = new ActivitySwipeMotion(getActivity()) {
-	        public void onSwipeLeft() {
-	            Log.i("Calendar", "Swiping Left");
-	        }
-	 
-	        public void onSwipeRight() {
-	            Log.i("Calendar", "Swiping Right");
-	        }
-	 
-	        public void onSwipeDown(){
-	            Log.i("Calendar", "Swiping Down");
-	            MainActivity.showHideHeader(true);
-				checkHeader = true;
-				handler.postDelayed(sendData,3000);
-	        }
-	 
-	        public void onSwipeUp(){
-	            Log.i("Calendar", "Swiping Up");
-	        }
-	    };
+
+	ActivitySwipeMotion mActivitySwipeMotion = new ActivitySwipeMotion(
+			getActivity()) {
+		public void onSwipeLeft() {
+			Log.i("Calendar", "Swiping Left");
+		}
+
+		public void onSwipeRight() {
+			Log.i("Calendar", "Swiping Right");
+		}
+
+		public void onSwipeDown() {
+			Log.i("Calendar", "Swiping Down");
+			MainActivity.showHideHeader(true);
+			checkHeader = true;
+			handler.postDelayed(sendData, 3000);
+		}
+
+		public void onSwipeUp() {
+			Log.i("Calendar", "Swiping Up");
+		}
+	};
 
 	@Override
 	public void onDestroyView() {
 		// TODO Auto-generated method stub
 		super.onDestroyView();
 		if (handler != null || sendData != null) {
-			 handler.removeCallbacks(sendData);
+			handler.removeCallbacks(sendData);
 		}
 	}
 
@@ -349,29 +352,29 @@ public class EventCalendarFragment extends Fragment {
 			// TODO Auto-generated method stub
 			final float X = e2.getX();
 			final float Y = e2.getY();
-			
+
 			if (Y > _yDelta) {
-//				MainActivity.showHideHeader(true);
-//				checkHeader = true;
-//				handler.postDelayed(sendData,3000);
+				// MainActivity.showHideHeader(true);
+				// checkHeader = true;
+				// handler.postDelayed(sendData,3000);
 			}
 
 			float speed = getActivity().getResources().getDisplayMetrics().heightPixels * 0.002f;
 			Log.d("Toc Do", "Speed: " + speed);
-//			translateX(viewContent, (X - _xDelta));
-//			translateX(viewLabel,(X - _xDelta));
-//
-//			if (!isLabel) {
-//				translateY(viewContent, (Y - _yDelta));
-//			}
+			// translateX(viewContent, (X - _xDelta));
+			// translateX(viewLabel,(X - _xDelta));
+			//
+			// if (!isLabel) {
+			// translateY(viewContent, (Y - _yDelta));
+			// }
 
 			translateX(viewContent, (-distanceX));
-			translateX(viewLabel,(-distanceX));
+			translateX(viewLabel, (-distanceX));
 
 			if (!isLabel) {
 				translateY(viewContent, (-distanceY));
 			}
-			
+
 			if (viewContent.getPosX() > 0)
 				viewContent.setPosX(0);
 			if (viewContent.getPosX() < -viewContent.getLimitWidth())
@@ -445,28 +448,28 @@ public class EventCalendarFragment extends Fragment {
 			// mScroller.fling((int) viewContent.getPosX(),
 			// 0, 1400, 0, Integer.MIN_VALUE,
 			// Integer.MAX_VALUE, 0,0);
-			
+
 			if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE
 					&& Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
 
-				Log.d("Gesture", "..................... Right to left");
-
-				mScroller.fling((int) viewContent.getPosX(),
-						(int) viewContent.getPosY(), 1700, 1700,
-						Integer.MIN_VALUE, Integer.MAX_VALUE,
-						Integer.MIN_VALUE, Integer.MAX_VALUE);
-				mScrollAnimator.setDuration(5 * mScroller.getDuration());
-				mScrollAnimator.start();
+				// Log.d("Gesture", "..................... Right to left");
+				//
+				// mScroller.fling((int) viewContent.getPosX(),
+				// (int) viewContent.getPosY(), 1700, 1700,
+				// Integer.MIN_VALUE, Integer.MAX_VALUE,
+				// Integer.MIN_VALUE, Integer.MAX_VALUE);
+				// mScrollAnimator.setDuration(5 * mScroller.getDuration());
+				// mScrollAnimator.start();
 				return false; // Right to left
 			} else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE
 					&& Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-				Log.d("Gesture", "..................... Left to right");
-				mScroller.fling((int) viewContent.getPosX(),
-						(int) viewContent.getPosY(), 1700, 1700,
-						Integer.MIN_VALUE, Integer.MAX_VALUE,
-						Integer.MIN_VALUE, Integer.MAX_VALUE);
-				mScrollAnimator.setDuration(5 * mScroller.getDuration());
-				mScrollAnimator.start();
+				// Log.d("Gesture", "..................... Left to right");
+				// mScroller.fling((int) viewContent.getPosX(),
+				// (int) viewContent.getPosY(), 1700, 1700,
+				// Integer.MIN_VALUE, Integer.MAX_VALUE,
+				// Integer.MIN_VALUE, Integer.MAX_VALUE);
+				// mScrollAnimator.setDuration(5 * mScroller.getDuration());
+				// mScrollAnimator.start();
 				return false; // Left to right
 			}
 
@@ -484,19 +487,18 @@ public class EventCalendarFragment extends Fragment {
 		}
 	}
 
-	private final Runnable sendData = new Runnable(){
-    public void run(){
-        try {
-            //prepare and send the data here..
+	private final Runnable sendData = new Runnable() {
+		public void run() {
+			try {
+				// prepare and send the data here..
 
-        	MainActivity.showHideHeader(false);
-        	checkHeader = false;
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }   
-    }
-};
+				MainActivity.showHideHeader(false);
+				checkHeader = false;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	};
 
 	public void translateX(CalendarView view, float dx) {
 		view.translateX(dx);
