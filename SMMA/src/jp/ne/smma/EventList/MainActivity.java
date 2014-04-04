@@ -1,6 +1,7 @@
 package jp.ne.smma.EventList;
 
 import jp.ne.smma.R;
+import jp.ne.smma.EventCalendar.Controller.ActivitySwipeMotion;
 import jp.ne.smma.Ultis.Constance;
 import android.R.bool;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -30,7 +32,7 @@ public class MainActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		
 		if (Constance.checkPortrait) {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		} else {
@@ -69,9 +71,8 @@ public class MainActivity extends FragmentActivity {
 				Constance.CHECK_ORIENTATION, false);
 		Constance.strCheckBoxNotifiation = preferences.getInt(
 				Constance.CHECK_CHECKBOXNOTIFIATION, 0);
-
+		//showHideHeader(true);
 	}
-
 	@Override
 	public void onResume() {
 		super.onResume();

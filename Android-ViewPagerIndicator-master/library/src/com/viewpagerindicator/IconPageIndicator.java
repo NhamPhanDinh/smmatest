@@ -131,7 +131,7 @@ public class IconPageIndicator extends HorizontalScrollView implements PageIndic
         for (int i = 0; i < count; i++) {
             ImageView view = new ImageView(getContext(), null, R.attr.vpiIconPageIndicatorStyle);
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            lp.setMargins(10 , 0, 10 , 0 ); // Here you can set margins.
+            lp.setMargins(10 , 2, 10 , 2 ); // Here you can set margins.
             view.setLayoutParams(lp);
             view.setImageResource(iconAdapter.getIconResId(i));
             mIconsLayout.addView(view);

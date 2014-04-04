@@ -5,39 +5,29 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <ImageView
+    <LinearLayout
+        android:id="@+id/linearBanner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:adjustViewBounds="true"
-        android:contentDescription="@string/image"
-        android:src="@drawable/banner3" />
+        android:orientation="vertical" >
 
-    <!-- <LinearLayout -->
-    <!-- android:layout_width="fill_parent" -->
-    <!-- android:layout_height="wrap_content" -->
-    <!-- android:layout_gravity="center_horizontal" -->
-    <!-- android:background="#fffad5" -->
-    <!-- android:orientation="horizontal" > -->
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/image"
+            android:src="@drawable/banner3" />
 
-    <ImageView
-        android:id="@+id/imgFillter"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:layout_gravity="center_horizontal"
-        android:adjustViewBounds="true"
-        android:background="@drawable/button_fillter_calendar"
-        android:contentDescription="@string/image" />
-    <!-- </LinearLayout> -->
-
-
-    <!-- <TextView -->
-    <!-- android:id="@+id/tv_month" -->
-    <!-- android:layout_width="fill_parent" -->
-    <!-- android:layout_height="wrap_content" -->
-    <!-- android:background="#F1F1F1" -->
-    <!-- android:padding="5dp" -->
-    <!-- android:text="" /> -->
+        <ImageView
+            android:id="@+id/imgFillter"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_gravity="center_horizontal"
+            android:adjustViewBounds="true"
+            android:background="@drawable/button_fillter_calendar"
+            android:contentDescription="@string/image" />
+    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/parentCalendar"
@@ -100,18 +90,17 @@
                         android:src="@drawable/footer_btn" />
                 </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/textView1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        android:paddingLeft="18dp"
-                        android:paddingRight="18dp"
-                        android:text="@string/event_footer_text"
-                        android:textColor="@color/footer_text_color"
-                        android:textSize="20dp" />
-
+                <TextView
+                    android:id="@+id/textView1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:paddingLeft="18dp"
+                    android:paddingRight="18dp"
+                    android:text="@string/event_footer_text"
+                    android:textColor="@color/footer_text_color"
+                    android:textSize="20dp" />
             </RelativeLayout>
         </RelativeLayout>
     </RelativeLayout>

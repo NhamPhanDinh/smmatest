@@ -16,7 +16,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="@color/White"
-        android:lineSpacingExtra="7dp"
+        android:lineSpacingExtra="10dp"
         android:padding="5dp"
         android:singleLine="false"
         android:text="@string/string_about"

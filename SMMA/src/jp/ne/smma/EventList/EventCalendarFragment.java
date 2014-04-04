@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Locale;
 
 import jp.ne.smma.R;
+import jp.ne.smma.EventCalendar.Controller.ActivitySwipeMotion;
 import jp.ne.smma.EventCalendar.Custom.CalendarView;
 import jp.ne.smma.EventList.Controller.GetDataEventCalendar;
 import jp.ne.smma.Ultis.MonthInfo;
@@ -90,9 +91,10 @@ public class EventCalendarFragment extends Fragment {
 	private int HEIGHT_SCREEN;
 	private int idGetDataCalendar = 1;
 	boolean checkHeader = false;
-	private Handler handler;
+	private Handler handler = new Handler();
 	private Runnable runnable;
 
+	LinearLayout linearBanner;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -166,8 +168,7 @@ public class EventCalendarFragment extends Fragment {
 						if (!gesDetectorContent.onTouchEvent(event)
 								&& detectedUp) {
 							Log.d("UpAction", "UpAction");
-							showHeaderAfterTime();
-							handler.removeCallbacks(runnable);
+							
 							return true;
 						}
 						return true;
@@ -223,7 +224,41 @@ public class EventCalendarFragment extends Fragment {
 
 			}
 		});
+		//test swipe down
+		linearBanner=(LinearLayout)rootView.findViewById(R.id.linearBanner);
+		linearBanner.setOnTouchListener(mActivitySwipeMotion);
+		
+		
 		return rootView;
+	}
+	 ActivitySwipeMotion mActivitySwipeMotion = new ActivitySwipeMotion(getActivity()) {
+	        public void onSwipeLeft() {
+	            Log.i("Calendar", "Swiping Left");
+	        }
+	 
+	        public void onSwipeRight() {
+	            Log.i("Calendar", "Swiping Right");
+	        }
+	 
+	        public void onSwipeDown(){
+	            Log.i("Calendar", "Swiping Down");
+	            MainActivity.showHideHeader(true);
+				checkHeader = true;
+				handler.postDelayed(sendData,3000);
+	        }
+	 
+	        public void onSwipeUp(){
+	            Log.i("Calendar", "Swiping Up");
+	        }
+	    };
+
+	@Override
+	public void onDestroyView() {
+		// TODO Auto-generated method stub
+		super.onDestroyView();
+		if (handler != null || sendData != null) {
+			 handler.removeCallbacks(sendData);
+		}
 	}
 
 	public void getDataCalendar() {
@@ -316,8 +351,9 @@ public class EventCalendarFragment extends Fragment {
 			final float Y = e2.getY();
 
 			if (Y > _yDelta) {
-				MainActivity.showHideHeader(true);
-				checkHeader = true;
+//				MainActivity.showHideHeader(true);
+//				checkHeader = true;
+//				handler.postDelayed(sendData,3000);
 			}
 
 			Log.d("Toa Do", "Toado: Y: " + Y + " _yDelta: " + _yDelta
@@ -442,20 +478,19 @@ public class EventCalendarFragment extends Fragment {
 		}
 	}
 
-	public void showHeaderAfterTime() {
+	private final Runnable sendData = new Runnable(){
+    public void run(){
+        try {
+            //prepare and send the data here..
 
-		handler = new Handler();
-		handler.postDelayed(runnable, 3000);
-		runnable = new Runnable() {
-			@Override
-			public void run() {
-				handler.postDelayed(this, 3000);
-			}
-		};
-
-		MainActivity.showHideHeader(false);
-		checkHeader = false;
-	}
+        	MainActivity.showHideHeader(false);
+        	checkHeader = false;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }   
+    }
+};
 
 	public void translateX(CalendarView view, float dx) {
 		view.translateX(dx);
@@ -607,7 +642,7 @@ public class EventCalendarFragment extends Fragment {
 	public void onDestroy() {
 		// TODO Auto-generated method stub
 		if (handler != null || runnable != null) {
-			//handler.removeCallbacks(runnable);
+			// handler.removeCallbacks(runnable);
 		}
 		super.onDestroy();
 	}
