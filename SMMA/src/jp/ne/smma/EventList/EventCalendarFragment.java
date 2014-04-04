@@ -368,11 +368,11 @@ public class EventCalendarFragment extends Fragment {
 			// translateY(viewContent, (Y - _yDelta));
 			// }
 
-			translateX(viewContent, (-distanceX));
-			translateX(viewLabel, (-distanceX));
+			translateX(viewContent, speed*(-distanceX));
+			translateX(viewLabel, speed*(-distanceX));
 
 			if (!isLabel) {
-				translateY(viewContent, (-distanceY));
+				translateY(viewContent, speed*(-distanceY));
 			}
 
 			if (viewContent.getPosX() > 0)

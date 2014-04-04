@@ -20,6 +20,7 @@
 <!--         android:textColor="@color/about_smma_color_text" /> -->
 
     <ListView
+        android:background="@color/White"
         android:id="@+id/listview"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

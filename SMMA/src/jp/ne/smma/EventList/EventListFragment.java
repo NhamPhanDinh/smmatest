@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import jp.ne.smma.R;
+import jp.ne.smma.EventCalendar.Controller.ActivitySwipeMotion;
 import jp.ne.smma.EventList.Controller.AlertDialogManager;
 import jp.ne.smma.EventList.Controller.EventListAdapter;
 import jp.ne.smma.Ultis.ConnectionDetector;
@@ -112,7 +113,9 @@ public class EventListFragment extends Fragment {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				// TODO Auto-generated method stub
+				Log.i("", "------------------------------");
 				gesDetectorBanner.onTouchEvent(event);
+				mHeader.setOnTouchListener(mActivitySwipeMotion);
 				return false;
 			}
 		});
@@ -129,6 +132,27 @@ public class EventListFragment extends Fragment {
 		return rootView;
 	}
 
+	ActivitySwipeMotion mActivitySwipeMotion = new ActivitySwipeMotion(
+			getActivity()) {
+		public void onSwipeLeft() {
+			Log.i("Calendar", "Swiping Left");
+		}
+
+		public void onSwipeRight() {
+			Log.i("Calendar", "Swiping Right");
+		}
+
+		public void onSwipeDown() {
+			Log.i("Calendar", "Swiping Down");
+//			MainActivity.showHideHeader(true);
+//			checkHeader = true;
+//			handler.postDelayed(sendData, 3000);
+		}
+
+		public void onSwipeUp() {
+			Log.i("Calendar", "Swiping Up");
+		}
+	};
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
