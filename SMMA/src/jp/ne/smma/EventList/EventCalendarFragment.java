@@ -17,7 +17,6 @@ import jp.ne.smma.aboutsmma.DTO.ItemCalendar;
 import jp.ne.smma.aboutsmma.dialog.DialogFillterCalendar;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -32,12 +31,9 @@ import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.view.animation.TranslateAnimation;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Scroller;
 import android.widget.TextView;
 
@@ -86,7 +82,7 @@ public class EventCalendarFragment extends Fragment {
 	private float posUpX = 0;
 	private float posUpY = 0;
 
-	RelativeLayout footer;
+//	RelativeLayout footer;
 	private int WITH_SCREEN;
 	private int HEIGHT_SCREEN;
 	private int idGetDataCalendar = 1;
@@ -103,17 +99,17 @@ public class EventCalendarFragment extends Fragment {
 		View rootView = inflater.inflate(R.layout.event_calendar, container,
 				false);
 		imgFillter = (ImageView) rootView.findViewById(R.id.imgFillter);
-		footer = (RelativeLayout) rootView
-				.findViewById(R.id.event_calendar_footer);
-		footer.setVisibility(View.GONE);
-		footer.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				getDataCalendar();
-			}
-		});
+//		footer = (RelativeLayout) rootView
+//				.findViewById(R.id.event_calendar_footer);
+//		footer.setVisibility(View.GONE);
+//		footer.setOnClickListener(new OnClickListener() {
+//
+//			@Override
+//			public void onClick(View v) {
+//				// TODO Auto-generated method stub
+//				getDataCalendar();
+//			}
+//		});
 
 		WindowManager wm = (WindowManager) getActivity()
 				.getApplicationContext().getSystemService(
@@ -392,7 +388,7 @@ public class EventCalendarFragment extends Fragment {
 					viewContent
 							.setPosY(-(viewContent.getLimitHeight() - HEIGHT_SCREEN));
 				}
-				footer.setVisibility(View.VISIBLE);
+//				footer.setVisibility(View.VISIBLE);
 				check = true;
 			} else if (-viewContent.getPosY() < (viewContent.getLimitHeight()
 					- HEIGHT_SCREEN - 50)) {
@@ -401,7 +397,7 @@ public class EventCalendarFragment extends Fragment {
 				// animate.setDuration(500);
 				// animate.setFillAfter(true);
 				// footer.startAnimation(animate);
-				footer.setVisibility(View.GONE);
+//				footer.setVisibility(View.GONE);
 			}
 
 			if (viewLabel.getPosX() > 0)

@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:text="@string/string_about"
         android:padding="5dp"
-        android:lineSpacingExtra="10dp"
+        android:lineSpacingExtra="14dp"
         android:singleLine="false"
         android:textColor="@color/about_smma_color_text" />
     

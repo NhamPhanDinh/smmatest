@@ -45,6 +45,8 @@ public class MainActivity extends FragmentActivity {
 		pager.setOffscreenPageLimit(2);
 		mIndicator = (IconPageIndicator) findViewById(R.id.indicator);
 		mIndicator.setViewPager(pager);
+		
+		//test click
 
 		mainHeader = (RelativeLayout) findViewById(R.id.main_header);
 

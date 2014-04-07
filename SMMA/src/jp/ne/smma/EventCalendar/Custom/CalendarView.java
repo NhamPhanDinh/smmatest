@@ -419,6 +419,7 @@ public class CalendarView extends View {
 				Paint companyPaint = new Paint();
 				companyPaint.setTextSize(30 * this.WITH_SCREEN / 1080);
 				companyPaint.setTextAlign(Align.LEFT);
+				//companyPaint.setTextScaleX(1.2f);
 				companyPaint.setColor(Color.parseColor(colorCode));
 				canvas.drawText(companyName, paddingLeftEvent + square
 						+ contentTextPain.measureText("a"), 3 * square
