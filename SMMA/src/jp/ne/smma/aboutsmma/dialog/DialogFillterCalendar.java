@@ -81,8 +81,8 @@ public abstract class DialogFillterCalendar {
 				.setTitle("絞り込む表示選択")
 				 .setMultiChoiceItems(
 				 province,
-				 new boolean[] { false, false, false, false, false,
-				 false, false, false, false, false, false, false },
+				 new boolean[] { true, true, true, true, true,
+						 true, true, true, true, true, true, true },
 //				.setMultiChoiceItems(province, dialogValueList,
 						new OnMultiChoiceClickListener() {
 

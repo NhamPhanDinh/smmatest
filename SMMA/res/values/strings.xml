@@ -5,7 +5,7 @@
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="image">image</string>
- <string name="dateSliderTitle">Selected date</string>
+    <string name="dateSliderTitle">Selected date</string>
     <!-- Setting activity -->
     <string name="tittle_push_setting">各種設定</string>
     <string name="event_push_setting">個別イベント設定</string>
@@ -17,11 +17,13 @@
     <string name="btn_off">OFF</string>
     <string name="lable_time_active_function">すべてのイベントの通知時期</string>
     <string name="check_one_month">前日</string>
+    <string name="check_advanced">任意</string>
     <string name="check_three_month">３日前</string>
     <string name="check_one_week">1 週間前</string>
     <string name="active_rotate">画面設定</string>
     <string name="rotate_active">縦画面表示</string>
     <string name="rotate_deactive">横画面表示</string>
+    <string name="rotate_auto">自動回転</string>
     <!-- Dialog clear event -->
     <string name="content_message">個別イベントの通知をすべてクリアします。 よろしいですか</string>
     <string name="dialog_cancel">キャンセル</string>
@@ -32,5 +34,12 @@
     <string name="string_about">知的情報資源である仙台・宮城地域のさまざまな博物館が共働することで、地域にとってより有益な機能を獲得していくための共同事業体です。\n各館の学芸員や専門職員が持つ知識やノウハウを集積し、分野を横断した連携イベント、学校教育への協力や地域で活動する人材の育成支援、観光資源の開発など、単館では実現困難な新たな価値の創出を行い、地域のニーズに合った新時代のミュージアムとなることを目指します。</string>
     <!-- String URL when click banner about -->
     <string name="about_footer_banner_url">http://www.smma.jp/</string>
+    <!-- Dialog setting -->
+    <string name="dialog_setting_complete_setting">設定</string>
+    <string name="dialog_setting_remove_setting">削除</string>
+    <string name="dialog_setting_cancel_setting">戻る</string>
+    <string name="dialog_setting_title_complete">通知を設定しました。</string>
+    <string name="dialog_setting_title_remove">通知を削除しました。</string>
+    <string name="dialog_setting_dialog_confirm">イベントの通知をクリアします。\n\nよろしいですか？</string>
 
 </resources>

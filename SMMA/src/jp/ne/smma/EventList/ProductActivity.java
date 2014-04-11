@@ -1,6 +1,7 @@
 package jp.ne.smma.EventList;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import jp.ne.smma.EventList.Controller.AlertDialogManager;
 import jp.ne.smma.Ultis.ApplicationUntils;
 import jp.ne.smma.Ultis.Constance;
 import jp.ne.smma.Ultis.JSONParser;
+import jp.ne.smma.aboutsmma.dialog.SettingDialog;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -106,11 +108,12 @@ public class ProductActivity extends Activity {
 					.permitAll().build();
 			StrictMode.setThreadPolicy(policy);
 		}
-		if(Constance.checkPortrait){
-			 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-		}
-		else{
-			 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		if (Constance.checkPortrait==1) {
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		} else if (Constance.checkPortrait==2){
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		}else{
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
 		}
 //		imageLoaderProduct = new ImageLoader(
 //				ProductActivity.this.getApplicationContext());
@@ -141,13 +144,18 @@ public class ProductActivity extends Activity {
 					java.util.Date dateF = df.parse(dateFrom);
 				
 				// show notification
-				ApplicationUntils.showDialogChooseDateEventDetail(
-						ProductActivity.this, id, strName, df1.format(dateF),
+//				ApplicationUntils.showDialogChooseDateEventDetail(
+//						ProductActivity.this, id, strName, df1.format(dateF),
+//						df1.format(dateE), strTitle, strDate);
+				final Calendar dateandtime = Calendar.getInstance();
+				SettingDialog setting = new SettingDialog(ProductActivity.this, dateandtime,id, strName, df1.format(dateF),
 						df1.format(dateE), strTitle, strDate);
+				setting.show();
 				} catch (java.text.ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				
 			}
 		});
 		// save db
@@ -168,13 +176,20 @@ public class ProductActivity extends Activity {
 					java.util.Date dateF = df.parse(dateFrom);
 				
 				// show notification
-				ApplicationUntils.showDialogChooseDateEventDetail(
-						ProductActivity.this, id, strName, df1.format(dateF),
-						df1.format(dateE), strTitle, strDate);
+//				ApplicationUntils.showDialogChooseDateEventDetail(
+//						ProductActivity.this, id, strName, df1.format(dateF),
+//						df1.format(dateE), strTitle, strDate);
+					final Calendar dateandtime = Calendar.getInstance();
+					SettingDialog setting = new SettingDialog(ProductActivity.this, dateandtime,id, strName, df1.format(dateF),
+							df1.format(dateE), strTitle, strDate);
+					setting.show();
 				} catch (java.text.ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+//				final Calendar dateandtime = Calendar.getInstance();
+//				SettingDialog setting = new SettingDialog(ProductActivity.this, dateandtime);
+//				setting.show();
 			}
 		});
 		

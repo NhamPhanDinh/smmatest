@@ -84,7 +84,7 @@ public class Constance {
 	public static boolean checkLanscape = false;
 
 	// check orientation portrait
-	public static boolean checkPortrait = true;
+	public static int checkPortrait = 1; //default true, 1: portrait, 2: lanscape, 3: auto rotate
 	/* Array list image company calendar */
 	public static final Integer[] idCompany = new Integer[] { 10, 17, 18, 9, 11, 19, 12, 8,
 			16, 15, 13, 14,55 };

@@ -17,6 +17,7 @@ import android.util.Log;
  * Class defind application until
  */
 public class ApplicationUntils {
+	static int id=0;
 	/**
 	 * Go to Place detail Activity
 	 */
@@ -92,7 +93,7 @@ public class ApplicationUntils {
 	 * @return date
 	 */
 	public static Date converStringtoDate(String dateString) {
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm");
 		Date convertedDate = new Date();
 		try {
 			convertedDate = dateFormat.parse(dateString);
@@ -167,13 +168,14 @@ public class ApplicationUntils {
 	 * @param datetime
 	 */
 	public static void setNotification(Context mContext, String time) {
-		Log.i("", "Time: "+time);
+		id++;
+		Log.i("Application Until", "Time: "+time);
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(converStringtoDate(time)); // month 3// month +1
 		// go to receiver class
 		Intent myIntent = new Intent(mContext, ReceiverNotification.class);
-		PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, 0,
-				myIntent, 0);
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, id,
+				myIntent, PendingIntent.FLAG_ONE_SHOT); //PendingIntent.FLAG_ONE_SHOT = 0
 		// set alarm
 		@SuppressWarnings("static-access")
 		AlarmManager alarmManager = (AlarmManager) mContext

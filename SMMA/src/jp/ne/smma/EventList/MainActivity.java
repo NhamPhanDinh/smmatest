@@ -33,10 +33,12 @@ public class MainActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		if (Constance.checkPortrait) {
+		if (Constance.checkPortrait==1) {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-		} else {
+		} else if (Constance.checkPortrait==2){
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		}else{
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
 		}
 
 		PagerAdapter pageAdapter = new PagerAdapter(getSupportFragmentManager());
@@ -78,10 +80,12 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	public void onResume() {
 		super.onResume();
-		if (Constance.checkPortrait) {
+		if (Constance.checkPortrait==1) {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-		} else {
+		} else if (Constance.checkPortrait==2){
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		}else{
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
 		}
 	}
 	

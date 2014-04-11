@@ -18,7 +18,7 @@
             android:layout_gravity="center_horizontal"
             android:adjustViewBounds="true"
             android:contentDescription="@string/image"
-            android:src="@drawable/banner3" />
+            android:src="@drawable/banner_calendar_lanscape" />
 
         <ImageView
             android:id="@+id/imgFillter"
@@ -26,7 +26,7 @@
             android:layout_height="30dp"
             android:layout_gravity="center_horizontal"
             android:adjustViewBounds="true"
-            android:background="@drawable/button_fillter_calendar"
+            android:background="@drawable/button_fillter_calendar_lanscape"
             android:contentDescription="@string/image" />
     </LinearLayout>
 

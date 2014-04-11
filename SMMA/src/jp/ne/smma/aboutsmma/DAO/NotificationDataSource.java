@@ -280,6 +280,25 @@ public class NotificationDataSource {
 		return true;
 
 	}
+	/**
+	* Remove record value
+	 */
+	public Boolean removeValueRecord(int id) {
+		try {
+			String querySql = "DELETE FROM " + DatabaseHandler.TBL_NOTIFICATION
+					+" WHERE "+DatabaseHandler.COLUMN_ID_EVENT+" = "+id;
+			Cursor cursor = database.rawQuery(querySql, null);
+
+			cursor.moveToFirst();
+			cursor.getCount();
+			cursor.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+
+	}
 
 	/**
 	 * Update choose day
@@ -312,7 +331,7 @@ public class NotificationDataSource {
 		try {
 			String querySql = "SELECT  " + DatabaseHandler.COLUMN_CHOOSE_DAY
 					+ " " + "FROM " + DatabaseHandler.TBL_NOTIFICATION
-					+ " WHERE " + DatabaseHandler.COLUMN_ID + " = " + (id + 1);
+					+ " WHERE " + DatabaseHandler.COLUMN_ID_EVENT + " = " + (id);
 			Log.i("", "Querry: " + querySql);
 			Cursor cursor = database.rawQuery(querySql, null);
 
@@ -327,6 +346,32 @@ public class NotificationDataSource {
 			e.printStackTrace();
 		}
 		Log.i("", "Time choose day get DB: " + time);
+		return time;
+
+	}
+	/**
+	 * get value day
+	 */
+	public String getValueDay(int id) {
+		String time = null;
+		try {
+			String querySql = "SELECT  " + DatabaseHandler.COLUMN_STATUS
+					+ " " + "FROM " + DatabaseHandler.TBL_NOTIFICATION
+					+ " WHERE " + DatabaseHandler.COLUMN_ID_EVENT + " = " + (id);
+			Log.i("", "Querry: " + querySql);
+			Cursor cursor = database.rawQuery(querySql, null);
+
+			cursor.moveToFirst();
+			cursor.getCount();
+			while (!cursor.isAfterLast()) {
+				time = cursor.getString(0);
+				cursor.moveToNext();
+			}
+			cursor.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		Log.i("", "Value get DB: " + time);
 		return time;
 
 	}

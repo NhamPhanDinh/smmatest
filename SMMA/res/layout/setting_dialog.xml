@@ -1,59 +1,176 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+    android:layout_width="320dp"
     android:layout_height="wrap_content"
     android:gravity="center"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:padding="5dp" >
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:text="CHOOSE VALUE" />
-
-    <LinearLayout
-        android:layout_marginLeft="10dp"
+        android:visibility="gone"
+        android:text=""
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:id="@+id/infoDialog"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:background="#FFE599" 
+        android:layout_marginBottom="2dp"/>
 
-        <CheckBox
-            android:id="@+id/checkOneMonth"
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border_linear_layout"
+        android:orientation="vertical"
+        android:padding="5dp" >
+
+        <RadioButton
+            android:id="@+id/checkOneWeek"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="1 Month" />
+            android:gravity="right|center"
+            android:text="@string/check_one_week" />
 
-        <CheckBox
-            android:id="@+id/checkThreeMonth"
+        <RadioButton
+            android:id="@+id/checkThreeDay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="3 Month" />
+            android:gravity="right|center"
+            android:text="@string/check_three_month" />
 
-        <CheckBox
-            android:id="@+id/checkOtherMonth"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Other" />
+            android:orientation="horizontal" >
+
+            <RadioButton
+                android:id="@+id/checkOneDay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="right|center"
+                android:text="@string/check_one_month" />
+            <!-- Wheel view one -->
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="horizontal" >
+
+                <jp.ne.smma.wheel.WheelView
+                    android:id="@+id/hourOneDay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_weight="1.1" >
+                </jp.ne.smma.wheel.WheelView>
+
+                <jp.ne.smma.wheel.WheelView
+                    android:id="@+id/minuteOneDay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_weight="1.1" >
+                </jp.ne.smma.wheel.WheelView>
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
+    <!-- Part two -->
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/border_linear_layout"
+        android:orientation="vertical"
+        android:padding="5dp" >
+
+        <RadioButton
+            android:id="@+id/checkAdvanced"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right|center"
+            android:text="@string/check_advanced" />
+        <!-- Wheel view two -->
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="5dp" >
+
+            <jp.ne.smma.wheel.WheelView
+                android:id="@+id/year"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.9" >
+            </jp.ne.smma.wheel.WheelView>
+
+            <jp.ne.smma.wheel.WheelView
+                android:id="@+id/month"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.1" >
+            </jp.ne.smma.wheel.WheelView>
+
+            <jp.ne.smma.wheel.WheelView
+                android:id="@+id/day"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.1" >
+            </jp.ne.smma.wheel.WheelView>
+
+            <jp.ne.smma.wheel.WheelView
+                android:id="@+id/hour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.1" >
+            </jp.ne.smma.wheel.WheelView>
+
+            <jp.ne.smma.wheel.WheelView
+                android:id="@+id/minute"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.1" >
+            </jp.ne.smma.wheel.WheelView>
+        </LinearLayout>
+    </LinearLayout>
+    <!-- Button -->
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="15dp"
+        android:gravity="center"
         android:orientation="horizontal" >
 
         <Button
-            android:id="@+id/btnOK"
+            android:id="@+id/btnSettingComplete"
+            style="@android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/dialog_setting_complete_setting" />
+
+        <Button
+            android:id="@+id/btnRemove"
+            style="@android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="OK" />
+            android:text="@string/dialog_setting_remove_setting" />
 
         <Button
             android:id="@+id/btnCancel"
+            style="@android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Cancel" />
+            android:text="@string/dialog_setting_cancel_setting" />
     </LinearLayout>
 
 </LinearLayout>

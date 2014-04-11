@@ -2,16 +2,12 @@ package jp.ne.smma.EventList;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
-
 import jp.ne.smma.R;
 import jp.ne.smma.EventCalendar.Custom.Switch;
-import jp.ne.smma.EventList.Controller.GetDataEventCalendar;
 import jp.ne.smma.Ultis.ApplicationUntils;
 import jp.ne.smma.Ultis.Constance;
 import jp.ne.smma.Ultis.DialogUtil;
 import jp.ne.smma.aboutsmma.DAO.NotificationDataSource;
-import jp.ne.smma.aboutsmma.DTO.ItemCalendar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -23,7 +19,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -45,6 +40,7 @@ public class SettingActivity extends Activity implements OnClickListener {
 	private RadioButton checkOneDay;
 	private RadioButton btnPortraint;
 	private RadioButton btnLanscape;
+	private RadioButton btnAutoRotate;
 
 	private RadioGroup radioOrientation;
 	private RadioGroup radioCheckBox;
@@ -66,11 +62,12 @@ public class SettingActivity extends Activity implements OnClickListener {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.setting_activity);
-		if(Constance.checkPortrait){
-			 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-		}
-		else{
-			 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		if (Constance.checkPortrait==1) {
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		} else if (Constance.checkPortrait==2){
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		}else{
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
 		}
 //		// get data from xml
 		ini();
@@ -114,12 +111,12 @@ public class SettingActivity extends Activity implements OnClickListener {
 			}
 		});
 		// check event bOrientation
-		if (Constance.checkPortrait) {
+		if (Constance.checkPortrait==1) {
 			btnPortraint.setChecked(true);
-			Log.e("bbbbbbbbbb","vvvvvvvvvvvvvvvvv");
-		} else {			
+		} else if(Constance.checkPortrait==2){			
 			btnLanscape.setChecked(true);
-			Log.e("bbbbbbbbbb","111111111111111111111111");
+		}else{
+			btnAutoRotate.setChecked(true);
 		}
 		// detect click radiobutton
 
@@ -191,6 +188,7 @@ public class SettingActivity extends Activity implements OnClickListener {
 		checkOneDay = (RadioButton) findViewById(R.id.checkOneDay);
 		btnPortraint = (RadioButton) findViewById(R.id.btnActive);
 		btnLanscape = (RadioButton) findViewById(R.id.btnDeactive);
+		btnAutoRotate=(RadioButton)findViewById(R.id.btnAutoRotate);
 		radioOrientation = (RadioGroup) findViewById(R.id.radioOrientation);
 		linearShow = (LinearLayout) findViewById(R.id.linearShow);
 		radioCheckBox = (RadioGroup) findViewById(R.id.radioCheckBox);
@@ -403,21 +401,20 @@ public class SettingActivity extends Activity implements OnClickListener {
 				// now checked...
 				switch (clickRadio) {
 				case R.id.btnActive:
-//					setAutoOrientationEnabled(getContentResolver(),
-//							true);
 					btnPortraint.setChecked(true);
-					// Constance.bOrientation = true;							
 					setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-					Constance.checkPortrait = true;
+					Constance.checkPortrait = 1;
 					break;
 
 				case R.id.btnDeactive:
-//					setAutoOrientationEnabled(getContentResolver(),
-//							true);
 					 btnLanscape.setChecked(true);
-					// Constance.bOrientation = false;							
 					setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-					Constance.checkPortrait = false;
+					Constance.checkPortrait = 2;
+					break;
+				case R.id.btnAutoRotate:
+					 btnAutoRotate.setChecked(true);
+					setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
+					Constance.checkPortrait = 3;
 					break;
 				}
 			}
