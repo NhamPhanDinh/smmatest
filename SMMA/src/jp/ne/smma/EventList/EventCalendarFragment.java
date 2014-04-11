@@ -34,6 +34,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Scroller;
 import android.widget.TextView;
 
@@ -82,7 +83,7 @@ public class EventCalendarFragment extends Fragment {
 	private float posUpX = 0;
 	private float posUpY = 0;
 
-//	RelativeLayout footer;
+	// RelativeLayout footer;
 	private int WITH_SCREEN;
 	private int HEIGHT_SCREEN;
 	private int idGetDataCalendar = 1;
@@ -99,17 +100,17 @@ public class EventCalendarFragment extends Fragment {
 		View rootView = inflater.inflate(R.layout.event_calendar, container,
 				false);
 		imgFillter = (ImageView) rootView.findViewById(R.id.imgFillter);
-//		footer = (RelativeLayout) rootView
-//				.findViewById(R.id.event_calendar_footer);
-//		footer.setVisibility(View.GONE);
-//		footer.setOnClickListener(new OnClickListener() {
-//
-//			@Override
-//			public void onClick(View v) {
-//				// TODO Auto-generated method stub
-//				getDataCalendar();
-//			}
-//		});
+		// footer = (RelativeLayout) rootView
+		// .findViewById(R.id.event_calendar_footer);
+		// footer.setVisibility(View.GONE);
+		// footer.setOnClickListener(new OnClickListener() {
+		//
+		// @Override
+		// public void onClick(View v) {
+		// // TODO Auto-generated method stub
+		// getDataCalendar();
+		// }
+		// });
 
 		WindowManager wm = (WindowManager) getActivity()
 				.getApplicationContext().getSystemService(
@@ -157,27 +158,143 @@ public class EventCalendarFragment extends Fragment {
 				// Set onTouchListener
 				viewContent.setOnTouchListener(new OnTouchListener() {
 
+					private float mDeltaX;
+					private float mDeltaY;
+					private float mLastTouchX;
+					private float mLastTouchY;
+
 					@Override
 					public boolean onTouch(View v, MotionEvent event) {
 						// TODO Auto-generated method stub
-						gesDetectorContent.onTouchEvent(event);
-						// boolean detectedUp = event.getAction() ==
-						// MotionEvent.ACTION_UP;
-						// if (!gesDetectorContent.onTouchEvent(event)
-						// && detectedUp) {
-						// Log.d("UpAction", "UpAction");
-						//
-						// return true;
-						// }
+						// gesDetectorContent.onTouchEvent(event);
+
+						final int action = event.getAction();
+
+						mLastTouchX = event.getRawX();
+						mLastTouchY = event.getRawY();
+
+						switch (action) {
+						case MotionEvent.ACTION_DOWN: {
+							FrameLayout.LayoutParams lParams = (FrameLayout.LayoutParams) viewContent
+									.getLayoutParams();
+							Log.d("LayoutMargin", "Margin Calendar: Left: "
+									+ lParams.leftMargin + " :Top: "
+									+ lParams.topMargin);
+							mDeltaX = mLastTouchX - lParams.leftMargin;
+							mDeltaY = mLastTouchY - lParams.topMargin;
+
+							break;
+						}
+						case MotionEvent.ACTION_MOVE: {
+							mLastTouchX = event.getRawX();
+							mLastTouchY = event.getRawY();
+
+							final FrameLayout.LayoutParams paramsContent = (FrameLayout.LayoutParams) viewContent
+									.getLayoutParams();
+							final FrameLayout.LayoutParams paramsLabel = (FrameLayout.LayoutParams) viewLabel
+									.getLayoutParams();
+
+							paramsContent.leftMargin = (int) (mLastTouchX - mDeltaX);
+							paramsContent.topMargin = (int) (mLastTouchY - mDeltaY);
+
+							if (paramsContent.leftMargin > 0)
+								paramsContent.leftMargin = 0;
+							if (paramsContent.topMargin > 0)
+								paramsContent.topMargin = 0;
+							if (paramsContent.leftMargin < -viewContent
+									.getLimitWidth())
+								paramsContent.leftMargin = (int) -viewContent
+										.getLimitWidth();
+
+							// Check footer visible
+							if (-paramsContent.topMargin >= (viewContent
+									.getLimitHeight() - HEIGHT_SCREEN)) {
+								if ((viewContent.getLimitHeight() - HEIGHT_SCREEN) < 0) {
+									paramsContent.topMargin = 0;
+								} else {
+									paramsContent.topMargin = (int) -(viewContent
+											.getLimitHeight() - HEIGHT_SCREEN);
+								}
+								// footer.setVisibility(View.VISIBLE);
+							} else if (-viewContent.getPosY() < (viewContent
+									.getLimitHeight() - HEIGHT_SCREEN - 50)) {
+								// TranslateAnimation animate = new
+								// TranslateAnimation(0, 0, 0,
+								// footer.getHeight());
+								// animate.setDuration(500);
+								// animate.setFillAfter(true);
+								// footer.startAnimation(animate);
+								// footer.setVisibility(View.GONE);
+							}
+
+							paramsLabel.leftMargin = paramsContent.leftMargin;
+							viewContent.setLayoutParams(paramsContent);
+							viewLabel.setLayoutParams(paramsLabel);
+
+							break;
+						}
+						}
 						return false;
 					}
 				});
 				viewLabel.setOnTouchListener(new OnTouchListener() {
 
+					private float mDeltaX;
+					private float mDeltaY;
+					private float mLastTouchX;
+					private float mLastTouchY;
+
 					@Override
 					public boolean onTouch(View v, MotionEvent event) {
 						// TODO Auto-generated method stub
-						gesDetectorLabel.onTouchEvent(event);
+						// gesDetectorLabel.onTouchEvent(event);
+						
+						final int action = event.getAction();
+
+						mLastTouchX = event.getRawX();
+						mLastTouchY = event.getRawY();
+
+						switch (action) {
+						case MotionEvent.ACTION_DOWN: {
+							FrameLayout.LayoutParams lParams = (FrameLayout.LayoutParams) viewContent
+									.getLayoutParams();
+							Log.d("LayoutMargin", "Margin Calendar: Left: "
+									+ lParams.leftMargin + " :Top: "
+									+ lParams.topMargin);
+							mDeltaX = mLastTouchX - lParams.leftMargin;
+							mDeltaY = mLastTouchY - lParams.topMargin;
+
+							break;
+						}
+						case MotionEvent.ACTION_MOVE: {
+							mLastTouchX = event.getRawX();
+							mLastTouchY = event.getRawY();
+
+							final FrameLayout.LayoutParams paramsContent = (FrameLayout.LayoutParams) viewContent
+									.getLayoutParams();
+							final FrameLayout.LayoutParams paramsLabel = (FrameLayout.LayoutParams) viewLabel
+									.getLayoutParams();
+
+							paramsContent.leftMargin = (int) (mLastTouchX - mDeltaX);
+							//paramsContent.topMargin = (int) (mLastTouchY - mDeltaY);
+
+							if (paramsContent.leftMargin > 0)
+								paramsContent.leftMargin = 0;
+							if (paramsContent.topMargin > 0)
+								paramsContent.topMargin = 0;
+							if (paramsContent.leftMargin < -viewContent
+									.getLimitWidth())
+								paramsContent.leftMargin = (int) -viewContent
+										.getLimitWidth();
+
+							paramsLabel.leftMargin = paramsContent.leftMargin;
+							viewContent.setLayoutParams(paramsContent);
+							viewLabel.setLayoutParams(paramsLabel);
+
+							break;
+						}
+						}
+						
 						return false;
 					}
 				});
@@ -364,11 +481,11 @@ public class EventCalendarFragment extends Fragment {
 			// translateY(viewContent, (Y - _yDelta));
 			// }
 
-			translateX(viewContent, speed*(-distanceX));
-			translateX(viewLabel, speed*(-distanceX));
+			// translateX(viewContent, speed * (-distanceX));
+			// translateX(viewLabel, speed * (-distanceX));
 
 			if (!isLabel) {
-				translateY(viewContent, speed*(-distanceY));
+				// translateY(viewContent, speed * (-distanceY));
 			}
 
 			if (viewContent.getPosX() > 0)
@@ -380,7 +497,6 @@ public class EventCalendarFragment extends Fragment {
 				viewContent.setPosY(0);
 
 			// Check footer visible
-			boolean check = false;
 			if (-viewContent.getPosY() >= (viewContent.getLimitHeight() - HEIGHT_SCREEN)) {
 				if ((viewContent.getLimitHeight() - HEIGHT_SCREEN) < 0) {
 					viewContent.setPosY(0);
@@ -388,8 +504,7 @@ public class EventCalendarFragment extends Fragment {
 					viewContent
 							.setPosY(-(viewContent.getLimitHeight() - HEIGHT_SCREEN));
 				}
-//				footer.setVisibility(View.VISIBLE);
-				check = true;
+				// footer.setVisibility(View.VISIBLE);
 			} else if (-viewContent.getPosY() < (viewContent.getLimitHeight()
 					- HEIGHT_SCREEN - 50)) {
 				// TranslateAnimation animate = new TranslateAnimation(0, 0, 0,
@@ -397,7 +512,7 @@ public class EventCalendarFragment extends Fragment {
 				// animate.setDuration(500);
 				// animate.setFillAfter(true);
 				// footer.startAnimation(animate);
-//				footer.setVisibility(View.GONE);
+				// footer.setVisibility(View.GONE);
 			}
 
 			if (viewLabel.getPosX() > 0)
