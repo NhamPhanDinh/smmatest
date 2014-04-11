@@ -198,7 +198,7 @@ public class CalendarView extends View {
 		super.onDraw(canvas);
 		canvas.save();
 		canvas.translate(mPosX, mPosY);
-		canvas.scale(mScaleFactor, mScaleFactor);
+		// canvas.scale(mScaleFactor, mScaleFactor);
 		if (isTitle) {
 			drawHeaderCalendar(canvas);
 		} else {
@@ -216,9 +216,10 @@ public class CalendarView extends View {
 
 		coorListMonth = new ArrayList<Float>();
 
-		canvas.drawRect(0, 0, limitWidth *  2, 2 * square + this.month_height,
+		canvas.drawRect(0, 0, limitWidth * 2, 2 * square + this.month_height,
 				this.backgroundHeaderPaint);
-		canvas.drawRect(0, 0, limitWidth *  2, this.month_height, this.weekendPaint);
+		canvas.drawRect(0, 0, limitWidth * 2, this.month_height,
+				this.weekendPaint);
 
 		for (int i = 0; i < listMonthInfo.size(); i++) {
 			MonthInfo monthInfo = listMonthInfo.get(i);
@@ -289,8 +290,8 @@ public class CalendarView extends View {
 	}
 
 	public void drawBackgroundCommon(Canvas canvas) {
-		canvas.drawRect(0, 2 * square + this.month_height, limitWidth * 2, 10000,
-				this.backgroundCommonPaint);
+		canvas.drawRect(0, 2 * square + this.month_height, limitWidth * 2,
+				10000, this.backgroundCommonPaint);
 	}
 
 	public void drawWeekend(Canvas canvas) {
@@ -396,8 +397,8 @@ public class CalendarView extends View {
 				// Calculate width of text
 				float widthText = contentTextPain.measureText(eventName35
 						+ companyName);
-				widthContentEvent = widthText + image.getWidth() + square
-						+ contentTextPain.measureText("a");
+				widthContentEvent = widthText + image.getWidth()
+						+ contentTextPain.measureText("aaa");
 
 				// draw header for event
 				canvas.drawRect(paddingLeftEvent, 3 * square + startTop
@@ -419,7 +420,7 @@ public class CalendarView extends View {
 				Paint companyPaint = new Paint();
 				companyPaint.setTextSize(30 * this.WITH_SCREEN / 1080);
 				companyPaint.setTextAlign(Align.LEFT);
-				//companyPaint.setTextScaleX(1.2f);
+				// companyPaint.setTextScaleX(1.2f);
 				companyPaint.setColor(Color.parseColor(colorCode));
 				canvas.drawText(companyName, paddingLeftEvent + square
 						+ contentTextPain.measureText("a"), 3 * square
@@ -427,11 +428,15 @@ public class CalendarView extends View {
 						companyPaint);
 
 				// draw event name
-				canvas.drawText(eventName35,
-						paddingLeftEvent + (ratio + 1) * (int) square
-								+ contentTextPain.measureText(companyName), 3
-								* square + startTop + headerLength
-								+ text_lenght + square / 2, contentTextPain);
+				canvas.drawText(
+						eventName35,
+						paddingLeftEvent
+								+ (ratio)
+								* (int) square
+								+ contentTextPain.measureText(companyName
+										+ "aa"), 3 * square + startTop
+								+ headerLength + text_lenght + square / 2,
+						contentTextPain);
 
 				// save Rect Coordinates of event
 				arrayRect[i] = new RectF(paddingLeftEvent, 3 * square
