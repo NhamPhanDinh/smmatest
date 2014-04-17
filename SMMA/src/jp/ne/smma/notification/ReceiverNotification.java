@@ -10,12 +10,21 @@ import android.util.Log;
  * 
  */
 public class ReceiverNotification extends BroadcastReceiver {
-
+	String idEvent;
+	String name;
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		// TODO Auto-generated method stub
 		Log.e("", "Running receiver");
+		//get intent
+		idEvent=intent.getStringExtra("itemId");
+		name=intent.getStringExtra("name");
+		Log.i("ReceverNotification", "idEvent: "+idEvent);
+		Log.i("ReceverNotification", "name: "+name);
+		//send service
 		Intent service = new Intent(context, AlarmServiceNotification.class);
+		service.putExtra("itemId", idEvent);
+		service.putExtra("name", name);
 		context.startService(service);
 	}
 

@@ -33,10 +33,8 @@ import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
@@ -211,10 +209,8 @@ public class EventListFragment extends Fragment {
 		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
 				float velocityY) {
 			// TODO Auto-generated method stub
-			Log.d("TouchEventList", "TouchEventList onFling");
 			if (e2.getY() - e1.getY() > SWIPE_MIN_DISTANCE
 					&& Math.abs(velocityY) > SWIPE_THRESHOLD_VELOCITY) {
-				Log.d("Gesture", "..................... Top to bottom");
 				return false; // Top to bottom
 			}
 			return super.onFling(e1, e2, velocityX, velocityY);
@@ -301,7 +297,6 @@ public class EventListFragment extends Fragment {
 											json.getString("ev_color"));
 									map.put(KEY_IMG_URL,
 											json.getString("ev_path_image"));
-									Log.d("KEY_IMG_URL", map.get(KEY_IMG_URL));
 									eventList.add(map);
 
 								}
@@ -423,7 +418,6 @@ public class EventListFragment extends Fragment {
 											json.getString("ev_color"));
 									map.put(KEY_IMG_URL,
 											json.getString("ev_path_image"));
-									Log.d("KEY_IMG_URL", map.get(KEY_IMG_URL));
 									eventList.add(map);
 
 								}

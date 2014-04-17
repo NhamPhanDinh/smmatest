@@ -6,19 +6,22 @@ import java.util.Calendar;
 import java.util.Date;
 
 import jp.ne.smma.R;
-import jp.ne.smma.EventList.MainActivity;
 import jp.ne.smma.Ultis.ApplicationUntils;
 import jp.ne.smma.Ultis.Constance;
 import jp.ne.smma.aboutsmma.DAO.NotificationDataSource;
+import jp.ne.smma.notification.ReceiverNotification;
 import jp.ne.smma.wheel.ArrayWheelAdapter;
 import jp.ne.smma.wheel.NumericWheelAdapter;
 import jp.ne.smma.wheel.OnWheelChangedListener;
 import jp.ne.smma.wheel.WheelView;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
@@ -72,7 +75,7 @@ public class SettingDialog extends Dialog implements
 	private Calendar mCalendar;
 	private int hourSetting;
 	private int minuteSetting;
-
+	private String ideventlist;
 	/**
 	 * Constructor class
 	 * 
@@ -81,7 +84,7 @@ public class SettingDialog extends Dialog implements
 	 */
 	public SettingDialog(Activity a, Calendar calendar, int idevent,
 			String nameEvent, String strDateTime, String endday, String value,
-			String note) {
+			String note,String ideventlist) {
 		super(a, android.R.style.Theme_DeviceDefault_Light_Dialog);
 		// TODO Auto-generated constructor stub
 		this.c = a;
@@ -93,6 +96,7 @@ public class SettingDialog extends Dialog implements
 		this.endday = endday;
 		// this.value = value;
 		this.note = note;
+		this.ideventlist=ideventlist;
 
 	}
 
@@ -133,10 +137,10 @@ public class SettingDialog extends Dialog implements
 
 				setTextTitle(c
 						.getString(R.string.dialog_setting_title_complete));
+			} else {
+				Toast.makeText(c, "You not set notification",
+						Toast.LENGTH_SHORT).show();
 			}
-		} else {
-			Toast.makeText(c, "You not set notification", Toast.LENGTH_SHORT)
-					.show();
 		}
 
 	}
@@ -155,8 +159,8 @@ public class SettingDialog extends Dialog implements
 		processCheckBox();
 		// set calendar
 		calendar = convertGetCalendar(endday);
-		Log.e("Nhamnha", "EndDay: " + endday);
-		Log.e("Nhamnha", "Calendar: " + calendar.getTime().toString());
+		Log.e("SettingDialog", "EndDay: " + endday);
+		Log.e("SettingDialog", "Calendar: " + calendar.getTime().toString());
 		// set day
 		iniFullDay(calendar);
 		// set sort day
@@ -301,6 +305,12 @@ public class SettingDialog extends Dialog implements
 		calendar.set(Calendar.MONTH, month.getCurrentItem());
 
 		int maxDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+		// day.setViewAdapter(new DayAdapter(c, 1, maxDays, calendar
+		// .get(Calendar.DAY_OF_MONTH) - 1));
+		// int curDay = Math.min(maxDays, day.getCurrentItem() + 1);
+		// day.setCurrentItem(curDay - 1, true);
+		// calendar.set(Calendar.DAY_OF_MONTH, curDay);
+		Calendar calendar = Calendar.getInstance();
 		day.setViewAdapter(new DayAdapter(c, 1, maxDays, calendar
 				.get(Calendar.DAY_OF_MONTH) - 1));
 		int curDay = Math.min(maxDays, day.getCurrentItem() + 1);
@@ -566,12 +576,27 @@ public class SettingDialog extends Dialog implements
 										c);
 								notificationSource.open();
 								notificationSource.removeValueRecord(idevent);
+								int idRecord = notificationSource
+										.getIdViaIdEvent(idevent);
 								notificationSource.close();
 								// remove checkbox
 								radioOneWeek.setChecked(false);
 								radioThreeDay.setChecked(false);
 								radioOneDay.setChecked(false);
 								radioAdvanced.setChecked(false);
+								// remove notifiaction
+								Log.i("SettingDialog", "ID record: "+idRecord);
+								Intent intent = new Intent(c,
+										ReceiverNotification.class);
+								PendingIntent pendingIntent = PendingIntent
+										.getBroadcast(
+												c,
+												idRecord,
+												intent,
+												PendingIntent.FLAG_UPDATE_CURRENT);
+								AlarmManager alarmManager = (AlarmManager) c
+										.getSystemService(Context.ALARM_SERVICE);
+								alarmManager.cancel(pendingIntent);
 								// set ttile
 								setTextTitle(c
 										.getString(R.string.dialog_setting_title_remove));
@@ -610,10 +635,12 @@ public class SettingDialog extends Dialog implements
 																	// 0
 																	// no have
 																	// notification
+		// get id via id event
+		int id = notificationSource.getIdViaIdEvent(idevent);
 
 		notificationSource.close();
 		// set notification
-		ApplicationUntils.setNotification(c, fDate);
+		ApplicationUntils.setNotification(c, fDate, calendar, id,nameEvent,ideventlist);
 	}
 
 	/**
@@ -635,23 +662,25 @@ public class SettingDialog extends Dialog implements
 		case 1:
 			// 1 day
 			cal.add(Calendar.DATE, -1);
-			cal.add(Calendar.HOUR_OF_DAY, hour);
-			cal.add(Calendar.MINUTE, minute);
+			cal.set(Calendar.HOUR_OF_DAY, hour);
+			cal.set(Calendar.MINUTE, minute);
+			// cal.add(Calendar.HOUR_OF_DAY, hour);
+			// cal.add(Calendar.MINUTE, minute);
 			Log.i("SettingDialog", "Date: " + dateFormat.format(cal.getTime()));
 			return dateFormat.format(cal.getTime());
 		case 2:
 			// 3 day
 			cal.add(Calendar.DATE, -3);
-			cal.add(Calendar.HOUR_OF_DAY, hour);
-			cal.add(Calendar.MINUTE, minute);
+			cal.set(Calendar.HOUR_OF_DAY, hour);
+			cal.set(Calendar.MINUTE, minute);
 			Log.i("SettingDialog", "Date: " + dateFormat.format(cal.getTime()));
 			return dateFormat.format(cal.getTime());
 		case 3:
 			// 1 week
 
 			cal.add(Calendar.DATE, -7);
-			cal.add(Calendar.HOUR_OF_DAY, hour);
-			cal.add(Calendar.MINUTE, minute);
+			cal.set(Calendar.HOUR_OF_DAY, hour);
+			cal.set(Calendar.MINUTE, minute);
 			Log.i("SettingDialog", "Date: " + dateFormat.format(cal.getTime()));
 			return dateFormat.format(cal.getTime());
 		default:
@@ -700,6 +729,7 @@ public class SettingDialog extends Dialog implements
 	protected void processCheckBox() {
 		String strChooseDay = getChooseDayDB();
 		String strGetValue = getValueDayDB();
+		Log.e("Setting Dialog", "strgetValue: "+strGetValue);
 		// if have no data
 		if (strChooseDay == null || strChooseDay.equals("")) {
 			radioOneDay.setChecked(false);

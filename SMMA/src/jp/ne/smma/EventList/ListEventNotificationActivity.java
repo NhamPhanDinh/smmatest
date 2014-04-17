@@ -121,8 +121,8 @@ public class ListEventNotificationActivity extends Activity {
 									Toast.LENGTH_SHORT).show();
 						}
 						// set notification
-						ApplicationUntils.setNotification(
-								ListEventNotificationActivity.this, fDate);
+//						ApplicationUntils.setNotification(
+//								ListEventNotificationActivity.this, fDate);
 					}
 
 					@Override

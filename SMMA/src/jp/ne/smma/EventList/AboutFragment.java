@@ -266,13 +266,6 @@ public class AboutFragment extends Fragment {
 											json.getDouble(Constance.KEY_ABOUT_LAT),
 											json.getDouble(Constance.KEY_ABOUT_LONG));
 									rowItems.add(item);
-									Log.d("item",
-											item.getColorCode()
-													+ item.getPathImageItem()
-													+ item.getStrContent()
-													+ item.getPlaceId()
-													+ item.getLatitude()
-													+ item.getLongitude());
 								}
 							}
 						}

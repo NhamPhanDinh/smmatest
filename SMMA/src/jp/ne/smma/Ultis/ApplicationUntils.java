@@ -1,5 +1,6 @@
 package jp.ne.smma.Ultis;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -17,12 +18,14 @@ import android.util.Log;
  * Class defind application until
  */
 public class ApplicationUntils {
-	static int id=0;
+	static int id = 0;
+
 	/**
 	 * Go to Place detail Activity
 	 */
 	public static void gotoActivityPlaceDetail(Context context, Class<?> cls,
-			String colorCode, String name, String id, double latutide, double longitude) {
+			String colorCode, String name, String id, double latutide,
+			double longitude) {
 		Intent intent = new Intent(context, cls);
 		intent.putExtra(Constance.COLOR_ITEM_ABOUT, colorCode);
 		intent.putExtra(Constance.COLOR_TEXT_INDEX_ABOUT, name);
@@ -73,7 +76,7 @@ public class ApplicationUntils {
 
 						notificationSource.close();
 						// set notification
-						setNotification(mContext, fDate);
+						//setNotification(mContext, fDate,c);
 
 					}
 
@@ -103,6 +106,7 @@ public class ApplicationUntils {
 		}
 		return convertedDate;
 	}
+
 	/**
 	 * Convert String to Date via yyyy/MM/dd
 	 * 
@@ -133,7 +137,8 @@ public class ApplicationUntils {
 	public static String previewDaybyDay(String oldday) {
 		Log.i("ApplicationUntil", "Old Date: " + oldday);
 		Date oldDate = converStringtoDate(oldday);
-		java.text.DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm");
+		java.text.DateFormat dateFormat = new SimpleDateFormat(
+				"yyyy/MM/dd hh:mm");
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(oldDate);
 		switch (Constance.strCheckBoxNotifiation) {
@@ -167,20 +172,51 @@ public class ApplicationUntils {
 	 * 
 	 * @param datetime
 	 */
-	public static void setNotification(Context mContext, String time) {
-		id++;
-		Log.i("Application Until", "Time: "+time);
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(converStringtoDate(time)); // month 3// month +1
+	public static void setNotification(Context mContext, String time,
+			Calendar calendar, int idEvent,String name,String ideventlist) {
+		Log.i("Application Until", "Time: " + time);
 		// go to receiver class
 		Intent myIntent = new Intent(mContext, ReceiverNotification.class);
-		PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, id,
-				myIntent, PendingIntent.FLAG_ONE_SHOT); //PendingIntent.FLAG_ONE_SHOT = 0
+		//send intent
+		myIntent.putExtra("itemId", ideventlist);
+		myIntent.putExtra("name", name);
+		//setup flag
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, idEvent,
+				myIntent, PendingIntent.FLAG_ONE_SHOT); // PendingIntent.FLAG_ONE_SHOT
+		
+		calendar=convertGetCalendar(time);
+		//check calendar
+//		Calendar cal = Calendar.getInstance();
+//		
+//		if (cal.after(calendar)) {
+//			
+//		}
 		// set alarm
 		@SuppressWarnings("static-access")
 		AlarmManager alarmManager = (AlarmManager) mContext
 				.getSystemService(mContext.ALARM_SERVICE);
+		// set time
+		Log.e("Application until", "Calendar notification: "+calendar.getTime().toString());
 		alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(),
-				pendingIntent);
+				 pendingIntent);
+//		(AlarmManager.RTC, calendar.getTimeInMillis(),
+//				AlarmManager.RTC_WAKEUP, pendingIntent);
+		// alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(),
+		// pendingIntent);
+	}
+	/**
+	 * Convert day calendar
+	 */
+	protected static Calendar convertGetCalendar(String endDay) {
+		Calendar cal = Calendar.getInstance();
+			try {
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd hh:mm");
+				cal.setTime(sdf.parse(endDay));
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}// all done
+		return cal;
+
 	}
 }

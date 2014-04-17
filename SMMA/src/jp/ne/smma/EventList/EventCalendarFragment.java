@@ -13,10 +13,13 @@ import jp.ne.smma.EventCalendar.Controller.ActivitySwipeMotion;
 import jp.ne.smma.EventCalendar.Custom.CalendarView;
 import jp.ne.smma.EventList.Controller.GetDataEventCalendar;
 import jp.ne.smma.Ultis.MonthInfo;
+import jp.ne.smma.Ultis.UntilDateTime;
 import jp.ne.smma.aboutsmma.DTO.ItemCalendar;
+import jp.ne.smma.aboutsmma.dialog.CustomDialogFillter;
 import jp.ne.smma.aboutsmma.dialog.DialogFillterCalendar;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -24,6 +27,7 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -71,7 +75,7 @@ public class EventCalendarFragment extends Fragment {
 	boolean checkRightLeft = false;
 	private int month_lenght = 80; // View month height
 
-	DialogFillterCalendar dialogFillter;
+	DialogFillterCalendar dialogFillter;// DialogFillterCalendar
 	private ArrayList<Integer> idCompanyFillter = new ArrayList<Integer>();
 	GetDataEventCalendar getDataEvent;
 	List<ItemCalendar> rowCalendar = new ArrayList<ItemCalendar>();
@@ -92,6 +96,8 @@ public class EventCalendarFragment extends Fragment {
 	private Runnable runnable;
 
 	LinearLayout linearBanner;
+	Date dateCurrent;
+	int currentMonth = 0;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -121,16 +127,27 @@ public class EventCalendarFragment extends Fragment {
 
 		linearIncludeCalendar = (FrameLayout) rootView
 				.findViewById(R.id.linearIncludeCalendar);
-		monthTv = (TextView) rootView.findViewById(R.id.monthLabel);
 
 		// set time zone japan
 		mCalendar = Calendar.getInstance();
-		Date dateCurrent = mCalendar.getTime();
+		dateCurrent = mCalendar.getTime();
 		SimpleDateFormat dayFormat = new SimpleDateFormat("MMMM", Locale.JAPAN);
 		String dayCurrent = dayFormat.format(dateCurrent);
 		createList();
 		getCurrentDate();
 		getListMonthInfor();
+
+		monthTv = (TextView) rootView.findViewById(R.id.monthLabel);
+		float textMonthSize = 30 * WITH_SCREEN / 1080;
+		monthTv.setLines(1);
+		monthTv.setBackgroundColor(Color.parseColor("#F1F1F1"));
+		monthTv.setTextSize(textMonthSize / 2);
+		monthTv.setHeight((int) WITH_SCREEN / 14);
+		monthTv.setGravity(Gravity.CENTER | Gravity.LEFT);
+		monthTv.setTextColor(Color.BLACK);
+		monthTv.setPadding(10, 0, 0, 0);
+		currentMonth = UntilDateTime.getMonth(dateCurrent) + 1;
+		monthTv.setText(currentMonth + "月");
 
 		gesDetectorContent = new GestureDetector(new GestureListener(false));
 		gesDetectorLabel = new GestureDetector(new GestureListener(true));
@@ -197,6 +214,10 @@ public class EventCalendarFragment extends Fragment {
 							paramsContent.leftMargin = (int) (mLastTouchX - mDeltaX);
 							paramsContent.topMargin = (int) (mLastTouchY - mDeltaY);
 
+							Log.d("Calendar", "... Int: "
+									+ (int) (mLastTouchX - mDeltaX)
+									+ " :Float: " + (mLastTouchX - mDeltaX));
+
 							if (paramsContent.leftMargin > 0)
 								paramsContent.leftMargin = 0;
 							if (paramsContent.topMargin > 0)
@@ -205,6 +226,28 @@ public class EventCalendarFragment extends Fragment {
 									.getLimitWidth())
 								paramsContent.leftMargin = (int) -viewContent
 										.getLimitWidth();
+
+							// Set text for Month Label
+							for (int i = 0; i < viewLabel.getCoorListMonth()
+									.size(); i++) {
+
+								if (-paramsContent.leftMargin <= viewLabel
+										.getCoorListMonth().get(0)) {
+									monthTv.setText(currentMonth + "月");
+								} else if (-paramsContent.leftMargin > viewLabel
+										.getCoorListMonth().get(i)
+										&& -paramsContent.leftMargin < viewLabel
+												.getCoorListMonth().get(i + 1)
+										&& i <= (viewLabel.getCoorListMonth()
+												.size() - 1)) {
+									if ((currentMonth + i + 1) % 12 != 0) {
+										monthTv.setText((currentMonth + i + 1)
+												% 12 + "月");
+									} else {
+										monthTv.setText(12 + "月");
+									}
+								}
+							}
 
 							// Check footer visible
 							if (-paramsContent.topMargin >= (viewContent
@@ -248,7 +291,7 @@ public class EventCalendarFragment extends Fragment {
 					public boolean onTouch(View v, MotionEvent event) {
 						// TODO Auto-generated method stub
 						// gesDetectorLabel.onTouchEvent(event);
-						
+
 						final int action = event.getAction();
 
 						mLastTouchX = event.getRawX();
@@ -276,7 +319,8 @@ public class EventCalendarFragment extends Fragment {
 									.getLayoutParams();
 
 							paramsContent.leftMargin = (int) (mLastTouchX - mDeltaX);
-							//paramsContent.topMargin = (int) (mLastTouchY - mDeltaY);
+							// paramsContent.topMargin = (int) (mLastTouchY -
+							// mDeltaY);
 
 							if (paramsContent.leftMargin > 0)
 								paramsContent.leftMargin = 0;
@@ -294,7 +338,7 @@ public class EventCalendarFragment extends Fragment {
 							break;
 						}
 						}
-						
+
 						return false;
 					}
 				});
@@ -336,7 +380,7 @@ public class EventCalendarFragment extends Fragment {
 						}
 					}
 				};
-
+				// dialogFillter.show();
 			}
 		});
 		// test swipe down

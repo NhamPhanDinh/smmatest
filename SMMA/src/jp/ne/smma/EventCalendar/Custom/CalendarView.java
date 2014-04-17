@@ -265,28 +265,28 @@ public class CalendarView extends View {
 		}
 
 		// Set text for Month Label
-		float textMonthSize = 30 * this.WITH_SCREEN / 1080;
-		monthTv.setLines(1);
-		monthTv.setBackgroundColor(Color.parseColor("#F1F1F1"));
-		monthTv.setTextSize(textMonthSize / 2);
-		monthTv.setHeight((int) square);
-		monthTv.setGravity(Gravity.CENTER | Gravity.LEFT);
-		monthTv.setTextColor(Color.BLACK);
-		monthTv.setPadding(10, 0, 0, 0);
-		for (int i = 0; i < coorListMonth.size(); i++) {
-			int currentMonth = UntilDateTime.getMonth(dateCurrent) + 1;
-			if (mPosX == 0) {
-				monthTv.setText(currentMonth + "月");
-			} else if (-mPosX > coorListMonth.get(i)
-					&& -mPosX < coorListMonth.get(i + 1)
-					&& i <= (coorListMonth.size() - 1)) {
-				if ((currentMonth + i + 1) % 12 != 0) {
-					monthTv.setText((currentMonth + i + 1) % 12 + "月");
-				} else {
-					monthTv.setText(12 + "月");
-				}
-			}
-		}
+		// float textMonthSize = 30 * this.WITH_SCREEN / 1080;
+		// monthTv.setLines(1);
+		// monthTv.setBackgroundColor(Color.parseColor("#F1F1F1"));
+		// monthTv.setTextSize(textMonthSize / 2);
+		// monthTv.setHeight((int) square);
+		// monthTv.setGravity(Gravity.CENTER | Gravity.LEFT);
+		// monthTv.setTextColor(Color.BLACK);
+		// monthTv.setPadding(10, 0, 0, 0);
+		// for (int i = 0; i < coorListMonth.size(); i++) {
+		// int currentMonth = UntilDateTime.getMonth(dateCurrent) + 1;
+		// if (mPosX == 0) {
+		// monthTv.setText(currentMonth + "月");
+		// } else if (-mPosX > coorListMonth.get(i)
+		// && -mPosX < coorListMonth.get(i + 1)
+		// && i <= (coorListMonth.size() - 1)) {
+		// if ((currentMonth + i + 1) % 12 != 0) {
+		// monthTv.setText((currentMonth + i + 1) % 12 + "月");
+		// } else {
+		// monthTv.setText(12 + "月");
+		// }
+		// }
+		// }
 	}
 
 	public void drawBackgroundCommon(Canvas canvas) {
@@ -507,7 +507,11 @@ public class CalendarView extends View {
 		mPosY += dy;
 		invalidate();
 	}
-
+	
+	public ArrayList<Float> getCoorListMonth() {
+		return this.coorListMonth;
+	}
+	
 	public float getPosX() {
 		return this.mPosX;
 	}

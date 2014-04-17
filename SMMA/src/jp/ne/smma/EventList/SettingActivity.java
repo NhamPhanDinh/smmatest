@@ -351,7 +351,7 @@ public class SettingActivity extends Activity implements OnClickListener {
 				fDate = ApplicationUntils.previewDaybyDay(fDate);
 				strChooseDayUpdate.add(fDate);
 				// set notification
-				ApplicationUntils.setNotification(SettingActivity.this, fDate);
+				//ApplicationUntils.setNotification(SettingActivity.this, fDate);
 			}
 			// update database
 			notificationSource.updateChooseDayZero(strChooseDayUpdate);

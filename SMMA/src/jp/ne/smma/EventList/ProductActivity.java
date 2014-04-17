@@ -7,7 +7,6 @@ import java.util.List;
 
 import jp.ne.smma.R;
 import jp.ne.smma.EventList.Controller.AlertDialogManager;
-import jp.ne.smma.Ultis.ApplicationUntils;
 import jp.ne.smma.Ultis.Constance;
 import jp.ne.smma.Ultis.JSONParser;
 import jp.ne.smma.aboutsmma.dialog.SettingDialog;
@@ -95,6 +94,8 @@ public class ProductActivity extends Activity {
 	int id = 0;
 	String dateFrom = null;
 	String dateEnd = null;
+	
+	String ideventlist;
 
 //	TextView productTittle;
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
@@ -149,7 +150,7 @@ public class ProductActivity extends Activity {
 //						df1.format(dateE), strTitle, strDate);
 				final Calendar dateandtime = Calendar.getInstance();
 				SettingDialog setting = new SettingDialog(ProductActivity.this, dateandtime,id, strName, df1.format(dateF),
-						df1.format(dateE), strTitle, strDate);
+						df1.format(dateE), strTitle, strDate,ideventlist);
 				setting.show();
 				} catch (java.text.ParseException e) {
 					// TODO Auto-generated catch block
@@ -181,7 +182,7 @@ public class ProductActivity extends Activity {
 //						df1.format(dateE), strTitle, strDate);
 					final Calendar dateandtime = Calendar.getInstance();
 					SettingDialog setting = new SettingDialog(ProductActivity.this, dateandtime,id, strName, df1.format(dateF),
-							df1.format(dateE), strTitle, strDate);
+							df1.format(dateE), strTitle, strDate,ideventlist);
 					setting.show();
 				} catch (java.text.ParseException e) {
 					// TODO Auto-generated catch block
@@ -266,14 +267,14 @@ public class ProductActivity extends Activity {
 			// TODO Auto-generated method stub
 			Intent intent = getIntent();
 			fName = intent.getStringExtra("name");
-			String id = intent.getStringExtra("itemId");
-			Log.e("item id", id);
+			ideventlist = intent.getStringExtra("itemId");
+			Log.i("Product", "Id event: "+ideventlist);
 
 			JSONParser jsonParser = new JSONParser();
 			List<NameValuePair> params1 = new ArrayList<NameValuePair>();
 
 			params1.add(new BasicNameValuePair("name_event", "get-event-detail"));
-			params1.add(new BasicNameValuePair("id", id));
+			params1.add(new BasicNameValuePair("id", ideventlist));
 			JSONObject mJson = jsonParser.getJSONFromUrl(Constance.url, params1);
 			try {
 				if (mJson.getString(KEY_SUCCESS) != null) {
@@ -295,7 +296,6 @@ public class ProductActivity extends Activity {
 									json.getString("ev_date_from"));
 							map.put(KEY_DATE_END, json.getString("ev_date_end"));
 							map.put(KEY_CONTENT, json.getString("ev_content"));
-							Log.e("ev_content",json.getString("ev_content") );
 							map.put(KEY_IMG_COLOR, json.getString("ev_color"));
 							map.put(KEY_TEXT_FIRST,
 									json.getString("ev_text_first"));

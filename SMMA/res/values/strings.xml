@@ -28,6 +28,7 @@
     <string name="content_message">個別イベントの通知をすべてクリアします。 よろしいですか</string>
     <string name="dialog_cancel">キャンセル</string>
     <string name="dialog_ok">OK</string>
+     <string name="dialog_ok_japan">完了</string>
     <!-- Notification service -->
     <string name="content_notification">You have an upcoming event happening</string>
     <string name="event_footer_text">古い記事を表示</string>

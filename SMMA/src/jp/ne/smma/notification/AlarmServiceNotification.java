@@ -1,7 +1,7 @@
 package jp.ne.smma.notification;
 
 import jp.ne.smma.R;
-import jp.ne.smma.EventList.MainActivity;
+import jp.ne.smma.EventList.ProductActivity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -15,7 +15,8 @@ import android.util.Log;
 public class AlarmServiceNotification extends Service {
 
 	private NotificationManager mManager;
-
+	String idEvent;
+	String name;
 	@Override
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
@@ -34,12 +35,26 @@ public class AlarmServiceNotification extends Service {
 	public void onStart(Intent intent, int startId) {
 		Log.e("", "Running start service");
 		super.onStart(intent, startId);
+		//get data
+		if (intent!=null) {
+			idEvent=intent.getStringExtra("itemId");
+			name=intent.getStringExtra("name");
+		}
+		
+		if (idEvent!=null && name!=null) {
+			Log.e("Alarm", "idEvent: "+idEvent);
+			Log.e("Alarm", "name: "+name);
+		
+		
+		//send intent
 
 		mManager = (NotificationManager) this.getApplicationContext()
 				.getSystemService(
 						this.getApplicationContext().NOTIFICATION_SERVICE);
 		Intent intent1 = new Intent(this.getApplicationContext(),
-				MainActivity.class);
+				ProductActivity.class); //mainactivity
+		intent1.putExtra("itemId", idEvent);
+		intent1.putExtra("name", name);
 
 		Notification notification = new Notification(R.drawable.ic_launcher,
 				getString(R.string.content_notification), System.currentTimeMillis());
@@ -55,6 +70,7 @@ public class AlarmServiceNotification extends Service {
 				pendingNotificationIntent);
 
 		mManager.notify(0, notification);
+		}
 	}
 
 	@Override

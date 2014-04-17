@@ -26,7 +26,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
@@ -146,7 +145,6 @@ public class PlaceDetailActivity extends Activity implements OnClickListener {
 		titleItem = intent.getStringExtra(Constance.COLOR_TEXT_INDEX_ABOUT);
 		colorCode = intent.getStringExtra(Constance.COLOR_ITEM_ABOUT);
 		placeID = intent.getStringExtra(Constance.KEY_ABOUT_PLACE);
-		Log.e("kkkkkkkkkkkkk", placeID);
 		latitude = intent.getDoubleExtra(Constance.LATITUDE_ABOUT, 40.714728);
 		longitude = intent
 				.getDoubleExtra(Constance.LONGITUDE_ABOUT, -73.998672);
@@ -167,7 +165,6 @@ public class PlaceDetailActivity extends Activity implements OnClickListener {
 				String phone = strPhone.getText().toString();
 				String phoneNumber = phone.replaceAll("TEL: ", "");
 				phoneNumber = phoneNumber.replace(" ", "");
-				Log.d("phone number", phoneNumber);
 				Intent callIntent = new Intent(Intent.ACTION_DIAL, Uri
 						.parse("tel:" + phoneNumber));
 				startActivity(callIntent);

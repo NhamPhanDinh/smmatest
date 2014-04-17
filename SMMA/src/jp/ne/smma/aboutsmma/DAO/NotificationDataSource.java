@@ -322,7 +322,31 @@ public class NotificationDataSource {
 		return true;
 
 	}
+	/**
+	 * get id via id_event
+	 */
+	public int getIdViaIdEvent(int idEvent) {
+		int time = 0;
+		try {
+			String querySql = "SELECT  " + DatabaseHandler.COLUMN_ID
+					+ " " + "FROM " + DatabaseHandler.TBL_NOTIFICATION
+					+ " WHERE " + DatabaseHandler.COLUMN_ID_EVENT + " = " + (idEvent);
+			Cursor cursor = database.rawQuery(querySql, null);
 
+			cursor.moveToFirst();
+			cursor.getCount();
+			while (!cursor.isAfterLast()) {
+				time = cursor.getInt(0);
+				cursor.moveToNext();
+			}
+			cursor.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		Log.i("", "Id get via IdEvent: " + time);
+		return time;
+
+	}
 	/**
 	 * get choose day
 	 */
@@ -355,7 +379,7 @@ public class NotificationDataSource {
 	public String getValueDay(int id) {
 		String time = null;
 		try {
-			String querySql = "SELECT  " + DatabaseHandler.COLUMN_STATUS
+			String querySql = "SELECT  " + DatabaseHandler.COLUMN_VALUE
 					+ " " + "FROM " + DatabaseHandler.TBL_NOTIFICATION
 					+ " WHERE " + DatabaseHandler.COLUMN_ID_EVENT + " = " + (id);
 			Log.i("", "Querry: " + querySql);
