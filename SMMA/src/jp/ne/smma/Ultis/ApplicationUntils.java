@@ -76,7 +76,7 @@ public class ApplicationUntils {
 
 						notificationSource.close();
 						// set notification
-						//setNotification(mContext, fDate,c);
+						// setNotification(mContext, fDate,c);
 
 					}
 
@@ -173,50 +173,64 @@ public class ApplicationUntils {
 	 * @param datetime
 	 */
 	public static void setNotification(Context mContext, String time,
-			Calendar calendar, int idEvent,String name,String ideventlist) {
+			Calendar calendar, int idEvent, String name, String ideventlist) {
 		Log.i("Application Until", "Time: " + time);
 		// go to receiver class
 		Intent myIntent = new Intent(mContext, ReceiverNotification.class);
-		//send intent
+		// send intent
 		myIntent.putExtra("itemId", ideventlist);
 		myIntent.putExtra("name", name);
-		//setup flag
-		PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, idEvent,
-				myIntent, PendingIntent.FLAG_ONE_SHOT); // PendingIntent.FLAG_ONE_SHOT
-		
-		calendar=convertGetCalendar(time);
-		//check calendar
-//		Calendar cal = Calendar.getInstance();
-//		
-//		if (cal.after(calendar)) {
-//			
-//		}
+		// setup flag
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext,
+				idEvent, myIntent, PendingIntent.FLAG_ONE_SHOT); // PendingIntent.FLAG_ONE_SHOT
+
+		calendar = convertGetCalendar(time);
+		// check calendar
+		// Calendar cal = Calendar.getInstance();
+		//
+		// if (cal.after(calendar)) {
+		//
+		// }
 		// set alarm
 		@SuppressWarnings("static-access")
 		AlarmManager alarmManager = (AlarmManager) mContext
 				.getSystemService(mContext.ALARM_SERVICE);
 		// set time
-		Log.e("Application until", "Calendar notification: "+calendar.getTime().toString());
+		Log.e("Application until", "Calendar notification: "
+				+ calendar.getTime().toString());
 		alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(),
-				 pendingIntent);
-//		(AlarmManager.RTC, calendar.getTimeInMillis(),
-//				AlarmManager.RTC_WAKEUP, pendingIntent);
+				pendingIntent);
+		// (AlarmManager.RTC, calendar.getTimeInMillis(),
+		// AlarmManager.RTC_WAKEUP, pendingIntent);
 		// alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(),
 		// pendingIntent);
 	}
+
 	/**
 	 * Convert day calendar
 	 */
 	protected static Calendar convertGetCalendar(String endDay) {
 		Calendar cal = Calendar.getInstance();
-			try {
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd hh:mm");
-				cal.setTime(sdf.parse(endDay));
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}// all done
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd hh:mm");
+			cal.setTime(sdf.parse(endDay));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}// all done
 		return cal;
 
+	}
+
+	public static float distance(Context context, float x1, float y1,
+			float x2, float y2) {
+		float dx = x1 - x2;
+		float dy = y1 - y2;
+		float distanceInPx = (float) Math.sqrt(dx * dx + dy * dy);
+		return pxToDp(context, distanceInPx);
+	}
+
+	public static float pxToDp(Context context, float px) {
+		return px / context.getResources().getDisplayMetrics().density;
 	}
 }

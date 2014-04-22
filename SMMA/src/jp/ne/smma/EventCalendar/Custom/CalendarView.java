@@ -439,9 +439,9 @@ public class CalendarView extends View {
 						contentTextPain);
 
 				// save Rect Coordinates of event
-				arrayRect[i] = new RectF(paddingLeftEvent, 3 * square
+				arrayRect[i] = new RectF(paddingLeftEvent, 4 * square
 						+ startTop + headerLength, paddingLeftEvent
-						+ widthContentEvent, 3 * square + startTop
+						+ widthContentEvent, 4 * square + startTop
 						+ headerLength + square);
 
 				paddingTop = square;
@@ -507,11 +507,11 @@ public class CalendarView extends View {
 		mPosY += dy;
 		invalidate();
 	}
-	
+
 	public ArrayList<Float> getCoorListMonth() {
 		return this.coorListMonth;
 	}
-	
+
 	public float getPosX() {
 		return this.mPosX;
 	}
@@ -539,9 +539,10 @@ public class CalendarView extends View {
 	public void clickEvent(float x, float y) {
 		for (int i = 0; i < arrayRect.length; i++) {
 			if (arrayRect[i] != null) {
+				Log.d("ClickEvent", "ClickEvent : " + arrayRect[i] + " Left: "
+						+ x + " Right: " + y);
 				if (x > arrayRect[i].left && x < arrayRect[i].right
 						&& y > arrayRect[i].top && y < arrayRect[i].bottom) {
-					Log.d("ClickEvent", "ClickEvent.............." + i);
 
 					Intent intent = new Intent(context, ProductActivity.class);
 					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

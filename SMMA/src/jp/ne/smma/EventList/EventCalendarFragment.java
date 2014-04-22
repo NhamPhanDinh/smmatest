@@ -12,6 +12,7 @@ import jp.ne.smma.R;
 import jp.ne.smma.EventCalendar.Controller.ActivitySwipeMotion;
 import jp.ne.smma.EventCalendar.Custom.CalendarView;
 import jp.ne.smma.EventList.Controller.GetDataEventCalendar;
+import jp.ne.smma.Ultis.ApplicationUntils;
 import jp.ne.smma.Ultis.MonthInfo;
 import jp.ne.smma.Ultis.UntilDateTime;
 import jp.ne.smma.aboutsmma.DTO.ItemCalendar;
@@ -31,6 +32,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
@@ -95,9 +97,11 @@ public class EventCalendarFragment extends Fragment {
 	private Handler handler = new Handler();
 	private Runnable runnable;
 
-	LinearLayout linearBanner;
+	private LinearLayout linearBanner;
+	int heightBanner = 0;
 	Date dateCurrent;
 	int currentMonth = 0;
+	private static final int MAX_CLICK_DISTANCE = 15;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -105,6 +109,17 @@ public class EventCalendarFragment extends Fragment {
 		// TODO Auto-generated method stub
 		View rootView = inflater.inflate(R.layout.event_calendar, container,
 				false);
+
+		linearBanner = (LinearLayout) rootView.findViewById(R.id.linearBanner);
+
+		ViewTreeObserver observer = linearBanner.getViewTreeObserver();
+		observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+			@Override
+			public void onGlobalLayout() {
+				heightBanner = linearBanner.getHeight();
+			}
+		});
+
 		imgFillter = (ImageView) rootView.findViewById(R.id.imgFillter);
 		// footer = (RelativeLayout) rootView
 		// .findViewById(R.id.event_calendar_footer);
@@ -171,7 +186,8 @@ public class EventCalendarFragment extends Fragment {
 								ViewGroup.LayoutParams.MATCH_PARENT));
 				linearIncludeCalendar.addView(viewLabel,
 						new ViewGroup.LayoutParams(
-								ViewGroup.LayoutParams.MATCH_PARENT, 300));
+								ViewGroup.LayoutParams.MATCH_PARENT,
+								WITH_SCREEN / 14 * 3));
 				// Set onTouchListener
 				viewContent.setOnTouchListener(new OnTouchListener() {
 
@@ -179,6 +195,8 @@ public class EventCalendarFragment extends Fragment {
 					private float mDeltaY;
 					private float mLastTouchX;
 					private float mLastTouchY;
+					private float mDownX;
+					private float mDownY;
 
 					@Override
 					public boolean onTouch(View v, MotionEvent event) {
@@ -199,6 +217,9 @@ public class EventCalendarFragment extends Fragment {
 									+ lParams.topMargin);
 							mDeltaX = mLastTouchX - lParams.leftMargin;
 							mDeltaY = mLastTouchY - lParams.topMargin;
+
+							mDownX = mLastTouchX;
+							mDownY = mLastTouchY;
 
 							break;
 						}
@@ -275,6 +296,19 @@ public class EventCalendarFragment extends Fragment {
 							viewLabel.setLayoutParams(paramsLabel);
 
 							break;
+						}
+						case MotionEvent.ACTION_UP: {
+							final FrameLayout.LayoutParams paramsContent = (FrameLayout.LayoutParams) viewContent
+									.getLayoutParams();
+
+							if (ApplicationUntils.distance(getActivity(),
+									mDownX, mDownY, event.getRawX(),
+									event.getRawY()) < MAX_CLICK_DISTANCE) {
+								viewContent.clickEvent(mLastTouchX
+										- paramsContent.leftMargin, mLastTouchY
+										- heightBanner
+										- paramsContent.topMargin);
+							}
 						}
 						}
 						return false;
@@ -591,8 +625,8 @@ public class EventCalendarFragment extends Fragment {
 			_xDelta = e.getX();
 			_yDelta = e.getY();
 
-			viewContent.clickEvent(_xDelta - viewContent.getPosX(), _yDelta
-					- viewContent.getPosY());
+			// viewContent.clickEvent(_xDelta - viewContent.getPosX(), _yDelta
+			// - viewContent.getPosY());
 			return super.onSingleTapUp(e);
 		}
 
