@@ -25,6 +25,7 @@
         android:padding="5dp" >
 
         <RadioButton
+              android:textSize="14sp"
             android:id="@+id/checkOneWeek"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -32,6 +33,7 @@
             android:text="@string/check_one_week" />
 
         <RadioButton
+              android:textSize="14sp"
             android:id="@+id/checkThreeDay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -48,6 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="right|center"
+                android:textSize="14sp"
                 android:text="@string/check_one_month" />
             <!-- Wheel view one -->
 
@@ -85,6 +88,7 @@
         android:padding="5dp" >
 
         <RadioButton
+              android:textSize="14sp"
             android:id="@+id/checkAdvanced"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

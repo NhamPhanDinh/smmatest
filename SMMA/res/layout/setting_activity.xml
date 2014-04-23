@@ -35,7 +35,7 @@
                 android:textStyle="bold" />
 
             <Button
-                android:id="@+id/btnSetEvent"
+                android:id="@+id/btnSetEventTest"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -177,6 +177,13 @@
                     android:text="@string/rotate_auto" />
             </RadioGroup>
         </LinearLayout>
+        <Button
+                android:id="@+id/btnSetEvent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:ems="17"
+                android:text="@string/set_calendar" />
     </LinearLayout>
 
 </ScrollView>

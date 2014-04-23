@@ -20,13 +20,15 @@
             android:contentDescription="@string/image"
             android:src="@drawable/banner_calendar_lanscape" />
 
-        <ImageView
+        <Button
+            android:textColor="@color/White"
             android:id="@+id/imgFillter"
             android:layout_width="fill_parent"
             android:layout_height="30dp"
             android:layout_gravity="center_horizontal"
             android:adjustViewBounds="true"
-            android:background="@drawable/button_fillter_calendar_lanscape"
+            android:text="絞り込んで表示"
+            android:background="@drawable/btn_fillter_button"
             android:contentDescription="@string/image" />
     </LinearLayout>
 

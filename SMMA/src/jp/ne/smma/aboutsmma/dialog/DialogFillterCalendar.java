@@ -29,8 +29,8 @@ public abstract class DialogFillterCalendar {
 			"仙台市天文台", "仙台市歴史民俗資料館", "仙台市八木山動物公園", "せんだいメディアテーク", "宮城県美術館",
 			"仙台市縄文の森広場", "仙台文学館", "仙台市博物館", "東北大学総合学術博物館",
 			"地底の森ミュージアム仙台市富沢遺跡保存館", "東北福祉大学芹沢銈介美術工芸館" };
-	private Integer[] idCompany = new Integer[] { 1, 10, 17, 18, 9, 11, 19, 12,
-			8, 16, 15, 13, 14 };
+	private Integer[] idCompany = new Integer[] { 1, 8, 17, 18, 9, 11, 19, 12,
+			10, 16, 15, 13, 14 };
 	private ListView listview;
 	private Context context;
 	private ArrayList<Integer> idCompanyComplete = new ArrayList<Integer>();

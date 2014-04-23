@@ -37,6 +37,7 @@ import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -65,7 +66,7 @@ public class EventCalendarFragment extends Fragment {
 	public static int current_Year;
 	public static int current_Day;
 
-	ImageView imgFillter;
+	Button imgFillter;
 	private float _xDelta;
 	private float _yDelta;
 	CalendarView viewLabel;
@@ -120,7 +121,7 @@ public class EventCalendarFragment extends Fragment {
 			}
 		});
 
-		imgFillter = (ImageView) rootView.findViewById(R.id.imgFillter);
+		imgFillter = (Button) rootView.findViewById(R.id.imgFillter);
 		// footer = (RelativeLayout) rootView
 		// .findViewById(R.id.event_calendar_footer);
 		// footer.setVisibility(View.GONE);

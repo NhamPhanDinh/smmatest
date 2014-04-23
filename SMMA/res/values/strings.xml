@@ -9,6 +9,7 @@
     <!-- Setting activity -->
     <string name="tittle_push_setting">各種設定</string>
     <string name="event_push_setting">個別イベント設定</string>
+    <string name="set_calendar">個別イベント設定</string>
     <string name="btn_set_event_list">イベント通知設定済みリストへ</string>
     <string name="btn_clear_event_list">個別イベントの通知をすべてクリア</string>
     <string name="all_push_setting">一括イベント設定</string>
