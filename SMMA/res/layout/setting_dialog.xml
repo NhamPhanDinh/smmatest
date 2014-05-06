@@ -7,15 +7,15 @@
     android:padding="5dp" >
 
     <TextView
-        android:visibility="gone"
-        android:text=""
-        android:layout_gravity="center"
-        android:gravity="center"
         android:id="@+id/infoDialog"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#FFE599" 
-        android:layout_marginBottom="2dp"/>
+        android:layout_gravity="center"
+        android:layout_marginBottom="2dp"
+        android:background="#FFE599"
+        android:gravity="center"
+        android:text=""
+        android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -25,20 +25,20 @@
         android:padding="5dp" >
 
         <RadioButton
-              android:textSize="14sp"
             android:id="@+id/checkOneWeek"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="right|center"
-            android:text="@string/check_one_week" />
+            android:text="@string/check_one_week"
+            android:textSize="14sp" />
 
         <RadioButton
-              android:textSize="14sp"
             android:id="@+id/checkThreeDay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="right|center"
-            android:text="@string/check_three_month" />
+            android:text="@string/check_three_month"
+            android:textSize="14sp" />
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -50,8 +50,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="right|center"
-                android:textSize="14sp"
-                android:text="@string/check_one_month" />
+                android:text="@string/check_one_month"
+                android:textSize="14sp" />
             <!-- Wheel view one -->
 
             <LinearLayout
@@ -88,12 +88,12 @@
         android:padding="5dp" >
 
         <RadioButton
-              android:textSize="14sp"
             android:id="@+id/checkAdvanced"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="right|center"
-            android:text="@string/check_advanced" />
+            android:text="@string/check_advanced"
+            android:textSize="14sp" />
         <!-- Wheel view two -->
 
         <LinearLayout

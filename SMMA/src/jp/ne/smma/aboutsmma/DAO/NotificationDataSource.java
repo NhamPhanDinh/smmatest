@@ -24,7 +24,8 @@ public class NotificationDataSource {
 			DatabaseHandler.COLUMN_STARTDAY, DatabaseHandler.COLUMN_ENDDAY,
 			DatabaseHandler.COLUMN_CHOOSE_DAY, DatabaseHandler.COLUMN_VALUE,
 			DatabaseHandler.COLUMN_NOTE, DatabaseHandler.COLUMN_CHECK,
-			DatabaseHandler.COLUMN_STATUS };
+			DatabaseHandler.COLUMN_STATUS,
+			DatabaseHandler.COLUMN_VALUE_NOTIFICATION };
 
 	/**
 	 * Constructor
@@ -55,10 +56,13 @@ public class NotificationDataSource {
 
 	/**
 	 * Create notification
+	 * 
+	 * @param valueNotification
+	 *            - valueNotification
 	 */
 	public NotificationItem createNotification(int idevent, String name,
 			String startday, String endday, String chooseday, String value,
-			String note, String check, String status) {
+			String note, String check, String status, String valueNotification) {
 		ContentValues values = new ContentValues();
 		values.put(DatabaseHandler.COLUMN_ID_EVENT, idevent);
 		values.put(DatabaseHandler.COLUMN_NAME, name);
@@ -71,6 +75,7 @@ public class NotificationDataSource {
 		values.put(DatabaseHandler.COLUMN_NOTE, note);
 		values.put(DatabaseHandler.COLUMN_CHECK, check);
 		values.put(DatabaseHandler.COLUMN_STATUS, status);
+		values.put(DatabaseHandler.COLUMN_VALUE_NOTIFICATION, valueNotification);
 
 		long insertId = database.insert(DatabaseHandler.TBL_NOTIFICATION, null,
 				values);
@@ -82,6 +87,31 @@ public class NotificationDataSource {
 		NotificationItem notification = cursorToNotification(cursor);
 		cursor.close();
 		return notification;
+	}
+
+	/**
+	 * Update choose day by id
+	 * 
+	 * @return arraylist status
+	 */
+	public Boolean updateChooseDayByID(String value, int id, String notifiation) {
+		try {
+			String querySql = "UPDATE  " + DatabaseHandler.TBL_NOTIFICATION
+					+ " " + "SET " + DatabaseHandler.COLUMN_CHOOSE_DAY + " = '"
+					+ value + " '," + DatabaseHandler.COLUMN_VALUE + "='"
+					+ notifiation + "' WHERE "
+					+ DatabaseHandler.COLUMN_ID_EVENT + " = " + id;
+			Cursor cursor = database.rawQuery(querySql, null);
+
+			cursor.moveToFirst();
+			cursor.getCount();
+			cursor.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+
 	}
 
 	/**
@@ -173,6 +203,7 @@ public class NotificationDataSource {
 
 		return status;
 	}
+
 	/**
 	 * Getting all choose day if check = 0
 	 * 
@@ -267,9 +298,10 @@ public class NotificationDataSource {
 			String querySql = "UPDATE  " + DatabaseHandler.TBL_NOTIFICATION
 					+ " " + "SET " + DatabaseHandler.COLUMN_STATUS + " = '"
 					+ value + "' WHERE " + DatabaseHandler.COLUMN_ID + " = "
-					+ (id + 1);
+					+ (id+1);
 			Cursor cursor = database.rawQuery(querySql, null);
 
+			Log.i("", "querySql: "+querySql);
 			cursor.moveToFirst();
 			cursor.getCount();
 			cursor.close();
@@ -280,13 +312,14 @@ public class NotificationDataSource {
 		return true;
 
 	}
+
 	/**
-	* Remove record value
+	 * Remove record value
 	 */
 	public Boolean removeValueRecord(int id) {
 		try {
 			String querySql = "DELETE FROM " + DatabaseHandler.TBL_NOTIFICATION
-					+" WHERE "+DatabaseHandler.COLUMN_ID_EVENT+" = "+id;
+					+ " WHERE " + DatabaseHandler.COLUMN_ID_EVENT + " = " + id;
 			Cursor cursor = database.rawQuery(querySql, null);
 
 			cursor.moveToFirst();
@@ -322,15 +355,16 @@ public class NotificationDataSource {
 		return true;
 
 	}
+
 	/**
 	 * get id via id_event
 	 */
 	public int getIdViaIdEvent(int idEvent) {
 		int time = 0;
 		try {
-			String querySql = "SELECT  " + DatabaseHandler.COLUMN_ID
-					+ " " + "FROM " + DatabaseHandler.TBL_NOTIFICATION
-					+ " WHERE " + DatabaseHandler.COLUMN_ID_EVENT + " = " + (idEvent);
+			String querySql = "SELECT  " + DatabaseHandler.COLUMN_ID + " "
+					+ "FROM " + DatabaseHandler.TBL_NOTIFICATION + " WHERE "
+					+ DatabaseHandler.COLUMN_ID_EVENT + " = " + (idEvent);
 			Cursor cursor = database.rawQuery(querySql, null);
 
 			cursor.moveToFirst();
@@ -347,6 +381,7 @@ public class NotificationDataSource {
 		return time;
 
 	}
+
 	/**
 	 * get choose day
 	 */
@@ -355,7 +390,8 @@ public class NotificationDataSource {
 		try {
 			String querySql = "SELECT  " + DatabaseHandler.COLUMN_CHOOSE_DAY
 					+ " " + "FROM " + DatabaseHandler.TBL_NOTIFICATION
-					+ " WHERE " + DatabaseHandler.COLUMN_ID_EVENT + " = " + (id);
+					+ " WHERE " + DatabaseHandler.COLUMN_ID_EVENT + " = "
+					+ (id);
 			Log.i("", "Querry: " + querySql);
 			Cursor cursor = database.rawQuery(querySql, null);
 
@@ -373,15 +409,44 @@ public class NotificationDataSource {
 		return time;
 
 	}
+
+	/**
+	 * get choose day
+	 */
+	public String getDayChooseDayIdRecord(int idRecord) {
+		String time = null;
+		try {
+			String querySql = "SELECT  " + DatabaseHandler.COLUMN_CHOOSE_DAY
+					+ " " + "FROM " + DatabaseHandler.TBL_NOTIFICATION
+					+ " WHERE " + DatabaseHandler.COLUMN_ID + " = "
+					+ (idRecord + 1);
+			Log.i("", "Querry: " + querySql);
+			Cursor cursor = database.rawQuery(querySql, null);
+
+			cursor.moveToFirst();
+			cursor.getCount();
+			while (!cursor.isAfterLast()) {
+				time = cursor.getString(0);
+				cursor.moveToNext();
+			}
+			cursor.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		Log.i("", "Time choose day get DB: " + time);
+		return time;
+
+	}
+
 	/**
 	 * get value day
 	 */
 	public String getValueDay(int id) {
 		String time = null;
 		try {
-			String querySql = "SELECT  " + DatabaseHandler.COLUMN_VALUE
-					+ " " + "FROM " + DatabaseHandler.TBL_NOTIFICATION
-					+ " WHERE " + DatabaseHandler.COLUMN_ID_EVENT + " = " + (id);
+			String querySql = "SELECT  " + DatabaseHandler.COLUMN_VALUE + " "
+					+ "FROM " + DatabaseHandler.TBL_NOTIFICATION + " WHERE "
+					+ DatabaseHandler.COLUMN_ID_EVENT + " = " + (id);
 			Log.i("", "Querry: " + querySql);
 			Cursor cursor = database.rawQuery(querySql, null);
 
@@ -435,6 +500,7 @@ public class NotificationDataSource {
 		notificationItem.setNote(cursor.getString(7));
 		notificationItem.setCheck(cursor.getString(8));
 		notificationItem.setStatus(cursor.getString(9));
+		notificationItem.setValueNotification(cursor.getString(10));
 
 		return notificationItem;
 	}

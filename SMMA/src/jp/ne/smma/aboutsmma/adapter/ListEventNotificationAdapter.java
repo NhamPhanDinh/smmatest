@@ -1,5 +1,6 @@
 package jp.ne.smma.aboutsmma.adapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jp.ne.smma.R;
@@ -22,7 +23,7 @@ import android.widget.Toast;
  */
 public class ListEventNotificationAdapter extends
 		ArrayAdapter<EventNotificationItem> {
-
+	public static ArrayList<String> checkbox = new ArrayList<String>();
 	Context context;
 	NotificationDataSource notificationSource;
 	ProgressDialog pDialog;
@@ -40,6 +41,7 @@ public class ListEventNotificationAdapter extends
 			List<EventNotificationItem> items) {
 		super(context, resourceId, items);
 		this.context = context;
+		checkbox.clear();
 	}
 
 	/* private view holder class */
@@ -52,6 +54,7 @@ public class ListEventNotificationAdapter extends
 
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		ViewHolder holder = null;
+		checkbox.add(position,"1");
 		EventNotificationItem rowItem = getItem(position);
 
 		LayoutInflater mInflater = (LayoutInflater) context
@@ -89,12 +92,14 @@ public class ListEventNotificationAdapter extends
 				pDialog = new ProgressDialog(context);
 				// check data
 				if (cb.isChecked()) {
+					checkbox.add(position, "1");
 					value = "1";
 				} else {
+					checkbox.add(position, "0");
 					value = "0";
 				}
 				id = position;
-				new updateStatus().execute("");
+				//new updateStatus().execute("");
 				// click check
 				country.setSelected(cb.isChecked());
 

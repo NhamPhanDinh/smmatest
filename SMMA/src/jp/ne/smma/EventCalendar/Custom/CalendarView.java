@@ -12,7 +12,6 @@ import jp.ne.smma.EventList.ProductActivity;
 import jp.ne.smma.Ultis.MonthInfo;
 import jp.ne.smma.Ultis.UntilDateTime;
 import jp.ne.smma.aboutsmma.DTO.ItemCalendar;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -28,14 +27,15 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Display;
-import android.view.Gravity;
 import android.view.MotionEvent;
-import android.view.View;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.ViewParent;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
-public class CalendarView extends View {
+public class CalendarView extends SurfaceView implements SurfaceHolder.Callback {
 	// canvas
 	private Drawable mIcon;
 	private float mPosX;
@@ -81,10 +81,18 @@ public class CalendarView extends View {
 	Context context;
 
 	TextView monthTv;
+	private SurfaceHolder holder;
+	Canvas c;
+	Bitmap image;
 
 	public CalendarView(Context context, ArrayList<MonthInfo> monthInfo,
 			ArrayList<ItemCalendar> listContent) {
 		this(context, null, 0);
+		holder = getHolder(); // Holder is now the internal/private
+								// mSurfaceHolder inherit
+		// from the SurfaceView class, which is from an anonymous
+		// class implementing SurfaceHolder interface.
+		holder.addCallback(this);
 		this.context = context;
 		WindowManager wm = (WindowManager) context
 				.getSystemService(Context.WINDOW_SERVICE);
@@ -130,6 +138,11 @@ public class CalendarView extends View {
 	public CalendarView(Context context, ArrayList<MonthInfo> monthInfo,
 			ArrayList<ItemCalendar> listContent, boolean isTitle, TextView tv) {
 		this(context, null, 0);
+		holder = getHolder(); // Holder is now the internal/private
+								// mSurfaceHolder inherit
+		// from the SurfaceView class, which is from an anonymous
+		// class implementing SurfaceHolder interface.
+		holder.addCallback(this);
 		this.context = context;
 		WindowManager wm = (WindowManager) context
 				.getSystemService(Context.WINDOW_SERVICE);
@@ -183,14 +196,6 @@ public class CalendarView extends View {
 		mIcon = context.getResources().getDrawable(R.drawable.ic_launcher);
 		mIcon.setBounds(0, 0, mIcon.getIntrinsicWidth(),
 				mIcon.getIntrinsicHeight());
-	}
-
-	@Override
-	public boolean onTouchEvent(MotionEvent ev) {
-		ViewParent parent = getParent();
-		// or get a reference to the ViewPager and cast it to ViewParent
-		parent.requestDisallowInterceptTouchEvent(true);
-		return true;
 	}
 
 	@Override
@@ -383,8 +388,8 @@ public class CalendarView extends View {
 				Matrix matrix = new Matrix();
 				matrix.postScale(scaleWidth, scaleHeight);
 
-				Bitmap image = Bitmap.createBitmap(bmp, 0, 0, width, height,
-						matrix, false);
+				image = Bitmap.createBitmap(bmp, 0, 0, width, height, matrix,
+						false);
 
 				// Limit string 35 char
 				String eventName35 = "";
@@ -557,6 +562,67 @@ public class CalendarView extends View {
 			}
 
 		}
+	}
+
+	@Override
+	public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
+		// TODO Auto-generated method stub
+		// c = holder.lockCanvas(null);
+		// onDraw(c);
+		// holder.unlockCanvasAndPost(c);
+	}
+
+	@Override
+	public void surfaceCreated(SurfaceHolder arg0) {
+		// TODO Auto-generated method stub
+
+		c = holder.lockCanvas(null);
+		c.drawColor(Color.GREEN);
+		onDraw(c);
+		holder.unlockCanvasAndPost(c);
+	}
+
+	@Override
+	public void surfaceDestroyed(SurfaceHolder arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public boolean onTouchEvent(MotionEvent ev) {
+		ViewParent parent = getParent();
+		// or get a reference to the ViewPager and cast it to ViewParent
+		parent.requestDisallowInterceptTouchEvent(true);
+
+		if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+		}
+
+		if (ev.getAction() == MotionEvent.ACTION_MOVE) {
+		}
+		return true;
+	}
+
+	@Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		// TODO Auto-generated method stub
+
+		// Set the dimension to the smaller of the 2 measures
+		int width;
+		int height;
+		if (isTitle) {
+			width = (int) (square * 50);
+			height = (int) (3 * square);
+		} else {
+			width = (int) (square * 50);
+			height = (int) (square * 50);
+		}
+
+		// Create the new specs
+		int widthSpec = MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY);
+		int heightSpec = MeasureSpec.makeMeasureSpec(height,
+				MeasureSpec.EXACTLY);
+
+		super.onMeasure(widthSpec, heightSpec);
 	}
 
 }

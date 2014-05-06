@@ -71,11 +71,16 @@ public class SettingDialog extends Dialog implements
 	private String endday;
 	private String value = "1"; // 1: one week, 2: 3day, 3: 1day, 4:advanced
 	private String note;
+	private String valueNotification;
 	// click code
 	private Calendar mCalendar;
 	private int hourSetting;
 	private int minuteSetting;
 	private String ideventlist;
+	// value check notification saved
+	private boolean bCheckNotification = false;//true: saved notification, false not save notification
+	//show dialog variable
+	private boolean bCheckDialog = false;//true run first, false not first run
 	/**
 	 * Constructor class
 	 * 
@@ -95,11 +100,28 @@ public class SettingDialog extends Dialog implements
 		this.strDateTime = strDateTime;
 		this.endday = endday;
 		// this.value = value;
+		this.valueNotification=value;
 		this.note = note;
 		this.ideventlist=ideventlist;
 
 	}
+	/**
+	 * Constructor class for list notification
+	 * 
+	 * @param a
+	 *            -Current activity
+	 */
+	public SettingDialog(Activity a, Calendar calendar, int idevent,
+			String strDateTime) {
+		super(a, android.R.style.Theme_DeviceDefault_Light_Dialog);
+		// TODO Auto-generated constructor stub
+		this.c = a;
+		this.calendar = calendar;
+		this.idevent = idevent;
 
+		this.strDateTime = strDateTime;
+
+	}
 	/**
 	 * Event click dialog
 	 */
@@ -123,12 +145,14 @@ public class SettingDialog extends Dialog implements
 				if (radioOneDay.isChecked() || radioOneWeek.isChecked()
 						|| radioThreeDay.isChecked()) {
 					mCalendar = updateSortDays(hourOne, minuteOne);
+					Log.i("", "--------------calendar: "+calendar.getTime().toString());
 					hourSetting = mCalendar.getTime().getHours();
 					minuteSetting = mCalendar.getTime().getMinutes();
 					setDataForNotification(mCalendar, hourSetting,
 							minuteSetting);
 				} else {
 					mCalendar = updateDays(year, month, day, hour, minute);
+					Log.i("", "--------------calendar: "+calendar.getTime().toString());
 					hourSetting = mCalendar.getTime().getHours();
 					minuteSetting = mCalendar.getTime().getMinutes();
 					setDataForNotification(mCalendar, hourSetting,
@@ -242,9 +266,10 @@ public class SettingDialog extends Dialog implements
 
 			}
 		};
-
+		Log.i("Setting dialog", "Calendar when full day: "+calendar.getTime().toString());
 		// month
 		int curMonth = calendar.get(Calendar.MONTH);
+		Log.i("Setting dialog", "curMonth when full day: "+curMonth);
 		String months[] = new String[] { "1月", "2月", "3月", "4月", "5月", "6月",
 				"7月", "8月", "9月", "10月", "11月", "12月" };
 		month.setViewAdapter(new DateArrayAdapter(c, months, curMonth));
@@ -262,7 +287,9 @@ public class SettingDialog extends Dialog implements
 		year.addChangingListener(listener);
 
 		// day
+		bCheckDialog=true;
 		updateDays(year, month, day, hour, minute);
+		bCheckDialog=false;
 		// day.setCurrentItem(calendar.getTime().getDay());
 		day.setCurrentItem(calendar.get(Calendar.DAY_OF_MONTH) - 1);
 
@@ -287,6 +314,25 @@ public class SettingDialog extends Dialog implements
 		// Calendar calendar = Calendar.getInstance();
 
 		// //Add hour and minute ///
+		calendar.set(Calendar.YEAR,
+				calendar.get(Calendar.YEAR)
+						+ (year.getCurrentItem() - NoOfYear));
+		calendar.set(Calendar.MONTH, month.getCurrentItem());
+
+		int maxDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+		
+		//check
+		
+		if (bCheckDialog) {
+			calendar = Calendar.getInstance();
+		}
+		//Calendar calendar = Calendar.getInstance(); //remove here
+		day.setViewAdapter(new DayAdapter(c, 1, maxDays, calendar
+				.get(Calendar.DAY_OF_MONTH) - 1));
+		int curDay = Math.min(maxDays, day.getCurrentItem() + 1);
+		day.setCurrentItem(curDay - 1, true);
+		calendar.set(Calendar.DAY_OF_MONTH, curDay);
+		
 		calendar.set(Calendar.HOUR_OF_DAY, hour.getCurrentItem());
 		calendar.set(Calendar.MINUTE, minute.getCurrentItem());
 		return calendar;
@@ -305,18 +351,18 @@ public class SettingDialog extends Dialog implements
 		calendar.set(Calendar.MONTH, month.getCurrentItem());
 
 		int maxDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-		// day.setViewAdapter(new DayAdapter(c, 1, maxDays, calendar
-		// .get(Calendar.DAY_OF_MONTH) - 1));
-		// int curDay = Math.min(maxDays, day.getCurrentItem() + 1);
-		// day.setCurrentItem(curDay - 1, true);
-		// calendar.set(Calendar.DAY_OF_MONTH, curDay);
-		Calendar calendar = Calendar.getInstance();
+		
+		//check
+		
+		if (bCheckDialog) {
+			calendar = Calendar.getInstance();
+		}
+		//Calendar calendar = Calendar.getInstance(); //remove here
 		day.setViewAdapter(new DayAdapter(c, 1, maxDays, calendar
 				.get(Calendar.DAY_OF_MONTH) - 1));
 		int curDay = Math.min(maxDays, day.getCurrentItem() + 1);
 		day.setCurrentItem(curDay - 1, true);
 		calendar.set(Calendar.DAY_OF_MONTH, curDay);
-
 		// //Add hour and minute ///
 		calendar.set(Calendar.HOUR_OF_DAY, hour.getCurrentItem());
 		calendar.set(Calendar.MINUTE, minute.getCurrentItem());
@@ -496,7 +542,7 @@ public class SettingDialog extends Dialog implements
 				// TODO Auto-generated method stub
 				setupOnOffRadioButton(0);
 				txtInfo.setVisibility(View.GONE);
-				Constance.strCheckBoxNotifiation = 3;
+				Constance.strCheckBoxNotifiation = 1;
 				value = "1";
 			}
 		});
@@ -520,7 +566,7 @@ public class SettingDialog extends Dialog implements
 				// TODO Auto-generated method stub
 				setupOnOffRadioButton(2);
 				txtInfo.setVisibility(View.GONE);
-				Constance.strCheckBoxNotifiation = 1;
+				Constance.strCheckBoxNotifiation = 3;
 				value = "3";
 			}
 		});
@@ -579,13 +625,14 @@ public class SettingDialog extends Dialog implements
 								int idRecord = notificationSource
 										.getIdViaIdEvent(idevent);
 								notificationSource.close();
+								//reset notification variable
+								bCheckNotification=false;
 								// remove checkbox
 								radioOneWeek.setChecked(false);
 								radioThreeDay.setChecked(false);
 								radioOneDay.setChecked(false);
 								radioAdvanced.setChecked(false);
 								// remove notifiaction
-								Log.i("SettingDialog", "ID record: "+idRecord);
 								Intent intent = new Intent(c,
 										ReceiverNotification.class);
 								PendingIntent pendingIntent = PendingIntent
@@ -629,12 +676,19 @@ public class SettingDialog extends Dialog implements
 		NotificationDataSource notificationSource = new NotificationDataSource(
 				c);
 		notificationSource.open();
+		//check variable notification update or new
+		if (bCheckNotification) {
+			//update db
+			notificationSource.updateChooseDayByID(fDate, idevent,""+Constance.strCheckBoxNotifiation);
+		}else{
+			//create new
 		notificationSource.createNotification(idevent, nameEvent, strDateTime,
-				endday, fDate, value, note, "1", checkSettting); // 1 have
+				endday, fDate, value, note, "1", checkSettting,valueNotification); // 1 have
 																	// notification,
 																	// 0
 																	// no have
 																	// notification
+		}
 		// get id via id event
 		int id = notificationSource.getIdViaIdEvent(idevent);
 
@@ -651,15 +705,13 @@ public class SettingDialog extends Dialog implements
 	 */
 	public String previewDay(String oldday, int hour, int minute) {
 		Log.i("SettingDialog", "Start Date: " + oldday);
-		Log.i("SettingDialog", "Start hour: " + hour);
-		Log.i("SettingDialog", "Start minute: " + minute);
 		Date oldDate = ApplicationUntils.converStringtoDate(oldday);
 		java.text.DateFormat dateFormat = new SimpleDateFormat(
 				"yyyy/MM/dd hh:mm");
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(oldDate);
 		switch (Constance.strCheckBoxNotifiation) {
-		case 1:
+		case 3:
 			// 1 day
 			cal.add(Calendar.DATE, -1);
 			cal.set(Calendar.HOUR_OF_DAY, hour);
@@ -675,7 +727,7 @@ public class SettingDialog extends Dialog implements
 			cal.set(Calendar.MINUTE, minute);
 			Log.i("SettingDialog", "Date: " + dateFormat.format(cal.getTime()));
 			return dateFormat.format(cal.getTime());
-		case 3:
+		case 1:
 			// 1 week
 
 			cal.add(Calendar.DATE, -7);
@@ -732,6 +784,9 @@ public class SettingDialog extends Dialog implements
 		Log.e("Setting Dialog", "strgetValue: "+strGetValue);
 		// if have no data
 		if (strChooseDay == null || strChooseDay.equals("")) {
+			//reset variable notification
+			bCheckNotification=false;
+			//set radiobutton
 			radioOneDay.setChecked(false);
 			radioOneWeek.setChecked(false);
 			radioThreeDay.setChecked(false);
@@ -739,8 +794,12 @@ public class SettingDialog extends Dialog implements
 		} else {
 			// have data
 			if (strGetValue == null || strGetValue.equals("")) {
+				//reset variable notification
+				bCheckNotification=false;
 				Log.e("DialogSetting", "Data null");
 			} else {
+				//set notification
+				bCheckNotification=true;
 				if (strGetValue.equals("1")) {
 					// 1 week
 					setupOnOffRadioButton(0);

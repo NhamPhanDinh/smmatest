@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-   
     <ImageView
         android:id="@+id/image_banner"
         android:layout_width="fill_parent"
@@ -13,9 +12,34 @@
         android:src="@drawable/banner_evenlist" />
 
     <ListView
+        android:layout_above="@+id/bottomImage"
+        android:layout_below="@+id/image_banner"
         android:id="@+id/listViewEventNotification"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+        android:layout_height="wrap_content" >
     </ListView>
 
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/bottomImage"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="削除" />
+
+        <Button
+            android:id="@+id/btnDelete"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="戻る" />
+    </LinearLayout>
+
+</RelativeLayout>

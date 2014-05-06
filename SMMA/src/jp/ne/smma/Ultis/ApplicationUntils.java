@@ -69,7 +69,7 @@ public class ApplicationUntils {
 						notificationSource.open();
 						notificationSource.createNotification(idevent,
 								nameEvent, strDateTime, endday, fDate, value,
-								note, "0", checkSettting); // 1 have
+								note, "0", checkSettting,value); // 1 have
 															// notification, 0
 															// no have
 															// notification

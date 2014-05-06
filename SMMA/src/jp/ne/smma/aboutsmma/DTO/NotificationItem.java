@@ -16,6 +16,8 @@ public class NotificationItem {
 	private String value;
 	private String check;
 	private String status;
+	
+	private String valueNotification;
 
 	/**
 	 * Constructor
@@ -30,10 +32,11 @@ public class NotificationItem {
 	 *            - value
 	 * @param status
 	 *            - 0: nothing, 1: 1 month, 2: 3 month, 3: other
+	 *            @param valueNotification - notification value
 	 */
 	public NotificationItem(int id, int idevent, String name, String startday,
 			String endday, String chooseday, String note, String value,
-			String check, String status) {
+			String check, String status, String valueNotification) {
 		this.id = id;
 		this.id_event = idevent;
 		this.name = name;
@@ -44,6 +47,7 @@ public class NotificationItem {
 		this.value = value;
 		this.check = check;
 		this.status = status;
+		this.valueNotification=valueNotification;
 	}
 
 	/**
@@ -131,6 +135,14 @@ public class NotificationItem {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public String getValueNotification() {
+		return valueNotification;
+	}
+
+	public void setValueNotification(String valueNotification) {
+		this.valueNotification = valueNotification;
 	}
 
 }

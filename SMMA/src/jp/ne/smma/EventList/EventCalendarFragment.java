@@ -181,14 +181,15 @@ public class EventCalendarFragment extends Fragment {
 						.getApplicationContext(), listMonthInfor,
 						getDataEvent.getItemCalendar(), true, monthTv);
 				// add view
-				linearIncludeCalendar.addView(viewContent,
-						new ViewGroup.LayoutParams(
-								ViewGroup.LayoutParams.MATCH_PARENT,
-								ViewGroup.LayoutParams.MATCH_PARENT));
 				linearIncludeCalendar.addView(viewLabel,
 						new ViewGroup.LayoutParams(
 								ViewGroup.LayoutParams.MATCH_PARENT,
 								WITH_SCREEN / 14 * 3));
+				linearIncludeCalendar.addView(viewContent,
+						new ViewGroup.LayoutParams(
+								ViewGroup.LayoutParams.MATCH_PARENT,
+								ViewGroup.LayoutParams.MATCH_PARENT));
+
 				// Set onTouchListener
 				viewContent.setOnTouchListener(new OnTouchListener() {
 

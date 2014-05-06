@@ -28,6 +28,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 	public static final String COLUMN_NOTE = "_note";
 	public static final String COLUMN_CHECK = "_check"; //0: nothing, 1 ; click item
 	public static final String COLUMN_STATUS = "_status"; //0: nothing, 1: show notification
+	public static final String COLUMN_VALUE_NOTIFICATION = "_value_notification"; //0: nothing, 1: show notification
 
 	// Database creation sql statement
 	private static final String CREATE_NOTIFICATION_TABLE = "create table " 
@@ -42,7 +43,8 @@ public class DatabaseHandler extends SQLiteOpenHelper
 			+ COLUMN_VALUE + " text not null, " 
 			+ COLUMN_NOTE + " text not null, "
 			+ COLUMN_CHECK + " text not null, "
-			+ COLUMN_STATUS + " text not null"
+			+ COLUMN_STATUS + " text not null,"
+			+ COLUMN_VALUE_NOTIFICATION + " text not null"
 			+ ");";
 	
 
